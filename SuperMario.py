@@ -14,7 +14,8 @@ class SuperMario:
         pygame.display.set_caption('Super Mario')
 
         # SET BUTTONS
-        self.play_button = Button(self, "PLAY", self.game_settings.WIDTH/2 - 100, self.game_settings.HEIGHT/2)
+        self.play_button = Button(self, "PLAY", self.game_settings.WIDTH/2 - 100, self.game_settings.HEIGHT/2) # 100 is the button offset (button width/2)
+        self.exit_button = Button(self, "EXIT", self.game_settings.WIDTH/2 - 100, self.game_settings.HEIGHT/2 + 100)
 
         # SET SPRITES
         self.bg = Background(self, 'Resources/Images/level_1_background.png')
@@ -34,6 +35,7 @@ class SuperMario:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self.check_play_button(mouse_pos)
+                self.check_exit_button(mouse_pos)
 
     def check_keydown(self, event):
         if event.key == pygame.K_ESCAPE:
@@ -60,6 +62,12 @@ class SuperMario:
             self.game_active = True
             pygame.mouse.set_visible(False)
 
+    def check_exit_button(self, mouse_pos):
+        button_clicked = self.exit_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_active:
+            pygame.quit()
+            sys.exit()
+
     def initialize(self):
         self.bg.draw_bg()
         self.bg_floor.draw_bg()
@@ -69,7 +77,10 @@ class SuperMario:
         while True:
             pygame.display.update()
             self.screen.fill((0, 0, 0))
-            self.play_button.draw_button()
+
+            if self.game_active == False:
+                self.play_button.draw_button()
+                self.exit_button.draw_button()
 
             if self.game_active == True:
                 self.initialize()
