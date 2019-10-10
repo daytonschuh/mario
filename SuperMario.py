@@ -10,6 +10,7 @@ class SuperMario:
         self.screen = pygame.display.set_mode((self.game_settings.WIDTH, self.game_settings.HEIGHT), 0, 32)
         pygame.display.set_caption('Super Mario')
 
+        # SET SPRITES
         self.bg = Background(self, 'Resources/Images/level_1_background.png')
         self.bg_floor = Background(self, 'Resources/Images/level_1_floor.png')
 
@@ -23,6 +24,9 @@ class SuperMario:
                 self.check_keyup(event)
 
     def check_keydown(self, event):
+        if event.key == pygame.K_ESCAPE:
+            pygame.quit()
+            sys.exit()
         if event.key == pygame.K_d:
             self.bg.moving_right = True
             self.bg_floor.moving_right = True

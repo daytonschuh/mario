@@ -9,17 +9,16 @@ class Background(Sprite):
         self.settings = game.game_settings
         self.screen_rect = game.screen.get_rect()
         self.background = pygame.image.load(image_name)
-
         self.rect = self.background.get_rect()
-
         self.x = float(self.rect.x)
         self.moving_right = False
         self.moving_left = False
 
     def update_bg(self):
-        if self.moving_right:
+        # move the background
+        if self.moving_right and self.rect.right >= self.settings.WIDTH: # right boundary
             self.x -= self.settings.bg_speed
-        if self.moving_left:
+        if self.moving_left and self.rect.left <= 0: # left boundary
             self.x += self.settings.bg_speed
 
         self.rect.x = self.x
