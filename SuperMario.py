@@ -1,14 +1,17 @@
 import pygame, sys
 from pygame.locals import *
 from Settings import Settings
+from Background import Background
 
 class SuperMario:
     def __init__(self):
         pygame.init()
         self.game_settings = Settings()
-        self.window_surface = pygame.display.set_mode((self.game_settings.WIDTH,
-                                              self.game_settings.HEIGHT), 0, 32)
+        self.screen = pygame.display.set_mode((self.game_settings.WIDTH, self.game_settings.HEIGHT), 0, 32)
         pygame.display.set_caption('Super Mario')
+
+        self.bg = Background(self, 'Resources/Images/level_1_background.png')
+        self.bg_floor = Background(self, 'Resources/Images/level_1_floor.png')
 
     def check_events(self):
         for event in pygame.event.get():
@@ -24,8 +27,10 @@ class SuperMario:
     def run_game(self):
         while True:
             pygame.display.update()
-            self.window_surface.fill((0, 0, 0))
+            self.screen.fill((0, 0, 0))
             self.check_events()
+            self.bg.draw_bg()
+            self.bg_floor.draw_bg()
 
 
 if __name__ == '__main__':
