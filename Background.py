@@ -14,9 +14,12 @@ class Background(Sprite):
 
         self.x = float(self.rect.x)
         self.moving_right = False
+        self.moving_left = False
 
     def update_bg(self):
-        if self.moving_right and self.rect.right < self.screen_rect.right:
+        if self.moving_right:
+            self.x -= self.settings.bg_speed
+        if self.moving_left:
             self.x += self.settings.bg_speed
 
         self.rect.x = self.x

@@ -3,4 +3,4 @@ class Settings:
         self.WIDTH = 1200
         self.HEIGHT = 672
         self.fps = 30
-        self.bg_speed = 20
+        self.bg_speed = 1

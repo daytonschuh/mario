@@ -15,14 +15,28 @@ class SuperMario:
 
     def check_events(self):
         for event in pygame.event.get():
-            self.key_presses()
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                self.check_keydown(event)
+            elif event.type == pygame.KEYUP:
+                self.check_keyup(event)
 
-    # method to deal with key presses
-    def key_presses(self):
-        self.keys = pygame.key.get_pressed()
-        if self.keys[pygame.K_ESCAPE]: # press ESC to quit
-            pygame.quit()
-            sys.exit()
+    def check_keydown(self, event):
+        if event.key == pygame.K_d:
+            self.bg.moving_right = True
+            self.bg_floor.moving_right = True
+        if event.key == pygame.K_a:
+            self.bg.moving_left = True
+            self.bg_floor.moving_left = True
+
+    def check_keyup(self, event):
+        if event.key == pygame.K_d:
+            self.bg.moving_right = False
+            self.bg_floor.moving_right = False
+        elif event.key == pygame.K_a:
+            self.bg.moving_left = False
+            self.bg_floor.moving_left = False
 
     def run_game(self):
         while True:
@@ -31,7 +45,8 @@ class SuperMario:
             self.check_events()
             self.bg.draw_bg()
             self.bg_floor.draw_bg()
-
+            self.bg.update_bg()
+            self.bg_floor.update_bg()
 
 if __name__ == '__main__':
     game = SuperMario()
