@@ -9,7 +9,11 @@ class Background(Sprite):
         self.settings = game.game_settings
         self.screen_rect = game.screen.get_rect()
         self.background = pygame.image.load(image_name)
+        self.image = self.background
+#        self.image.set_colorkey((1, 1, 1))
+
         self.rect = self.background.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.x = float(self.rect.x)
         self.moving_right = False
         self.moving_left = False
