@@ -8,8 +8,8 @@ class Background(Sprite):
         self.screen = game.screen
         self.settings = game.game_settings
         self.screen_rect = game.screen.get_rect()
-        self.background = pygame.image.load(image_name)
-        self.rect = self.background.get_rect()
+        self.image = pygame.image.load(image_name)
+        self.rect = self.image.get_rect()
         self.x = float(self.rect.x)
         self.moving_right = False
         self.moving_left = False
