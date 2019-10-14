@@ -24,4 +24,4 @@ class Background(Sprite):
         self.rect.x = self.x
 
     def draw_bg(self):
-        self.screen.blit(self.background, self.rect)
+        self.screen.blit(self.image, self.rect)
