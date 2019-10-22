@@ -2,30 +2,21 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Background(Sprite):
-    def __init__(self, game, image_name):
+    def __init__(self, screen, settings, camera, image_name):
         super().__init__()
-        self.screen = game.screen
-        self.settings = game.game_settings
-        self.screen_rect = game.screen.get_rect()
-        self.background = pygame.image.load(image_name)
-        self.image = self.background
-#        self.image.set_colorkey((1, 1, 1))
-
-        self.rect = self.background.get_rect()
+        self.screen = screen
+        self.settings = settings
+        self.camera = camera
+        self.image = pygame.image.load(image_name)
         self.mask = pygame.mask.from_surface(self.image)
-        self.x = float(self.rect.x)
-        self.moving_right = False
-        self.moving_left = False
+        self.rect = self.image.get_rect()
+#        self.x = float(self.rect.x)
+        self.x = (self.settings.WIDTH / 2)
 
-    def update_bg(self):
-        # move the background
-        if self.moving_right and self.rect.right >= self.settings.WIDTH: # right boundary
-            self.x -= self.settings.bg_speed
-        if self.moving_left and self.rect.left <= 0: # left boundary
-            self.x += self.settings.bg_speed
+    def update(self):
+        self.rect.left = self.x - self.camera.x_pos
 
-        self.rect.x = self.x
-
-    def draw_bg(self):
-        self.screen.blit(self.background, self.rect)
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
