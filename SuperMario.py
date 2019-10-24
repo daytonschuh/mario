@@ -4,6 +4,7 @@ from Settings import Settings
 from Button import Button
 from LevelCreator import *
 
+
 class SuperMario:
     def __init__(self):
         pygame.init()
@@ -22,7 +23,7 @@ class SuperMario:
         self.level = world_1_1(self.screen, self.settings)
 
         # SET EVENTS
-        self.left, self.right = False, False
+        self.left, self.right, self.space, self.shift, self.fire = [False] * 5
 
         # SET SOUNDS
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
@@ -50,19 +51,27 @@ class SuperMario:
         if event.key == pygame.K_a:
             self.right = False
             self.left = True
+        if event.key == pygame.K_SPACE:
+            self.space = True
+        if event.key == pygame.KMOD_SHIFT:
+            self.shift = True
+        if event.key == pygame.K_f:
+            self.fire = True
 
     def check_keyup(self, event):
         if event.key == pygame.K_d:
             self.right = False
-        elif event.key == pygame.K_a:
+        if event.key == pygame.K_a:
             self.left = False
+        if event.key == pygame.K_SPACE:
+            self.space = False
+        if event.key == pygame.KMOD_SHIFT:
+            self.shift = False
+        if event.key == pygame.K_f:
+            self.fire = False
 
     def do_event(self):
-        if self.left is True:
-            self.level.mario.move_left()
-
-        elif self.right is True:
-            self.level.mario.move_right()
+        self.level.update_mario(self.left, self.right, self.space, self.shift, self.fire)
 
     def check_play_button(self, mouse_pos):
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
@@ -87,9 +96,9 @@ class SuperMario:
         self.level.draw_screen()
 
     def run_game(self):
-        self.clock.tick(30)
         while True:
-            pygame.display.update()
+            self.clock.tick(60)
+
             self.screen.fill((0, 0, 0))
 
             self.check_events()
@@ -101,6 +110,9 @@ class SuperMario:
             if self.game_active is True:
                 self.do_event()
                 self.draw_screen()
+            pygame.display.flip()
+
+
 
 if __name__ == '__main__':
     game = SuperMario()

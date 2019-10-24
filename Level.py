@@ -3,6 +3,7 @@ from pygame.sprite import Group
 from Background import Background
 from camera import Camera
 from jumpman import Jumpman
+from physics import *
 
 
 class Level:
@@ -27,9 +28,19 @@ class Level:
         pass
 
     def update(self):
-        self.mario.update()
+        self.mario.update(self.floor)
         self.background.update()
         self.floor.update()
+
+    def update_mario(self, left, right, space, shift, fire):
+        if left:
+            self.mario.move_left(shift)
+        elif right:
+            self.mario.move_right(shift)
+        if space:
+            self.mario.jump()
+        if fire:
+            self.mario.fire()
 
     def draw_screen(self):
         self.background.draw()
