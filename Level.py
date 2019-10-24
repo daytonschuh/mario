@@ -37,6 +37,7 @@ class Level:
         self.mario.update(self.floor)
         self.background.update()
         self.floor.update()
+        self.scores.update_text()
 
     def update_mario(self, left, right, space, shift, fire):
         if left:
