@@ -2,6 +2,7 @@ class Timer:
 
     def __init__(self, refresh):
         self.frame = 0
+        self.out_of_time = False
         self.refresh = refresh
         self.default = self.refresh
 

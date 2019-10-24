@@ -102,6 +102,11 @@ class SuperMario:
     def run_game(self):
         while True:
             self.clock.tick(60)
+            print(str(self.level.scores.timer))
+
+            if self.level.scores.timer <= 0:
+                self.game_active = False
+                pygame.mouse.set_visible(True)
 
             self.screen.fill((0, 0, 0))
 
@@ -114,7 +119,7 @@ class SuperMario:
             if self.game_active is True:
                 self.do_event()
                 self.draw_screen()
-                #self.scores.draw_text()
+
             pygame.display.flip()
 
 

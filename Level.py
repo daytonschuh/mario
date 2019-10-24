@@ -21,11 +21,12 @@ class Level:
         self.score = 0
         self.world = "1-1"
         self.coins = 0
-        self.timer = 240
+        self.time_left = 240
+        self.loss = False
 
         self.enemies = Group()
         # self.objects = Group()
-        self.scores = Scoring(self.screen, self.score, self.world, self.coins, self.timer)
+        self.scores = Scoring(self.screen, self.score, self.world, self.coins, self.time_left)
 
     def place_enemy(self, enemy):
         pass
@@ -33,11 +34,17 @@ class Level:
     def place_block(self, block):
         pass
 
+    def check_loss(self):
+        if self.scores.timer <= 0:
+            self.loss = True
+
     def update(self):
-        self.mario.update(self.floor)
-        self.background.update()
-        self.floor.update()
-        self.scores.update_text()
+        self.check_loss()
+        if self.loss == False:
+            self.mario.update(self.floor)
+            self.background.update()
+            self.floor.update()
+            self.scores.update_text()
 
     def update_mario(self, left, right, space, shift, fire):
         if left:

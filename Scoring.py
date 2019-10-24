@@ -36,6 +36,10 @@ class Scoring:
     def add_score(self, score):
         self.scores += score
 
+    def check_time(self):
+        if self.timer == 0:
+            self.timer.out_of_time = True
+
     def run_clock(self):
         self.clock.tick()
         if self.clock.check():
