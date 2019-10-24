@@ -3,7 +3,7 @@ from Text import *
 from Timer import *
 
 class Scoring:
-    def __init__(self, screen, score, world, coins, time):
+    def __init__(self, screen, score, world, coins):
         self.screen = screen
         self.clock = Timer(60)
         self.score_text = Text(self)
@@ -16,7 +16,7 @@ class Scoring:
         self.scores = score
         self.world = world
         self.coins = coins
-        self.timer = time
+        self.timer = 240
 
     def draw_text(self):
         self.score_num_text.message(str(self.scores), (255, 255, 255), 100, 30)

@@ -107,6 +107,7 @@ class SuperMario:
             if self.level.scores.timer <= 0:
                 self.game_active = False
                 pygame.mouse.set_visible(True)
+                self.level.scores.timer = 240
 
             self.screen.fill((0, 0, 0))
 
