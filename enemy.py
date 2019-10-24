@@ -1,20 +1,33 @@
+# potentially rewriting this entire thing
 from pygame.sprite import Sprite
 from pygame import *
 
 
 class Enemy(Sprite):
+	""" Base class for enemies. """
     def __init__(self, screen, settings, camera, spawn_pos):
         super().__init__()
+		self.sprite_sheet = pygame.image.load('Resources/Images/enemy_sprite_sheet')
         self.screen = screen
         self.settings = settings
-        self.image = None
-        self.rect = self.image.get_rect()
         self.active = False
         self.camera = camera
         self.pos = spawn_pos
+		self.velocity = 10
+		
+		# Generate frames from sprite sheet.
+        self.frames = []
+		generate_frames()
+        self.frame_index = 0
+        self.animate_timer = 0
+        self.death_timer = 0
 
-    def enemy_type(self, enemy_type):
-	self.image = pygame.image.load(enemy_type)
+        self.name = name
+
+        self.image = self.frames[self.frame_index]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.bottom = y
 
     def update(self):
         self.rect.left = self.pos - self.camera.x_pos
@@ -26,12 +39,18 @@ class Enemy(Sprite):
             if self.rect.right < 0:
                 self.active = False
                 # self.kill()
+		
+	def generate_frames(self, x, y, direction, name, setup_frames):
+        """ Create frames from the sprite sheet. """
+		image = pygame.Surface([width, height]).convert()
+        rect = image.get_rect()
 
-    def behavior(self):
-        pass
-	# might be easier to read by just defining behavior within each enemy subclass vs. overloading
-	# move the sprite left at 10(?) pixels per loop
-	# if self.rect.left collides with something, turn around with something like self.x *= -1
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+
+        image = pygame.transform.scale(image,
+                                   (int(rect.width),
+                                    int(rect.height))
+        return image
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
