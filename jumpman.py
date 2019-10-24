@@ -3,21 +3,21 @@ from pygame.sprite import Sprite
 from pygame import *
 from physics import *
 
-face_left = pygame.image.load('Resources/images/jumpman/face_left.png')
-face_right = pygame.image.load('Resources/images/jumpman/face_right.png')
+face_left = pygame.image.load('Resources/Images/jumpman/face_left.png')
+face_right = pygame.image.load('Resources/Images/jumpman/face_right.png')
 face = [face_left, face_right]
-jump_left = pygame.image.load('Resources/images/jumpman/jump_left.png')
-jump_right = pygame.image.load('Resources/images/jumpman/jump_right.png')
+jump_left = pygame.image.load('Resources/Images/jumpman/jump_left.png')
+jump_right = pygame.image.load('Resources/Images/jumpman/jump_right.png')
 jump = [jump_left, jump_right]
-turn_left = pygame.image.load('Resources/images/jumpman/turn_left.png')
-turn_right = pygame.image.load('Resources/images/jumpman/turn_right.png')
-walk_left_1 = pygame.image.load('Resources/images/jumpman/walk_left_1.png')
-walk_left_2 = pygame.image.load('Resources/images/jumpman/walk_left_2.png')
-walk_left_3 = pygame.image.load('Resources/images/jumpman/walk_left_3.png')
+turn_left = pygame.image.load('Resources/Images/jumpman/turn_left.png')
+turn_right = pygame.image.load('Resources/Images/jumpman/turn_right.png')
+walk_left_1 = pygame.image.load('Resources/Images/jumpman/walk_left_1.png')
+walk_left_2 = pygame.image.load('Resources/Images/jumpman/walk_left_2.png')
+walk_left_3 = pygame.image.load('Resources/Images/jumpman/walk_left_3.png')
 walk_left_cycle = [walk_left_1, walk_left_2, walk_left_3]
-walk_right_1 = pygame.image.load('Resources/images/jumpman/walk_right_1.png')
-walk_right_2 = pygame.image.load('Resources/images/jumpman/walk_right_2.png')
-walk_right_3 = pygame.image.load('Resources/images/jumpman/walk_right_3.png')
+walk_right_1 = pygame.image.load('Resources/Images/jumpman/walk_right_1.png')
+walk_right_2 = pygame.image.load('Resources/Images/jumpman/walk_right_2.png')
+walk_right_3 = pygame.image.load('Resources/Images/jumpman/walk_right_3.png')
 walk_right_cycle = [walk_right_1, walk_right_2, walk_right_3]
 
 
