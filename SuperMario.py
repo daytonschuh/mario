@@ -102,7 +102,6 @@ class SuperMario:
     def run_game(self):
         while True:
             self.clock.tick(60)
-            print(str(self.level.scores.timer))
 
             if self.level.scores.timer <= 0:
                 self.game_active = False
