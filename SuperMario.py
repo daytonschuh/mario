@@ -99,12 +99,17 @@ class SuperMario:
         self.level.update()
         self.level.draw_screen()
 
+    def reset_stats(self):
+        self.level.mario.x = 500
+        self.level.camera.x_pos = self.settings.WIDTH/2
+
     def run_game(self):
         while True:
             self.clock.tick(60)
 
             if self.level.scores.timer <= 0:
                 self.game_active = False
+                self.reset_stats()
                 pygame.mouse.set_visible(True)
                 self.level.scores.timer = 240
 
