@@ -5,6 +5,7 @@ from camera import Camera
 from jumpman import Jumpman
 from physics import *
 from Scoring import *
+from Block import *
 
 
 class Level:
@@ -24,17 +25,35 @@ class Level:
         self.loss = False
 
         self.enemies = Group()
-        # self.objects = Group()
+        self.blocks = Group()
         self.scores = Scoring(self.screen, self.score, self.world, self.coins)
 
     def place_enemy(self, enemy):
         pass
 
-    def place_block(self, block):
-        pass
+    def place_block(self, block_type, x, y, item=None):
+        if block_type is 'q':
+            if item is None:
+                item = "Coin"
+            new_block = QuestionBlock(self.screen, self.settings, self.camera, x, y, item)
+        elif block_type is 'b':
+            new_block = BrickBlock(self.screen, self.settings, self.camera, x, y, item)
+        elif block_type is 'i':
+            if item is None:
+                item = "Coin"
+            new_block = InvisibleBlock(self.screen, self.settings, self.camera, x, y, item)
+        else:
+            new_block = Block(self.screen, self.settings, self.camera, x, y, item)
+        self.blocks.add(new_block)
+
+    def mass_place_blocks(self, block_type, x, y, columns=1, rows=1, item=None):
+        for column in range(columns):
+            for row in range(rows):
+                self.place_block(block_type, x + column, y + row, item)
 
     def update(self):
-        self.mario.update(self.floor)
+        self.mario.update(self.floor, self.blocks)
+        self.blocks.update()
         self.background.update()
         self.floor.update()
         self.scores.update_text()
@@ -55,3 +74,4 @@ class Level:
         self.mario.draw()
         self.enemies.draw(self.screen)
         self.scores.draw_text()
+        self.blocks.draw(self.screen)

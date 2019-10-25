@@ -5,7 +5,6 @@ class Settings:
         self.HEIGHT = 672
         self.fps = 30
         self.bg_speed = 1 # speed of the background
-        self.block_size = 48
         self.upscale = 3
 
         # Physics Variables
@@ -17,3 +16,7 @@ class Settings:
         self.run_speed = 12
         self.walk_speed = 6
         self.acceleration_x = 1
+
+        # Block Variables
+        self.block_recoil = 3
+        self.block_size = 48

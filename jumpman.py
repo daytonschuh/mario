@@ -36,7 +36,7 @@ class Jumpman(Sprite):
         self.update_mask()
         self.set_pos(start_pos)
 
-        self.x = self.rect.centerx
+        self.x = self.rect.left
         self.delta_x = 0
         self.delta_y = 0
         self.buffer_a = 0
@@ -50,7 +50,9 @@ class Jumpman(Sprite):
 
     def update_hitbox(self):
         bottom = self.rect.bottom
+        left = self.rect.left
         self.rect = self.image.get_rect()
+        self.rect.left = left
         self.rect.bottom = bottom
 
     def set_pos(self, start_pos):
@@ -109,9 +111,9 @@ class Jumpman(Sprite):
 
     def update_rel_pos(self):
         self.camera.center_camera(self)
-        self.rect.centerx = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
+        self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
 
-    def update(self, floor):
+    def update(self, floor, blocks):
         apply_gravity(self.settings, self)
 
         self.rect.left += self.delta_x
@@ -120,13 +122,17 @@ class Jumpman(Sprite):
 
         if self.airborne:
             self.image = jump[self.face]
-
-        if collide_check_x(floor, self, direction_x) or direction_x == 0 and not self.airborne:
+        if collide_group_x(blocks, self, direction_x):
+            direction_x = 0
+        if (direction_x == 0 and not self.airborne)or collide_check_x(floor, self, direction_x):
             self.image = face[self.face]
 
         self.rect.bottom += self.delta_y
         direction_y = get_direction(self.delta_y)
 
+        if collide_group_y(blocks, self, direction_y, "Block"):
+            direction_y = 0
+            self.delta_y = 0
         collide_check_y(floor, self, direction_y)
 
         self.update_rel_pos()
