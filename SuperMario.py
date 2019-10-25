@@ -1,7 +1,9 @@
 import pygame, sys
 from pygame.locals import *
-from Settings import Settings
-from Button import Button
+from Text import *
+from Scoring import *
+from Settings import *
+from Button import *
 from LevelCreator import *
 
 
@@ -19,6 +21,8 @@ class SuperMario:
         self.play_button = Button(self, "PLAY", self.settings.WIDTH/2 - 100, self.settings.HEIGHT/2) # 100 is the button offset (button width/2)
         self.exit_button = Button(self, "EXIT", self.settings.WIDTH/2 - 100, self.settings.HEIGHT/2 + 100)
 
+        # SET GAME HEADER
+        #self.scores = Scoring(self)
         # SET LEVEL
         self.level = world_1_1(self.screen, self.settings)
 
@@ -95,9 +99,19 @@ class SuperMario:
         self.level.update()
         self.level.draw_screen()
 
+    def reset_stats(self):
+        self.level.mario.x = 500
+        self.level.camera.x_pos = self.settings.WIDTH/2
+
     def run_game(self):
         while True:
             self.clock.tick(60)
+
+            if self.level.scores.timer <= 0:
+                self.game_active = False
+                self.reset_stats()
+                pygame.mouse.set_visible(True)
+                self.level.scores.timer = 240
 
             self.screen.fill((0, 0, 0))
 
@@ -110,6 +124,7 @@ class SuperMario:
             if self.game_active is True:
                 self.do_event()
                 self.draw_screen()
+
             pygame.display.flip()
 
 

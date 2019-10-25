@@ -4,6 +4,7 @@ from Background import Background
 from camera import Camera
 from jumpman import Jumpman
 from physics import *
+from Scoring import *
 
 
 class Level:
@@ -17,9 +18,14 @@ class Level:
         self.mario = Jumpman(self.screen, self.settings, self.camera, 0, 0, mario_pos)
         self.flag_pos = flag_pos
         self.time = time
+        self.score = 0
+        self.world = "1-1"
+        self.coins = 0
+        self.loss = False
 
         self.enemies = Group()
         # self.objects = Group()
+        self.scores = Scoring(self.screen, self.score, self.world, self.coins)
 
     def place_enemy(self, enemy):
         pass
@@ -31,6 +37,7 @@ class Level:
         self.mario.update(self.floor)
         self.background.update()
         self.floor.update()
+        self.scores.update_text()
 
     def update_mario(self, left, right, space, shift, fire):
         if left:
@@ -47,4 +54,4 @@ class Level:
         self.floor.draw()
         self.mario.draw()
         self.enemies.draw(self.screen)
-
+        self.scores.draw_text()
