@@ -16,36 +16,65 @@ def add_velocity_up(settings, entity):
     entity.delta_y -= settings
 
 
-def collide_check_y(floor, entity):
-    if entity.delta_y >= 0:
-        direction = 1
-    else:
-        direction = -1
-    entity.rect.bottom += entity.delta_y
+def collide_check_y(floor, entity, direction):
+    if direction == 0:
+        return False
     collision = collide_mask(entity, floor)
-    if collision:
-        entity.airborne = True
-        entity.buffer_b = 11
+    if collision is None:
+        return False
     while collision is not None:
         entity.rect.bottom -= direction
         collision = collide_mask(entity, floor)
-        if collision is None:
-            entity.land()
+    entity.land()
+    return True
 
 
-def collide_check_x(wall, entity):
-    if entity.delta_x == 0:
+def collide_check_x(wall, entity, direction):
+    if direction == 0:
         return False
-    elif entity.delta_x > 0:
-        direction = 1
-    else:
-        direction = -1
-    entity.rect.left += entity.delta_x
-    entity.x += entity.delta_x
     collision = collide_mask(entity, wall)
+    if collision is None:
+        return False
     while collision is not None:
         entity.rect.left -= direction
         entity.x -= direction
         collision = collide_mask(entity, wall)
-    entity.delta_x = 0
     return True
+
+
+def collide_solid_x(solid, entity, direction):
+    if direction == 0:
+        return False
+    collision = collide_rect(entity, solid)
+    if not collision:
+        return False
+    if collision:
+        if direction > 0:
+            entity.rect.right = solid.rect.left
+        else:
+            entity.rect.left = solid.rect.right
+    return True
+
+
+def collide_solid_y(solid, entity, direction, special=False):
+    # if colliding with a special kind of object that only allows collision when walking on it
+    if direction == 0 or (special and entity.bottom < solid.top):
+        return False
+    collision = collide_rect(entity, solid)
+    if not collision:
+        return False
+    if collision:
+        if direction > 0:
+            entity.rect.bottom = solid.rect.top
+        else:
+            entity.rect.top = solid.rect.bottom
+    return True
+
+
+def get_direction(delta):
+    if delta == 0:
+        return 0
+    elif delta > 0:
+        return 1
+    else:
+        return -1

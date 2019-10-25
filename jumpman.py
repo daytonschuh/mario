@@ -42,6 +42,7 @@ class Jumpman(Sprite):
         self.buffer_a = 0
         self.buffer_b = 0
         self.airborne = False
+        self.run = False
         self.face = 0
 
     def update_mask(self):
@@ -67,6 +68,7 @@ class Jumpman(Sprite):
             self.buffer_a += 1
             if self.buffer_a >= 24:
                 self.buffer_a = 0
+
         self.delta_x = self.settings.walk_speed
 
     def move_left(self, shift):
@@ -83,7 +85,6 @@ class Jumpman(Sprite):
 
     def jump(self):
         if not self.airborne:
-            self.image = jump[self.face]
             self.airborne = True
             self.buffer_a = 0
             self.buffer_b = 0
@@ -92,7 +93,13 @@ class Jumpman(Sprite):
             add_velocity_up(self.settings.jump_speed[self.buffer_b // 3], self)
         self.buffer_b += 1
 
+    def run(self):
+        pass
+
     def fire(self):
+        pass
+
+    def bounce(self):
         pass
 
     def land(self):
@@ -107,13 +114,23 @@ class Jumpman(Sprite):
     def update(self, floor):
         apply_gravity(self.settings, self)
 
-        if not collide_check_x(floor, self) and not self.airborne:
-            self.image = face[self.face]
+        self.rect.left += self.delta_x
+        self.x += self.delta_x
+        direction_x = get_direction(self.delta_x)
 
-        if collide_check_y(floor, self) and self.airborne:
+        if self.airborne:
             self.image = jump[self.face]
 
+        if collide_check_x(floor, self, direction_x) or direction_x == 0 and not self.airborne:
+            self.image = face[self.face]
+
+        self.rect.bottom += self.delta_y
+        direction_y = get_direction(self.delta_y)
+
+        collide_check_y(floor, self, direction_y)
+
         self.update_rel_pos()
+        self.delta_x = 0
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
