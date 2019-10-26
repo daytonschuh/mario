@@ -128,7 +128,6 @@ class SuperMario:
             pygame.display.flip()
 
 
-
 if __name__ == '__main__':
     game = SuperMario()
     game.run_game()

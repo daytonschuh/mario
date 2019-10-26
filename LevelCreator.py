@@ -3,9 +3,12 @@ from Level import Level
 
 def world_1_1(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/level_1_background.png', 'Resources/Images/level_1_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-1/level_1_background.png',
+              'Resources/Images/Backgrounds/World_1/1-1/level_1_floor.png', (500, 600), (120, 120), 500)
 
-#    place_enemy()
+    # place_enemy()
+
+    # place blocks
     new_level.place_block('q', 16, 4)
     new_level.place_block('b', 20, 4)
     new_level.place_block('q', 21, 4)
@@ -39,8 +42,10 @@ def world_1_1(screen, settings):
 
     return new_level
 
+
 def world_1_2(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/level_1_2_background.png', 'Resources/Images/level_1_2_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png',
+              'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', (500, 600), (120, 120), 500)
 
     return new_level
