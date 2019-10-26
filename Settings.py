@@ -16,6 +16,7 @@ class Settings:
         self.run_speed = 12
         self.walk_speed = 6
         self.acceleration_x = 1
+        self.invincible_time = 600
 
         # Block Variables
         self.block_recoil = 3
@@ -26,3 +27,10 @@ class Settings:
         self.block_id = 0
         self.invisible_block_id = 1
         self.platform_id = 2
+        self.no_collision_id = 3
+
+        self.star_id = 20
+        self.mushroom_id = 21
+        self.green_mushroom_id = 22
+        self.flower_id = 23
+        self.coin_id = 24

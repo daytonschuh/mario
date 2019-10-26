@@ -5,24 +5,49 @@ from physics import *
 
 face_left = pygame.image.load('Resources/Images/Baby_mario/face_left.png')
 face_right = pygame.image.load('Resources/Images/Baby_mario/face_right.png')
-face = [face_left, face_right]
+big_face_left = pygame.image.load('Resources/Images/Papa_mario/face_left.png')
+big_face_right = pygame.image.load('Resources/Images/Papa_mario/face_right.png')
+fire_face_left = pygame.image.load('Resources/Images/Fire_mario/face_left.png')
+fire_face_right = pygame.image.load('Resources/Images/Fire_mario/face_right.png')
+face = [[face_left, face_right], [big_face_left, big_face_right], [fire_face_left, fire_face_right]]
 jump_left = pygame.image.load('Resources/Images/Baby_mario/jump_left.png')
 jump_right = pygame.image.load('Resources/Images/Baby_mario/jump_right.png')
-jump = [jump_left, jump_right]
+big_jump_left = pygame.image.load('Resources/Images/Papa_mario/jump_left.png')
+big_jump_right = pygame.image.load('Resources/Images/Papa_mario/jump_right.png')
+fire_jump_left = pygame.image.load('Resources/Images/Fire_mario/jump_left.png')
+fire_jump_right = pygame.image.load('Resources/Images/Fire_mario/jump_right.png')
+jump = [[jump_left, jump_right], [big_jump_left, big_jump_right], [fire_jump_left, fire_jump_right]]
 turn_left = pygame.image.load('Resources/Images/Baby_mario/turn_left.png')
 turn_right = pygame.image.load('Resources/Images/Baby_mario/turn_right.png')
+big_turn_left = pygame.image.load('Resources/Images/Papa_mario/turn_left.png')
+big_turn_right = pygame.image.load('Resources/Images/Papa_mario/turn_right.png')
+fire_turn_left = pygame.image.load('Resources/Images/Fire_mario/turn_left.png')
+fire_turn_right = pygame.image.load('Resources/Images/Fire_mario/turn_right.png')
+turn = [[turn_left, turn_right], [big_turn_left, big_turn_right], [fire_turn_left, fire_turn_right]]
 walk_left_1 = pygame.image.load('Resources/Images/Baby_mario/walk_left_1.png')
 walk_left_2 = pygame.image.load('Resources/Images/Baby_mario/walk_left_2.png')
 walk_left_3 = pygame.image.load('Resources/Images/Baby_mario/walk_left_3.png')
-walk_left_cycle = [walk_left_1, walk_left_2, walk_left_3]
+big_walk_left_1 = pygame.image.load('Resources/Images/Papa_mario/walk_left_1.png')
+big_walk_left_2 = pygame.image.load('Resources/Images/Papa_mario/walk_left_2.png')
+big_walk_left_3 = pygame.image.load('Resources/Images/Papa_mario/walk_left_3.png')
+fire_walk_left_1 = pygame.image.load('Resources/Images/Fire_mario/walk_left_1.png')
+fire_walk_left_2 = pygame.image.load('Resources/Images/Fire_mario/walk_left_2.png')
+fire_walk_left_3 = pygame.image.load('Resources/Images/Fire_mario/walk_left_3.png')
+walk_left_cycle = [[walk_left_1, walk_left_2, walk_left_3], [big_walk_left_1, big_walk_left_2, big_walk_left_3], [fire_walk_left_1, fire_walk_left_2, fire_walk_left_3]]
 walk_right_1 = pygame.image.load('Resources/Images/Baby_mario/walk_right_1.png')
 walk_right_2 = pygame.image.load('Resources/Images/Baby_mario/walk_right_2.png')
 walk_right_3 = pygame.image.load('Resources/Images/Baby_mario/walk_right_3.png')
-walk_right_cycle = [walk_right_1, walk_right_2, walk_right_3]
+big_walk_right_1 = pygame.image.load('Resources/Images/Papa_mario/walk_right_1.png')
+big_walk_right_2 = pygame.image.load('Resources/Images/Papa_mario/walk_right_2.png')
+big_walk_right_3 = pygame.image.load('Resources/Images/Papa_mario/walk_right_3.png')
+fire_walk_right_1 = pygame.image.load('Resources/Images/Fire_mario/walk_right_1.png')
+fire_walk_right_2 = pygame.image.load('Resources/Images/Fire_mario/walk_right_2.png')
+fire_walk_right_3 = pygame.image.load('Resources/Images/Fire_mario/walk_right_3.png')
+walk_right_cycle = [[walk_right_1, walk_right_2, walk_right_3], [big_walk_right_1, big_walk_right_2, big_walk_right_3], [fire_walk_right_1, fire_walk_right_2, fire_walk_right_3]]
 
 
 class Jumpman(Sprite):
-    def __init__(self, screen, settings, camera, stage, style, start_pos):
+    def __init__(self, screen, settings, camera, stage, style, start_pos, swim=False):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -30,11 +55,12 @@ class Jumpman(Sprite):
         self.stage = stage
         self.style = style
         self.state = 0
-        self.image = face_right
+        self.image = face[self.stage][1]
         self.rect = self.image.get_rect()
         self.mask = None
         self.update_mask()
         self.set_pos(start_pos)
+        self.swim = swim
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -43,17 +69,26 @@ class Jumpman(Sprite):
         self.buffer_b = 0
         self.airborne = False
         self.run = False
-        self.face = 0
+        self.face = 1
+        self.invincible = 0
 
     def update_mask(self):
         self.mask = pygame.mask.from_surface(self.image)
 
     def update_hitbox(self):
-        bottom = self.rect.bottom
-        left = self.rect.left
-        self.rect = self.image.get_rect()
-        self.rect.left = left
-        self.rect.bottom = bottom
+        self.update_rel_pos()
+
+    def power_up(self, item):
+        if item.item_id is self.settings.star_id:
+            self.invincible = self.settings.invincible_time
+        elif item.item_id is self.settings.mushroom_id:
+            self.stage = 1
+        elif item.item_id is self.settings.green_mushroom_id:
+            pass
+        elif item.item_id is self.settings.flower_id:
+            pass
+        elif item.item_id is self.settings.coin_id:
+            pass
 
     def set_pos(self, start_pos):
         self.rect.left, self.rect.bottom = start_pos
@@ -66,7 +101,7 @@ class Jumpman(Sprite):
             if self.face is 0:
                 self.face = 1
                 self.buffer_a = 0
-            self.image = walk_right_cycle[self.buffer_a // 8]
+            self.image = walk_right_cycle[self.stage][self.buffer_a // 8]
             self.buffer_a += 1
             if self.buffer_a >= 24:
                 self.buffer_a = 0
@@ -78,7 +113,7 @@ class Jumpman(Sprite):
             if self.face is 1:
                 self.face = 0
                 self.buffer_a = 0
-            self.image = walk_left_cycle[self.buffer_a // 8]
+            self.image = walk_left_cycle[self.stage][self.buffer_a // 8]
             self.buffer_a += 1
             if self.buffer_a >= 24:
                 self.buffer_a = 0
@@ -121,11 +156,11 @@ class Jumpman(Sprite):
         direction_x = get_direction(self.delta_x)
 
         if self.airborne:
-            self.image = jump[self.face]
+            self.image = jump[self.stage][self.face]
         if collide_group_x(blocks, self, direction_x):
             direction_x = 0
         if (direction_x == 0 and not self.airborne)or collide_check_x(floor, self, direction_x):
-            self.image = face[self.face]
+            self.image = face[self.stage][self.face]
 
         self.rect.bottom += self.delta_y
         direction_y = get_direction(self.delta_y)
@@ -134,7 +169,6 @@ class Jumpman(Sprite):
             direction_y = 0
             self.delta_y = 0
         if collide_check_y(floor, self, direction_y):
-            direction_y = 0
             self.delta_y = 0
         self.update_rel_pos()
         self.delta_x = 0

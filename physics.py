@@ -98,7 +98,7 @@ def check_event_collision_x(solid, entity, direction, asset_id):
     if asset_id is 0:
         return False
 
-    if asset_id is 1:
+    if asset_id is 1 or asset_id is 3:
         return True
 
     return False
@@ -107,6 +107,9 @@ def check_event_collision_x(solid, entity, direction, asset_id):
 def check_event_collision_y(solid, entity, direction, asset_id):
     if asset_id < 0:
         return False
+
+    if asset_id is 3:
+        return True
 
     if asset_id is 0:
         test_rect = entity.rect.copy()
