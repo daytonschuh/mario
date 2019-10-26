@@ -130,11 +130,12 @@ class Jumpman(Sprite):
         self.rect.bottom += self.delta_y
         direction_y = get_direction(self.delta_y)
 
-        if collide_group_y(blocks, self, direction_y, "Block"):
+        if collide_group_y(blocks, self, direction_y):
             direction_y = 0
             self.delta_y = 0
-        collide_check_y(floor, self, direction_y)
-
+        if collide_check_y(floor, self, direction_y):
+            direction_y = 0
+            self.delta_y = 0
         self.update_rel_pos()
         self.delta_x = 0
 

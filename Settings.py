@@ -20,3 +20,9 @@ class Settings:
         # Block Variables
         self.block_recoil = 3
         self.block_size = 48
+
+        # Asset IDs
+        self.static_id = -1
+        self.block_id = 0
+        self.invisible_block_id = 1
+        self.platform_id = 2

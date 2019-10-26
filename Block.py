@@ -19,6 +19,7 @@ class Block(Sprite):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.item = item
         self.active = False
+        self.asset_id = settings.block_id
 
     def update(self):
         self.rect.left = self.x - self.camera.x_pos
@@ -68,7 +69,7 @@ class BrickBlock(QuestionBlock):
         if not self.active:
             if self.item is not None:
                 super().hit(entity)
-            elif entity.state is 0:
+            elif entity.state is 0 and self.delta_y is 0:
                 self.active = True
                 add_velocity_up(self.settings.block_recoil, self)
             else:
@@ -82,8 +83,11 @@ class InvisibleBlock(QuestionBlock):
     def __init__(self, screen, settings, camera, x, y, item="Coin"):
         super().__init__(screen, settings, camera, x, y, item)
         self.image = i_block
+        self.asset_id = settings.invisible_block_id
 
     def hit(self, entity):
         super().hit(entity)
-        if self.image is not e_block:
+        if self.asset_id is self.settings.invisible_block_id:
             self.image = q_block
+            self.asset_id = self.settings.block_id
+
