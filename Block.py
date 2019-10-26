@@ -1,9 +1,9 @@
 from physics import *
 
-b_block = pygame.image.load("Resources/Images/b_block.png")
-e_block = pygame.image.load("Resources/Images/e_block.png")
-q_block = pygame.image.load("Resources/Images/q_block.png")
-i_block = pygame.image.load("Resources/Images/i_block.png")
+b_block = pygame.image.load("Resources/Images/Blocks/b_block.png")
+e_block = pygame.image.load("Resources/Images/Blocks/e_block.png")
+q_block = pygame.image.load("Resources/Images/Blocks/q_block.png")
+i_block = pygame.image.load("Resources/Images/Blocks/i_block.png")
 
 
 class Block(Sprite):

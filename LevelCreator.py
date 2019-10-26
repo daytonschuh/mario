@@ -38,3 +38,21 @@ def world_1_1(screen, settings):
     new_level.place_block('b', 171, 4)
 
     return new_level
+
+def world_1_2(screen, settings):
+    new_level = \
+        Level(screen, settings, 'Resources/Images/level_1_2_background.png', 'Resources/Images/level_1_2_floor.png', (500, 600), (120,120), 500)
+
+    return new_level
+
+def world_1_2_part2(screen, settings):
+    new_level = \
+        Level(screen, settings, 'Resources/Images/level_1_2_part2_background.png', 'Resources/Images/level_1_2_part2_floor.png', (500, 600), (120,120), 500)
+
+    return new_level
+
+def world_1_2_part3(screen, settings):
+    new_level = \
+        Level(screen, settings, 'Resources/Images/level_1_2_part3_background.png', 'Resources/Images/level_1_2_part3_floor.png', (500, 600), (120,120), 500)
+
+    return new_level
