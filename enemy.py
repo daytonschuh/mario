@@ -17,7 +17,6 @@ class Enemy(Sprite):
         self.settings = settings
         self.active = False
         self.camera = camera
-        self.velocity = 1
         self.state = 0
         self.airborne = False
         self.face = 1
@@ -119,27 +118,29 @@ class Goomba(Enemy):
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
-            # animate walking
-            apply_gravity(self.settings, self)
-            self.image = self.frames[self.buffer // 8]
-            self.buffer += 1
-            if self.buffer >= 16:
-                self.buffer = 0
+            if self.state == 0:
+                # animate walking
+                apply_gravity(self.settings, self)
+                if self.buffer % 8 == 0:
+                    self.image = self.frames[self.buffer // 8]
+                self.buffer += 1
+                if self.buffer >= 16:
+                    self.buffer = 0
 
-            # check collisions
-            self.rect.left += self.delta_x
-            self.x += self.delta_x
-            direction_x = get_direction(self.delta_x)
+                # check collisions
+                self.rect.left += self.delta_x
+                self.x += self.delta_x
+                direction_x = get_direction(self.delta_x)
 
-            if collide_check_x(floor, self, direction_x):
-                self.delta_x *= -1
+                if collide_check_x(floor, self, direction_x):
+                    self.delta_x *= -1
 
-            self.rect.bottom += self.delta_y
-            direction_y = get_direction(self.delta_y)
-            collide_check_y(floor, self, direction_y)
+                self.rect.bottom += self.delta_y
+                direction_y = get_direction(self.delta_y)
+                collide_check_y(floor, self, direction_y)
 
             # animate death
-            if 1 == self.state:
+            if self.state == 1:
                 # death animation
                 self.image = goomba_death
                 self.buffer += 1
