@@ -41,18 +41,24 @@ def world_1_1(screen, settings):
 
 def world_1_2(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/level_1_2_background.png', 'Resources/Images/level_1_2_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', (500, 600), (120,120), 500)
 
     return new_level
 
 def world_1_2_part2(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/level_1_2_part2_background.png', 'Resources/Images/level_1_2_part2_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part2_floor.png', (500, 600), (120,120), 500)
 
     return new_level
 
 def world_1_2_part3(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/level_1_2_part3_background.png', 'Resources/Images/level_1_2_part3_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part3_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part3_floor.png', (500, 600), (120,120), 500)
+
+    return new_level
+
+def world_1_3(screen, settings):
+    new_level = \
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', (500, 600), (120,120), 500)
 
     return new_level
