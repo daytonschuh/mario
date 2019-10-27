@@ -1,132 +1,305 @@
-# potentially rewriting this entire thing
 from pygame.sprite import Sprite
 from pygame import *
+from physics import *
+from itertools import combinations
+
+goomba_walk_1 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_1.png')
+goomba_walk_2 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_2.png')
+goomba_death = pygame.image.load('Resources/Images/Enemies/Goomba/death.png')
 
 
 class Enemy(Sprite):
-	""" Base class for enemies. """
-    def __init__(self, screen, settings, camera, spawn_pos):
+    """ Base class for enemies. """
+
+    def __init__(self, screen, settings, camera, x, y):
         super().__init__()
-		self.sprite_sheet = pygame.image.load('Resources/Images/enemy_sprite_sheet')
         self.screen = screen
         self.settings = settings
         self.active = False
         self.camera = camera
-        self.pos = spawn_pos
-		self.velocity = 10
-		
-		# Generate frames from sprite sheet.
-        self.frames = []
-		generate_frames()
-        self.frame_index = 0
-        self.animate_timer = 0
-        self.death_timer = 0
-
-        self.name = name
-
-        self.image = self.frames[self.frame_index]
+        self.velocity = 1
+        self.state = 0
+        self.airborne = False
+        self.face = 1
+        self.delta_x = 1
+        self.wait = 100
+        self.image = goomba_walk_1
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.bottom = y
+        self.rect.left = x * settings.block_size + self.camera.x_pos
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.x = self.rect.left
+        self.buffer = 0
 
-    def update(self):
-        self.rect.left = self.pos - self.camera.x_pos
+    def behavior(self, enemies, floor, blocks, mario):
+        pass
+
+    def update(self, enemies, floor, blocks, mario):
+        self.rect.left = self.x - self.camera.x_pos
         if not self.active:
-            if self.rect < self.settings.WIDTH:
+            if self.rect.left < self.settings.WIDTH:
                 self.active = True
         if self.active:
-            self.behavior()
+            self.behavior(enemies, floor, blocks, mario)
             if self.rect.right < 0:
                 self.active = False
-                # self.kill()
-		
-	def generate_frames(self, x, y, direction, name, setup_frames):
-        """ Create frames from the sprite sheet. """
-		image = pygame.Surface([width, height]).convert()
-        rect = image.get_rect()
-
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-
-        image = pygame.transform.scale(image,
-                                   (int(rect.width),
-                                    int(rect.height))
-        return image
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
 
+
 class Blooper(Enemy):
-	# basically follows Mario
-	pass
+    """def behavior(self):
+        if self.active:
+            if self.y - 10 < mario.rect.centery:
+                if self.x < mario.rect.centerx:
+                    self.x += 10
+                else:
+                    self.x -= 10
+                self.y += 20
+
+            else:
+                self.y -= 5"""
+    pass
+
 
 class Bill_Blaster(Enemy):
-	# stationary
-	# shoots when mario crosses in the path
-	pass
+    """def behavior(self):
+        # shoots when mario crosses in the path
+        if mario.rect.right == self.y:
+            pew pew nigga"""
+    pass
+
 
 class Bullet_Bill(Enemy):
-	# just flies straight
-	# can be bounced on
-	pass
+    """def behavior(self):
+        # just flies straight
+        if shot left:
+            self.image = facing left
+            self.x -= self.velocity
+        if shot right:
+            self.image = facing right
+            self.x += self.velocity
+        # can be bounced on"""
+    pass
+
 
 class Buzzy_Beetle(Enemy):
-	# uh?
-	pass
+    """def behavior(self):
+    # uh?"""
+    pass
+
 
 class Cheep_Cheep(Enemy):
-	# gravity affected jumping enemy
-	# comes from off screen
-    # track x to know when to jump
-	pass
+    """def behavior(self):
+    # gravity affected jumping enemy
+    # comes from off screen
+    # track x to know when to jump"""
+    pass
+
 
 class Fire_Bar(Enemy):
-	# unsure of behavior
-    # pretty sure this just spins in circles
-    # might want to add something like length to append to a group of fire balls on the bar?
-    # or just hard code it
-	pass
+    """def behavior(self):
+    # unsure of behavior
+    # pretty sure this just spins in circles"""
+    pass
+
 
 class Goomba(Enemy):
-	# walks back and forth
-	# jumping on it kills it
-	pass
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = goomba_walk_1
+        self.frames = [goomba_walk_1, goomba_walk_2]
+
+    def behavior(self, enemies, floor, blocks, mario):
+        if self.active:
+            self.rect.left -= self.delta_x
+            self.x -= self.delta_x
+            direction_x = get_direction(self.delta_x)
+
+            # animate walking
+            self.image = self.frames[self.buffer // 8]
+            self.buffer += 1
+            if self.buffer >= 16:
+                self.buffer = 0
+
+            # check collisions
+            self.wait -= 1
+            if collide_check_x(floor, self, direction_x) and 0 >= self.wait:
+                self.delta_x = -self.delta_x
+                self.wait = 100
+
+            enemy_to_enemy_collision(enemies)
+
+            if collide_group_y(enemies, mario.rect.bottom, 0):
+                self.state = 1
+
+            # animate death
+            if 1 == self.state:
+                # death animation
+                self.image = goomba_death
+                self.buffer += 1
+                if self.buffer > 16:
+                    self.kill()
+                    self.state = 0
+
+                # death sound
+                self.kill()
+                # settings.points += 100
+
+    # jumping on it kills it
+
 
 class Hammer_Bro(Enemy):
-	# stationary
-	# throws gravity affected 'bullets'
-	pass
+    """def behavior(self):
+        choices = [1000, 2000]
+        # randomly throw stuff and jump
+        random.randint(choices)
+    # throws gravity affected 'bullets'"""
+    pass
+
 
 class Koopa_Paratroopa(Enemy):
-	# jumps and moves
-	# first bounce knocks it to a troopa, second turns to a shell, third kicks it
-	pass
+    """def behavior(self):
+        if 0 == self.state:
+            # jumps and moves
+            if koopa_paratroopa collides with wall:
+                self.velocity *= -1
+
+            if not self.airborne:
+                self.image = jump[self.face]
+                self.airborne = True
+                add_velocity_up(self.settings.jump_speed[6], self)
+
+            if mario.rect.bottom collides with koopa_troopa.rect.top:
+                self.state = 1
+                self.image = koopa_paratroopa_no_wings
+
+        if 1 == self.state:
+            if koopa_paratroopa collides with wall:
+                self.velocity *= -1
+
+            if mario.rect.bottom collides with koopa_troopa.rect.top:
+                self.state = 2
+                self.velocity = 0
+                self.image = koopa_paratroopa_in_shell
+
+        if 2 == self.state:
+            if mario.rect collides with self.rect.right:
+                self.velocity = -12
+            else if mario.rect colldes with self.rect.left:
+                self.velocity = 12
+            if koopa troopa shell hits wall:
+                self.velocity *= -1
+    # first bounce knocks it to a troopa, second turns to a shell, third kicks it"""
+    pass
+
 
 class Koopa_Troopa(Enemy):
-	# walks back and forth
-	# first bounce turns it to a shell, second kicks it
-	pass
+    """# walks back and forth
+    def behavior(self):
+        if 0 == self.state:
+            self.x -= self.velocity
+            if koopa_troopa collides with wall:
+                self.velocity *= -1
+
+            if mario.rect.bottom collides with koopa_troopa.rect.top:
+                self.state = 1
+                self.image = koopa_troopa_shell
+                self.velocity = 0
+
+        if 1 == self.state:
+            if mario.rect collides with self.rect.right:
+                self.velocity = -12
+            else if mario.rect colldes with self.rect.left:
+                self.velocity = 12
+            if koopa troopa shell hits wall:
+                self.velocity *= -1"""
+
+    pass
+
 
 class Lava_Bubble(Enemy):
-	# unsure of behavior
-    # perhaps just like Piranha plant up and down with delay
-	pass
+    """def behavior(self):
+        if not self.airborne:
+            self.image = jump[self.face]
+            self.airborne = True
+            add_velocity_up(self.settings.jump_speed[6], self)
+
+        if self.airborne:
+            self.image = lava_bubble_falling
+            self.y += 10
+            if 0 == self.y:
+                self.airborne = False
+    # perhaps just like Piranha plant up and down with delay"""
+    pass
+
 
 class Piranha_Plant(Enemy):
-	# up and down delay
-	# behind pipe, in front of backdrop
-	pass
+    """def behavior(self):
+        # moving up
+        if 0 == self.state:
+            self.y -= 10
+            if self.y > self.pos[1]+30:
+                self.state = 1
+        # delay
+        if 1 == self.state:
+            self.wait -= 1
+            if 0 == self.wait:
+                self.state = 2
+        # moving down
+        if 2 == self.state:
+            self.y += 10
+            if self.y == self.pos[1]:
+                self.wait = 100
+                self.state = 3
+        # second delay
+        if 3 == self.state:
+            self.wait -= 1
+            if 0 == self.wait:
+                self.state = 0
+    # up and down delay
+    # behind pipe, in front of backdrop"""
+    pass
+
 
 class Spiny_Egg(Enemy):
-	# drops until it hits the floor
-	# short delay before becoming spiny
-	pass
+    """def behavior(self):
+    # drops until it hits the floor
+        self.y -= self.velocity
+
+        if not self.airborne:
+            self.image = jump[self.face]
+            self.airborne = True
+            add_velocity_up(self.settings.jump_speed[6], self)
+    # short delay before becoming spiny
+    def change_to_spiny(self):"""
+    pass
+
 
 class Spiny(Enemy):
-	# walks back and forth
-	# cannot be jumped on
-	pass
+    """def behavior(self):
+        if mario.x > self.x:
+            self.image = facing right
+            self.x += self.velocity
+
+        if mario.x < self.x:
+            self.image = facing left
+            self.x += self.velocity
+
+        if spiny collides with wall:
+            self.velocity *= -1
+    # cannot be jumped on
+        if mario collides with self:
+            mario.kill()"""
+    pass
+
 
 class Lakitu(Enemy):
-	# flies above and follows mario
-	# drops spiny eggs  that turn into spiny enemy
-	pass
+    """def behavior(self):
+        self.velocity = 8
+        if mario.rect.centerx > self.x:
+            self.x += self.velocity
+    # flies above and follows mario
+    # drops spiny eggs  that turn into spiny enemy"""
+    pass
