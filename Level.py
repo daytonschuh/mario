@@ -58,10 +58,12 @@ class Level:
 
     def update(self):
         self.mario.update(self.floor, self.blocks)
+        self.enemies.update(self.enemies, self.floor, self.blocks, self.mario)
         self.blocks.update()
         self.background.update()
         self.floor.update()
         self.scores.update_text()
+        enemy_to_enemy_collision(self.enemies)
 
     def update_mario(self, left, right, space, shift, fire):
         if left:

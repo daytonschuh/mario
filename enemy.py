@@ -21,7 +21,8 @@ class Enemy(Sprite):
         self.state = 0
         self.airborne = False
         self.face = 1
-        self.delta_x = 1
+        self.delta_x = -self.settings.enemy_walk_speed
+        self.delta_y = 0
         self.wait = 100
         self.image = goomba_walk_1
         self.rect = self.image.get_rect()
@@ -29,6 +30,11 @@ class Enemy(Sprite):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.x = self.rect.left
         self.buffer = 0
+        self.asset_id = -1
+
+    def land(self):
+        self.airborne = False
+        self.delta_y = 0
 
     def behavior(self, enemies, floor, blocks, mario):
         pass
@@ -113,26 +119,24 @@ class Goomba(Enemy):
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
-            self.rect.left -= self.delta_x
-            self.x -= self.delta_x
-            direction_x = get_direction(self.delta_x)
-
             # animate walking
+            apply_gravity(self.settings, self)
             self.image = self.frames[self.buffer // 8]
             self.buffer += 1
             if self.buffer >= 16:
                 self.buffer = 0
 
             # check collisions
-            self.wait -= 1
-            if collide_check_x(floor, self, direction_x) and 0 >= self.wait:
-                self.delta_x = -self.delta_x
-                self.wait = 100
+            self.rect.left += self.delta_x
+            self.x += self.delta_x
+            direction_x = get_direction(self.delta_x)
 
-            enemy_to_enemy_collision(enemies)
+            if collide_check_x(floor, self, direction_x):
+                self.delta_x *= -1
 
-            if collide_group_y(enemies, mario.rect.bottom, 0):
-                self.state = 1
+            self.rect.bottom += self.delta_y
+            direction_y = get_direction(self.delta_y)
+            collide_check_y(floor, self, direction_y)
 
             # animate death
             if 1 == self.state:

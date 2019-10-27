@@ -18,6 +18,9 @@ class Settings:
         self.acceleration_x = 1
         self.invincible_time = 600
 
+        # Enemy Variables
+        self.enemy_walk_speed = 1
+
         # Block Variables
         self.block_recoil = 3
         self.block_size = 48
