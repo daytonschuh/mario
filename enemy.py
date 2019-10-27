@@ -29,6 +29,7 @@ class Enemy(Sprite):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.x = self.rect.left
         self.buffer = 0
+        self.asset_id = 3 # 3 is goomba
 
     def behavior(self, enemies, floor, blocks, mario):
         pass
@@ -66,7 +67,7 @@ class Bill_Blaster(Enemy):
     """def behavior(self):
         # shoots when mario crosses in the path
         if mario.rect.right == self.y:
-            pew pew nigga"""
+            shoot"""
     pass
 
 
