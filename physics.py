@@ -3,6 +3,8 @@ import pygame
 from pygame.sprite import *
 from masked_sprite import MaskedSprite
 from pygame.mask import *
+from itertools import combinations
+
 
 
 def apply_gravity(settings, entity):
@@ -98,7 +100,7 @@ def check_event_collision_x(solid, entity, direction, asset_id):
     if asset_id is 0:
         return False
 
-    if asset_id is 1 or asset_id is 3:
+    if asset_id is 1:
         return True
 
     return False
@@ -107,9 +109,6 @@ def check_event_collision_x(solid, entity, direction, asset_id):
 def check_event_collision_y(solid, entity, direction, asset_id):
     if asset_id < 0:
         return False
-
-    if asset_id is 3:
-        return True
 
     if asset_id is 0:
         test_rect = entity.rect.copy()
@@ -145,6 +144,14 @@ def get_direction(delta):
         return 1
     else:
         return -1
+
+
+def enemy_to_enemy_collision(enemies):
+    for one, two in combinations(enemies, 2):
+        if one.rect.colliderect(two.rect):
+            one.delta_x *= -1
+            two.delta_x *= -1
+
 
 '''
 def warp(gate, entity, screen):

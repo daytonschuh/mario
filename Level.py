@@ -6,6 +6,7 @@ from jumpman import Jumpman
 from physics import *
 from Scoring import *
 from Block import *
+from enemy import *
 
 
 class Level:
@@ -28,8 +29,12 @@ class Level:
         self.blocks = Group()
         self.scores = Scoring(self.screen, self.score, self.world, self.coins)
 
-    def place_enemy(self, enemy):
-        pass
+    def place_enemy(self, enemy, x, y):
+        if enemy is 'goomba':
+            new_enemy = Goomba(self.screen, self.settings, self.camera, x, y)
+        else:
+            new_enemy = Enemy(self.screen, self.settings, self.camera, x, y)
+        self.enemies.add(new_enemy)
 
     def place_block(self, block_type, x, y, item=None):
         if block_type is 'q':
