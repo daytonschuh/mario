@@ -29,7 +29,7 @@ class Enemy(Sprite):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.x = self.rect.left
         self.buffer = 0
-        self.asset_id = -1
+        self.asset_id = 30  # goomba is base asset id
 
     def land(self):
         self.airborne = False
@@ -53,7 +53,14 @@ class Enemy(Sprite):
 
 
 class Blooper(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = goomba_walk_1
+        self.frames = [goomba_walk_1, goomba_walk_2]
+        self.asset_id = 31 # enemy can only be killed by fireball
+
+    def behavior(self):def behavior(self):
         if self.active:
             if self.y - 10 < mario.rect.centery:
                 if self.x < mario.rect.centerx:
@@ -68,7 +75,14 @@ class Blooper(Enemy):
 
 
 class Bill_Blaster(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = goomba_walk_1
+        self.frames = [goomba_walk_1, goomba_walk_2]
+        self.asset_id = 0 # treat like a block
+
+    def behavior(self):def behavior(self):
         # shoots when mario crosses in the path
         if mario.rect.right == self.y:
             pew pew nigga"""
@@ -76,7 +90,14 @@ class Bill_Blaster(Enemy):
 
 
 class Bullet_Bill(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 30
+
+    def behavior(self):
         # just flies straight
         if shot left:
             self.image = facing left
@@ -89,13 +110,27 @@ class Bullet_Bill(Enemy):
 
 
 class Buzzy_Beetle(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 30
+
+    def behavior(self):
     # uh?"""
     pass
 
 
 class Cheep_Cheep(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = goomba_walk_1
+        self.frames = [goomba_walk_1, goomba_walk_2]
+        self.asset_id = 30
+
+    def behavior(self):
     # gravity affected jumping enemy
     # comes from off screen
     # track x to know when to jump"""
@@ -156,7 +191,14 @@ class Goomba(Enemy):
 
 
 class Hammer_Bro(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 31
+
+    def behavior(self):
         choices = [1000, 2000]
         # randomly throw stuff and jump
         random.randint(choices)
@@ -165,7 +207,14 @@ class Hammer_Bro(Enemy):
 
 
 class Koopa_Paratroopa(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 30
+
+    def behavior(self):
         if 0 == self.state:
             # jumps and moves
             if koopa_paratroopa collides with wall:
@@ -201,7 +250,14 @@ class Koopa_Paratroopa(Enemy):
 
 
 class Koopa_Troopa(Enemy):
-    """# walks back and forth
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 30
+
+    # walks back and forth
     def behavior(self):
         if 0 == self.state:
             self.x -= self.velocity
@@ -225,7 +281,14 @@ class Koopa_Troopa(Enemy):
 
 
 class Lava_Bubble(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+           super().__init__(screen, settings, camera, x, y)
+           self.active = False
+           self.image = goomba_walk_1
+           self.frames = [goomba_walk_1, goomba_walk_2]
+           self.asset_id = 32
+
+    def behavior(self):
         if not self.airborne:
             self.image = jump[self.face]
             self.airborne = True
@@ -241,7 +304,14 @@ class Lava_Bubble(Enemy):
 
 
 class Piranha_Plant(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 31
+
+    def behavior(self):
         # moving up
         if 0 == self.state:
             self.y -= 10
@@ -269,7 +339,14 @@ class Piranha_Plant(Enemy):
 
 
 class Spiny_Egg(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 32
+
+    def behavior(self):
     # drops until it hits the floor
         self.y -= self.velocity
 
@@ -283,7 +360,14 @@ class Spiny_Egg(Enemy):
 
 
 class Spiny(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 31
+
+    def behavior(self):
         if mario.x > self.x:
             self.image = facing right
             self.x += self.velocity
@@ -301,7 +385,14 @@ class Spiny(Enemy):
 
 
 class Lakitu(Enemy):
-    """def behavior(self):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 31
+
+    def behavior(self):
         self.velocity = 8
         if mario.rect.centerx > self.x:
             self.x += self.velocity
