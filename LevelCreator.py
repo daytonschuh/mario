@@ -67,3 +67,9 @@ def world_1_3(screen, settings):
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', (500, 600), (120,120), 500)
 
     return new_level
+
+def world_1_4(screen, settings):
+    new_level = \
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_background.png', 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_floor.png', (500, 600), (120,120), 500)
+
+    return new_level
