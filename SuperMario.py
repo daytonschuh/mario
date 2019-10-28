@@ -24,7 +24,7 @@ class SuperMario:
         # SET GAME HEADER
         #self.scores = Scoring(self)
         # SET LEVEL
-        self.level = world_1_4(self.screen, self.settings)
+        self.level = world_1_1(self.screen, self.settings)
 
         # SET EVENTS
         self.left, self.right, self.space, self.shift, self.fire = [False] * 5
