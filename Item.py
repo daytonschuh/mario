@@ -10,6 +10,7 @@ coin4 = pygame.image.load('Resources/Images/Items/coin4.png')
 coin5 = pygame.image.load('Resources/Images/Items/coin5.png')
 coin = [coin1, coin2, coin3, coin4, coin5]
 mushroom = pygame.image.load('Resources/Images/Items/mushroom.png')
+green_mushroom = pygame.image.load('Resources/Images/Items/green_mushroom.png')
 
 
 class Mushroom(Sprite):
@@ -76,6 +77,20 @@ class Mushroom(Sprite):
         self.screen.blit(self.image, self.rect)
 
 
+class GreenMushroom(Mushroom):
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__(screen, settings, camera, x, y, block_spawn, true_x)
+        self.image = green_mushroom
+        self.score = 0
+        if block_spawn:
+            self.asset_id = self.settings.no_collision_id
+        else:
+            self.asset_id = self.settings.green_mushroom_idmushroom_id
+
+    def update(self, floor, blocks):
+        super().update(floor, blocks)
+        if self.asset_id == self.settings.mushroom_id:
+            self.asset_id = self.settings.green_mushroom_id
 class Coin(Sprite):
     def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
         super().__init__()

@@ -36,6 +36,8 @@ class Level:
             new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         elif item == "Power-Up":
             new_item = Mushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+        elif item == "1-Up":
+            new_item = GreenMushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         else:
             new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         self.items.add(new_item)
@@ -58,6 +60,8 @@ class Level:
             if item is None:
                 item = "Coin"
             new_block = InvisibleBlock(self.screen, self.settings, self.camera, x, y, self, item)
+        elif block_type is 'ub':
+            new_block = UndergroundBrickBlock(self.screen, self.settings, self.camera, x, y, self, item)
         else:
             new_block = Block(self.screen, self.settings, self.camera, x, y, self, item)
         self.blocks.add(new_block)

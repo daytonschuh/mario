@@ -197,7 +197,6 @@ class Jumpman(Sprite):
 
     def update(self, floor, blocks, items, level):
         self.power_up(items, level)
-        print(self.rect.x, self.rect.y)
         apply_gravity(self.settings, self)
 
         self.rect.left += self.delta_x

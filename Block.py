@@ -5,7 +5,7 @@ e_block = pygame.image.load("Resources/Images/Blocks/e_block.png")
 q_block = pygame.image.load("Resources/Images/Blocks/q_block.png")
 i_block = pygame.image.load("Resources/Images/Blocks/i_block.png")
 d_block = pygame.image.load("Resources/Images/Blocks/d_block.png")
-
+ub_block = b_block
 
 class Block(Sprite):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
@@ -105,3 +105,7 @@ class InvisibleBlock(QuestionBlock):
             self.image = q_block
             self.asset_id = self.settings.block_id
 
+class UndergroundBrickBlock(BrickBlock):
+    def __init__(self, screen, settings, camera, x, y, level, item=None):
+        super().__init__(screen, settings, camera, x, y, level, item)
+        self.image = ub_block
