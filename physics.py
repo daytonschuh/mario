@@ -103,6 +103,9 @@ def check_event_collision_x(solid, entity, direction, asset_id):
     if asset_id is 1:
         return True
 
+    if asset_id is 10:
+        return True
+
     return False
 
 
@@ -117,14 +120,16 @@ def check_event_collision_y(solid, entity, direction, asset_id):
             if entity.rect.top - entity.delta_y >= solid.rect.bottom:
                 if not solid.active:
                     entity.rect.top = solid.y_pos
-                    solid.hit(entity)
+                    if entity.asset_id is 99:
+                        solid.hit(entity)
 
     elif asset_id is 1:
         if collide_rect(entity, solid):
             if entity.rect.top - entity.delta_y <= solid.rect.bottom:
                 return True
             else:
-                solid.hit(entity)
+                if entity.asset_id is 99:
+                    solid.hit(entity)
 
     # Platform collision
     elif asset_id is 2:
@@ -132,6 +137,9 @@ def check_event_collision_y(solid, entity, direction, asset_id):
             if entity.rect.bottom - entity.delta_y <= solid.rect.top:
                 entity.rect.bottom = solid.rect.top
                 entity.land()
+        return True
+
+    if asset_id is 10:
         return True
 
     return False

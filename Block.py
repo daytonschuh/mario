@@ -44,7 +44,7 @@ class QuestionBlock(Block):
         self.asset_id = self.settings.block_id
 
     def hit(self, entity):
-        if self.asset_id is not self.settings.static_id:
+        if self.asset_id is not self.settings.static_id and entity.asset_id is 99:
             self.active = True
             add_velocity_up(self.settings.block_recoil, self)
             if self.item is not None:

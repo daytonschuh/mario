@@ -44,6 +44,16 @@ fire_walk_right_1 = pygame.image.load('Resources/Images/Fire_mario/walk_right_1.
 fire_walk_right_2 = pygame.image.load('Resources/Images/Fire_mario/walk_right_2.png')
 fire_walk_right_3 = pygame.image.load('Resources/Images/Fire_mario/walk_right_3.png')
 walk_right_cycle = [[walk_right_1, walk_right_2, walk_right_3], [big_walk_right_1, big_walk_right_2, big_walk_right_3], [fire_walk_right_1, fire_walk_right_2, fire_walk_right_3]]
+transform_a_r = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_1.png')
+transform_b_r = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_2.png')
+transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_1_l.png')
+transform_b_l = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_2_l.png')
+transform = [[transform_a_l, transform_b_l], [transform_a_r, transform_b_r]]
+fire_transform_a_r = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_1.png')
+fire_transform_b_r = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_2.png')
+fire_transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_1_l.png')
+fire_transform_b_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_2_l.png')
+fire_transform = [[fire_transform_a_l, fire_transform_b_l], [fire_transform_a_r, fire_transform_b_r]]
 
 
 class Jumpman(Sprite):
@@ -76,25 +86,44 @@ class Jumpman(Sprite):
     def update_mask(self):
         self.mask = pygame.mask.from_surface(self.image)
 
-    def update_hitbox(self):
+    def update_hitbox(self, next_stage):
         bottom = self.rect.bottom
         left = self.rect.left
-        self.rect.inflate_ip(0, 48)
-        image = self.image
-        self.image = big_face_left
+
+        image_a = face[self.stage][1]
+        size_a = image_a.get_size()
+
+        self.stage = next_stage
+
+        self.image = face[self.stage][1]
+        size_b = self.image.get_size()
+
+        c_x = size_b[0] - size_a[0]
+        c_y = size_b[1] - size_a[1]
+
+        self.rect.inflate_ip(c_x, c_y)
         self.update_mask()
-        self.image = image
+
         self.rect.bottom = bottom
         self.rect.left = left
 
-    def power_up(self, items):
+    def transform(self, next_stage, level):
+        if next_stage == 1:
+            for i in range(9):
+                self.image = transform[self.face][i % 2]
+                level.draw_screen()
+                pygame.display.flip()
+                pygame.time.wait(50)
+            self.update_hitbox(next_stage)
+
+    def power_up(self, items, level):
         for item in items:
             if collide_rect(item, self):
                 if item.asset_id is self.settings.star_id:
                     self.invincible = self.settings.invincible_time
-                elif item.asset_id is self.settings.mushroom_id:
-                    self.stage = 1
-                    self.update_hitbox()
+                elif item.asset_id is self.settings.mushroom_id and self.stage is 0:
+                    if self.stage == 0:
+                        self.transform(1, level)
                 elif item.asset_id is self.settings.green_mushroom_id:
                     pass
                 elif item.asset_id is self.settings.flower_id:
@@ -166,8 +195,8 @@ class Jumpman(Sprite):
         self.camera.center_camera(self)
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
 
-    def update(self, floor, blocks, items):
-        self.power_up(items)
+    def update(self, floor, blocks, items, level):
+        self.power_up(items, level)
         print(self.rect.x, self.rect.y)
         apply_gravity(self.settings, self)
 
