@@ -13,7 +13,7 @@ def world_1_1(screen, settings):
 
     new_level.place_block('q', 16, 4)
     new_level.place_block('b', 20, 4)
-    new_level.place_block('q', 21, 4)
+    new_level.place_block('q', 21, 4, "Mushroom")
     new_level.place_block('b', 22, 4)
     new_level.place_block('q', 22, 8)
     new_level.place_block('q', 23, 4)

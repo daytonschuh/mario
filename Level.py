@@ -34,6 +34,8 @@ class Level:
     def place_item(self, item, x, y, block_spawn=False, true_x=None):
         if item is "Coin":
             new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+        elif item is "Mushroom":
+            new_item = Mushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         else:
             new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         self.items.add(new_item)
@@ -66,9 +68,9 @@ class Level:
                 self.place_block(block_type, x + column, y + row, item)
 
     def update(self):
-        self.mario.update(self.floor, self.blocks)
+        self.mario.update(self.floor, self.blocks, self.items)
         self.enemies.update(self.enemies, self.floor, self.blocks, self.mario)
-        self.items.update()
+        self.items.update(self.floor, self.blocks)
         self.blocks.update()
         self.background.update()
         self.floor.update()
@@ -91,5 +93,5 @@ class Level:
         self.mario.draw()
         self.enemies.draw(self.screen)
         self.scores.draw_text()
-        self.blocks.draw(self.screen)
         self.items.draw(self.screen)
+        self.blocks.draw(self.screen)

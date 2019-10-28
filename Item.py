@@ -9,6 +9,71 @@ coin3 = pygame.image.load('Resources/Images/Items/coin3.png')
 coin4 = pygame.image.load('Resources/Images/Items/coin4.png')
 coin5 = pygame.image.load('Resources/Images/Items/coin5.png')
 coin = [coin1, coin2, coin3, coin4, coin5]
+mushroom = pygame.image.load('Resources/Images/Items/mushroom.png')
+
+
+class Mushroom(Sprite):
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__()
+        self.screen = screen
+        self.settings = settings
+        self.camera = camera
+        self.image = mushroom
+        self.rect = self.image.get_rect()
+        if true_x is None:
+            self.x = x * settings.block_size + self.camera.x_pos
+        else:
+            self.x = true_x
+        self.rect.left = self.x - self.camera.x_pos + self.settings.block_size/2 - self.image.get_size()[0]/2
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.block_spawn = block_spawn
+        self.delta_x = 1
+        self.delta_y = 0
+        self.score = 100
+        self.rise_timer = 48
+        self.rise = -1
+        if block_spawn:
+            self.asset_id = self.settings.no_collision_id
+        else:
+            self.asset_id = self.settings.mushroom_id
+
+    def land(self):
+        self.delta_y = 0
+
+    def bounce(self):
+        add_velocity_up(12, self)
+
+    def update(self, floor, blocks):
+        if self.block_spawn:
+            self.rect.left = self.x - self.camera.x_pos
+            if self.rise_timer > 0:
+                self.rect.bottom += self.rise
+                self.rise_timer -= 1
+            else:
+                self.block_spawn = False
+                self.asset_id = self.settings.mushroom_id
+        else:
+            self.rect.left = self.x - self.camera.x_pos
+            self.rect.left += self.delta_x
+            self.x += self.delta_x
+            direction_x = get_direction(self.delta_x)
+            if collide_group_x(blocks, self, direction_x):
+                self.delta_x *= -1
+                direction_x = 0
+            if collide_check_x(floor, self, direction_x):
+                self.delta_x *= -1
+
+            apply_gravity(self.settings, self)
+            self.rect.bottom += self.delta_y
+            direction_y = get_direction(self.delta_y)
+            if collide_group_y(blocks, self, direction_y):
+                direction_y = 0
+                self.delta_y = 0
+            if collide_check_y(floor, self, direction_y):
+                self.delta_y = 0
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
 
 
 class Coin(Sprite):
@@ -31,13 +96,13 @@ class Coin(Sprite):
         self.delta_x = 0
         self.delta_y = 0
         if not self.block_spawn:
-            self.asset_id = self.settings.item_id
+            self.asset_id = self.settings.coin_id
             self.timer = Timer(12)
         else:
             self.asset_id = self.settings.no_collision_id
             self.timer = Timer(1)
 
-    def update(self):
+    def update(self, floor, blocks):
         self.timer.tick()
         if self.timer.check():
             self.state += 1

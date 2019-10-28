@@ -30,6 +30,7 @@ class Settings:
         self.block_id = 0
         self.invisible_block_id = 1
         self.platform_id = 2
+        self.bounce_id = 3
 
         self.no_collision_id = 10
         self.item_id = 11

@@ -61,6 +61,7 @@ class Jumpman(Sprite):
         self.update_mask()
         self.set_pos(start_pos)
         self.swim = swim
+        self.asset_id = 99
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -76,19 +77,32 @@ class Jumpman(Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
     def update_hitbox(self):
-        self.update_rel_pos()
+        bottom = self.rect.bottom
+        left = self.rect.left
+        self.rect.inflate_ip(0, 48)
+        image = self.image
+        self.image = big_face_left
+        self.update_mask()
+        self.image = image
+        self.rect.bottom = bottom
+        self.rect.left = left
 
-    def power_up(self, item):
-        if item.item_id is self.settings.star_id:
-            self.invincible = self.settings.invincible_time
-        elif item.item_id is self.settings.mushroom_id:
-            self.stage = 1
-        elif item.item_id is self.settings.green_mushroom_id:
-            pass
-        elif item.item_id is self.settings.flower_id:
-            pass
-        elif item.item_id is self.settings.coin_id:
-            pass
+    def power_up(self, items):
+        for item in items:
+            if collide_rect(item, self):
+                if item.asset_id is self.settings.star_id:
+                    self.invincible = self.settings.invincible_time
+                elif item.asset_id is self.settings.mushroom_id:
+                    self.stage = 1
+                    self.update_hitbox()
+                elif item.asset_id is self.settings.green_mushroom_id:
+                    pass
+                elif item.asset_id is self.settings.flower_id:
+                    pass
+                elif item.asset_id is self.settings.coin_id:
+                    pass
+                if item.asset_id is not self.settings.no_collision_id:
+                    item.kill()
 
     def set_pos(self, start_pos):
         self.rect.left, self.rect.bottom = start_pos
@@ -137,7 +151,11 @@ class Jumpman(Sprite):
         pass
 
     def bounce(self):
-        pass
+        self.buffer_b = 0
+        self.jump()
+
+    def hit(self):
+        print("Mario got hit!")
 
     def land(self):
         self.airborne = False
@@ -148,7 +166,9 @@ class Jumpman(Sprite):
         self.camera.center_camera(self)
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
 
-    def update(self, floor, blocks):
+    def update(self, floor, blocks, items):
+        self.power_up(items)
+        print(self.rect.x, self.rect.y)
         apply_gravity(self.settings, self)
 
         self.rect.left += self.delta_x
@@ -159,7 +179,7 @@ class Jumpman(Sprite):
             self.image = jump[self.stage][self.face]
         if collide_group_x(blocks, self, direction_x):
             direction_x = 0
-        if (direction_x == 0 and not self.airborne)or collide_check_x(floor, self, direction_x):
+        if (direction_x == 0 and not self.airborne) or collide_check_x(floor, self, direction_x):
             self.image = face[self.stage][self.face]
 
         self.rect.bottom += self.delta_y
