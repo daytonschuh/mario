@@ -29,7 +29,7 @@ class Enemy(Sprite):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.x = self.rect.left
         self.buffer = 0
-        self.asset_id = 30  # goomba is base asset id
+        self.asset_id = self.settings.goomba_id  # goomba is base asset id
 
     def land(self):
         self.airborne = False
@@ -174,12 +174,20 @@ class Goomba(Enemy):
                 self.x += self.delta_x
                 direction_x = get_direction(self.delta_x)
 
+                reverse = False
                 if collide_check_x(floor, self, direction_x):
+                    direction_x = 0
+                    reverse = True
+                if collide_group_x(blocks, self, direction_x):
+                    reverse = True
+                if reverse:
                     self.delta_x *= -1
 
                 self.rect.bottom += self.delta_y
                 direction_y = get_direction(self.delta_y)
-                collide_check_y(floor, self, direction_y)
+                if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
+                    self.delta_y = False
+
 
             # animate death
             if self.state == 1:
