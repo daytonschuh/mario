@@ -8,7 +8,7 @@ d_block = pygame.image.load("Resources/Images/Blocks/d_block.png")
 
 
 class Block(Sprite):
-    def __init__(self, screen, settings, camera, x, y, item=None):
+    def __init__(self, screen, settings, camera, x, y, level, item=None):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -21,6 +21,8 @@ class Block(Sprite):
         self.item = item
         self.active = False
         self.asset_id = settings.static_id
+        self.level = level
+        self.origin = [x, y]
 
     def update(self):
         self.rect.left = self.x - self.camera.x_pos
@@ -33,8 +35,8 @@ class Block(Sprite):
 
 
 class QuestionBlock(Block):
-    def __init__(self, screen, settings, camera, x, y, item="Coin"):
-        super().__init__(screen, settings, camera, x, y, item)
+    def __init__(self, screen, settings, camera, x, y, level, item="Coin"):
+        super().__init__(screen, settings, camera, x, y, level, item)
         self.active = False
         self.image = q_block
         self.y_pos = self.rect.bottom
@@ -45,6 +47,8 @@ class QuestionBlock(Block):
         if self.asset_id is not self.settings.static_id:
             self.active = True
             add_velocity_up(self.settings.block_recoil, self)
+            if self.item is not None:
+                self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
 
     def update(self):
         super().update()
@@ -62,8 +66,8 @@ class QuestionBlock(Block):
 
 
 class BrickBlock(QuestionBlock):
-    def __init__(self, screen, settings, camera, x, y, item=None):
-        super().__init__(screen, settings, camera, x, y, item)
+    def __init__(self, screen, settings, camera, x, y, level, item=None):
+        super().__init__(screen, settings, camera, x, y, level, item)
         self.image = b_block
         self.destroy = False
         self.d_timer = 20
@@ -90,8 +94,8 @@ class BrickBlock(QuestionBlock):
 
 
 class InvisibleBlock(QuestionBlock):
-    def __init__(self, screen, settings, camera, x, y, item="Coin"):
-        super().__init__(screen, settings, camera, x, y, item)
+    def __init__(self, screen, settings, camera, x, y, level, item="Coin"):
+        super().__init__(screen, settings, camera, x, y, level, item)
         self.image = i_block
         self.asset_id = settings.invisible_block_id
 

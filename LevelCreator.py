@@ -5,6 +5,8 @@ def world_1_1(screen, settings):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-1/level_1_background.png', 'Resources/Images/Backgrounds/World_1/1-1/level_1_floor.png', (500, 600), (120,120), 500)
 
+    new_level.place_item("Coin", 11, 1)
+
     new_level.place_enemy('goomba', 22, 1)
     new_level.place_enemy('goomba', 43, 1)
     new_level.place_enemy('goomba', 44.5, 1)

@@ -7,6 +7,7 @@ from physics import *
 from Scoring import *
 from Block import *
 from enemy import *
+from Item import *
 
 
 class Level:
@@ -27,7 +28,15 @@ class Level:
 
         self.enemies = Group()
         self.blocks = Group()
+        self.items = Group()
         self.scores = Scoring(self.screen, self.score, self.world, self.coins)
+
+    def place_item(self, item, x, y, block_spawn=False, true_x=None):
+        if item is "Coin":
+            new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+        else:
+            new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+        self.items.add(new_item)
 
     def place_enemy(self, enemy, x, y):
         if enemy is 'goomba':
@@ -40,15 +49,15 @@ class Level:
         if block_type is 'q':
             if item is None:
                 item = "Coin"
-            new_block = QuestionBlock(self.screen, self.settings, self.camera, x, y, item)
+            new_block = QuestionBlock(self.screen, self.settings, self.camera, x, y, self, item)
         elif block_type is 'b':
-            new_block = BrickBlock(self.screen, self.settings, self.camera, x, y, item)
+            new_block = BrickBlock(self.screen, self.settings, self.camera, x, y, self, item)
         elif block_type is 'i':
             if item is None:
                 item = "Coin"
-            new_block = InvisibleBlock(self.screen, self.settings, self.camera, x, y, item)
+            new_block = InvisibleBlock(self.screen, self.settings, self.camera, x, y, self, item)
         else:
-            new_block = Block(self.screen, self.settings, self.camera, x, y, item)
+            new_block = Block(self.screen, self.settings, self.camera, x, y, self, item)
         self.blocks.add(new_block)
 
     def mass_place_blocks(self, block_type, x, y, columns=1, rows=1, item=None):
@@ -59,6 +68,7 @@ class Level:
     def update(self):
         self.mario.update(self.floor, self.blocks)
         self.enemies.update(self.enemies, self.floor, self.blocks, self.mario)
+        self.items.update()
         self.blocks.update()
         self.background.update()
         self.floor.update()
@@ -82,3 +92,4 @@ class Level:
         self.enemies.draw(self.screen)
         self.scores.draw_text()
         self.blocks.draw(self.screen)
+        self.items.draw(self.screen)
