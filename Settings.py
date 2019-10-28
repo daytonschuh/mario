@@ -40,3 +40,5 @@ class Settings:
         self.green_mushroom_id = 22
         self.flower_id = 23
         self.coin_id = 24
+
+        self.goomba_id = 30

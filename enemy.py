@@ -151,6 +151,13 @@ class Goomba(Enemy):
         self.image = goomba_walk_1
         self.frames = [goomba_walk_1, goomba_walk_2]
 
+    def hit(self):
+        self.image = goomba_death
+        self.state = 1
+        self.buffer = 0
+        self.asset_id = self.settings.no_collision_id
+        print("Enemy Down")
+
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             if self.state == 0:
@@ -177,14 +184,12 @@ class Goomba(Enemy):
             # animate death
             if self.state == 1:
                 # death animation
-                self.image = goomba_death
                 self.buffer += 1
                 if self.buffer > 16:
                     self.kill()
                     self.state = 0
 
                 # death sound
-                self.kill()
                 # settings.points += 100
 
     # jumping on it kills it

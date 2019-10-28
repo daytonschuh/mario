@@ -72,7 +72,7 @@ class Level:
                 self.place_block(block_type, x + column, y + row, item)
 
     def update(self):
-        self.mario.update(self.floor, self.blocks, self.items, self)
+        self.mario.update(self.floor, self.blocks, self.items, self.enemies, self)
         self.enemies.update(self.enemies, self.floor, self.blocks, self.mario)
         self.items.update(self.floor, self.blocks)
         self.blocks.update()

@@ -82,6 +82,8 @@ class Jumpman(Sprite):
         self.run = False
         self.face = 1
         self.invincible = 0
+        self.invulnerable = False
+        self.invul_timer = 100
 
     def update_mask(self):
         self.mask = pygame.mask.from_surface(self.image)
@@ -181,10 +183,14 @@ class Jumpman(Sprite):
 
     def bounce(self):
         self.buffer_b = 0
+        self.delta_y = 0
         self.jump()
 
-    def hit(self):
-        print("Mario got hit!")
+    def take_damage(self):
+        if self.invulnerable is False:
+            print("Mario got hit!")
+            self.invul_timer = 100
+            self.invulnerable = True
 
     def land(self):
         self.airborne = False
@@ -195,7 +201,7 @@ class Jumpman(Sprite):
         self.camera.center_camera(self)
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
 
-    def update(self, floor, blocks, items, level):
+    def update(self, floor, blocks, items, enemies, level):
         self.power_up(items, level)
         apply_gravity(self.settings, self)
 
@@ -217,9 +223,22 @@ class Jumpman(Sprite):
             direction_y = 0
             self.delta_y = 0
         if collide_check_y(floor, self, direction_y):
+            direction_y = 0
             self.delta_y = 0
+
+        collide_group_y(enemies, self, direction_y)
+        collide_group_x(enemies, self, direction_x)
+
         self.update_rel_pos()
         self.delta_x = 0
+
+        if self.invulnerable:
+            if self.invul_timer % 4 == 0:
+                self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
+
+            if self.invul_timer == 0:
+                self.invulnerable = False
+            self.invul_timer -= 1
 
     def draw(self):
         self.screen.blit(self.image, self.rect)

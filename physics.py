@@ -106,6 +106,11 @@ def check_event_collision_x(solid, entity, direction, asset_id):
     if asset_id is 10:
         return True
 
+    if asset_id is 30 and entity.asset_id is 99:
+        if collide_rect(entity, solid):
+            entity.take_damage()
+            return True
+
     return False
 
 
@@ -141,6 +146,15 @@ def check_event_collision_y(solid, entity, direction, asset_id):
 
     if asset_id is 10:
         return True
+
+    if asset_id is 30 and entity.asset_id is 99:
+        if collide_rect(entity, solid):
+            if entity.rect.bottom - entity.delta_y <= solid.rect.top and direction > 0:
+                entity.bounce()
+                solid.hit()
+            else:
+                entity.take_damage()
+            return True
 
     return False
 
