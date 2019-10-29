@@ -6,6 +6,7 @@ q_block = pygame.image.load("Resources/Images/Blocks/q_block.png")
 i_block = pygame.image.load("Resources/Images/Blocks/i_block.png")
 d_block = pygame.image.load("Resources/Images/Blocks/d_block.png")
 ub_block = pygame.image.load("Resources/Images/Blocks/u_block.png")
+ud_block = pygame.image.load("Resources/Images/Blocks/ud_block.png")
 
 class Block(Sprite):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
@@ -109,3 +110,16 @@ class UndergroundBrickBlock(BrickBlock):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
         super().__init__(screen, settings, camera, x, y, level, item)
         self.image = ub_block
+        self.destroy = False
+        self.d_timer = 20
+
+    def hit(self, entity):
+        if not self.active:
+            if self.item is not None:
+                super().hit(entity)
+            elif entity.stage is 0 and self.delta_y is 0:
+                self.active = True
+                add_velocity_up(self.settings.block_recoil, self)
+            else:
+                self.destroy = True
+                self.image = ud_block
