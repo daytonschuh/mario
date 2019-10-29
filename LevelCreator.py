@@ -6,6 +6,7 @@ def world_1_1(screen, settings):
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-1/level_1_background.png', 'Resources/Images/Backgrounds/World_1/1-1/level_1_floor.png', (500, 600), (120,120), 500)
 
     new_level.place_enemy('goomba', 22, 1)
+    new_level.place_enemy('koopa', 20, 1)
     new_level.place_enemy('goomba', 32, 1)
     new_level.place_enemy('goomba', 43, 1)
     new_level.place_enemy('goomba', 44.5, 1)
@@ -59,11 +60,14 @@ def world_1_1(screen, settings):
 def world_1_2(screen, settings):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', (500, 600), (120,120), 500)
-    new_level.place_block('q', 10, 4)
+    new_level.place_block('q', 10, 4, "Power-Up")
     new_level.place_block('q', 11, 4)
     new_level.place_block('q', 12, 4)
     new_level.place_block('q', 13, 4)
     new_level.place_block('q', 14, 4)
+    new_level.place_block('ub', 29, 5)
+    new_level.place_block('ub', 39, 4)
+    #new_level.mass_place_blocks('ub', 10, 5, 5)
     return new_level
 
 def world_1_2_part2(screen, settings):
