@@ -54,7 +54,7 @@ fire_transform_b_r = pygame.image.load('Resources/Images/Mario_transitions/fire_
 fire_transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_1_l.png')
 fire_transform_b_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_2_l.png')
 fire_transform = [[fire_transform_a_l, fire_transform_b_l], [fire_transform_a_r, fire_transform_b_r]]
-death = pygame.image.load('Resources/Images/baby_mario/death.png')
+death = pygame.image.load('Resources/Images/Baby_mario/death.png')
 
 
 class Jumpman(Sprite):
