@@ -104,14 +104,15 @@ class Level:
 
     def update_mario(self, left, right, space, shift, down, fire):
         if self.mario.stage > -1:
+            if down:
+                if self.mario.stage > 0:
+                    self.mario.crouching = True
             if left:
                 self.mario.move_left(shift)
             elif right:
                 self.mario.move_right(shift)
             if space:
                 self.mario.jump()
-            if down:
-                self.mario.crouching = True
             if fire:
                 self.mario.fire()
 

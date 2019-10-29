@@ -55,6 +55,11 @@ fire_transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/fire_
 fire_transform_b_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_2_l.png')
 fire_transform = [[fire_transform_a_l, fire_transform_b_l], [fire_transform_a_r, fire_transform_b_r]]
 death = pygame.image.load('Resources/Images/baby_mario/death.png')
+crouch_l = pygame.image.load('Resources/Images/Papa_mario/crouch_left.png')
+crouch_r = pygame.image.load('Resources/Images/Papa_mario/crouch_right.png')
+f_crouch_l = pygame.image.load('Resources/Images/Fire_mario/crouch_left.png')
+f_crouch_r = pygame.image.load('Resources/Images/Fire_mario/crouch_right.png')
+crouch = [[crouch_l, crouch_r], [f_crouch_l, f_crouch_r]]
 
 
 class Jumpman(Sprite):
@@ -69,10 +74,11 @@ class Jumpman(Sprite):
         self.image = face[self.stage][1]
         self.rect = self.image.get_rect()
         self.mask = None
-        self.update_mask()
+        self.update_mask(self.image)
         self.set_pos(start_pos)
         self.swim = swim
         self.asset_id = 99
+        self.crouching = False
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -87,63 +93,38 @@ class Jumpman(Sprite):
         self.invul_timer = 100
         self.death_timer = 240
 
-    def update_mask(self):
-        self.mask = pygame.mask.from_surface(self.image)
+    def update_mask(self, image):
+        self.mask = pygame.mask.from_surface(image)
 
-    def update_hitbox(self, next_stage):
-        if next_stage > 0:
-            bottom = self.rect.bottom
-            left = self.rect.left
+    def update_hitbox(self, hitbox_size):
+        bottom = self.rect.bottom
+        left = self.rect.left
 
-            image_a = face[self.stage][1]
-            size_a = image_a.get_size()
-
-            self.stage = next_stage
-
-            self.image = face[1][1]
-            size_b = self.image.get_size()
-
-            c_x = size_b[0] - size_a[0]
-            c_y = size_b[1] - size_a[1]
-
-            self.rect.inflate_ip(c_x, c_y)
-            self.update_mask()
-
-            self.rect.bottom = bottom
-            self.rect.left = left
-
-        if next_stage == 0:
-            bottom = self.rect.bottom
-            left = self.rect.left
-
-            image_a = face[1][1]
-            size_a = image_a.get_size()
-
-            self.stage = next_stage
-
-            self.image = face[0][1]
-            size_b = self.image.get_size()
-
-            c_x = size_b[0] - size_a[0]
-            c_y = size_b[1] - size_a[1]
-
-            self.rect.inflate_ip(c_x, c_y)
-            self.update_mask()
-
-            self.rect.bottom = bottom
-            self.rect.left = left
+        if hitbox_size == 0:
+            self.rect = face_left.get_rect()
+            self.update_mask(face_left)
+        else:
+            self.rect = big_face_right.get_rect()
+            self.update_mask(big_face_left)
+        self.rect.bottom = bottom
+        self.rect.left = left
+        return
 
     def crouch(self):
-        pass
+        if self.stage > 0:
+            self.update_hitbox(0)
+            self.image = crouch[self.stage-1][self.face]
+        self.crouching = False
 
     def transform(self, next_stage, level):
+        self.update_hitbox(next_stage)
+
         if next_stage == 1:
             for i in range(9):
                 self.image = transform[self.face][i % 2]
                 level.draw_screen()
                 pygame.display.flip()
                 pygame.time.wait(50)
-            self.update_hitbox(next_stage)
 
         if next_stage == 2:
             for i in range(9):
@@ -151,22 +132,27 @@ class Jumpman(Sprite):
                 level.draw_screen()
                 pygame.display.flip()
                 pygame.time.wait(50)
-            self.update_hitbox(next_stage)
 
     def power_up(self, items, level):
         for item in items:
             if collide_rect(item, self):
                 if item.asset_id is self.settings.star_id:
+                    item.eat_star()
                     self.invincible = self.settings.invincible_time
                 elif item.asset_id is self.settings.mushroom_id and self.stage is 0:
+                    item.eat_mushroom()
                     if self.stage == 0:
                         self.transform(1, level)
+                        self.stage = 1
                 elif item.asset_id is self.settings.green_mushroom_id:
-                    pass
+                    item.eat_green_mushroom()
                 elif item.asset_id is self.settings.flower_id:
-                    self.transform(2, level)
+                    if self.stage < 2:
+                        self.transform(2, level)
+                        self.stage = 2
+                    item.eat_flower()
                 elif item.asset_id is self.settings.coin_id:
-                    pass
+                    item.eat_coin()
                 if item.asset_id is not self.settings.no_collision_id:
                     item.kill()
 
@@ -177,37 +163,43 @@ class Jumpman(Sprite):
         pass
 
     def move_right(self, shift):
-        if not self.airborne:
-            if self.face is 0:
-                self.face = 1
-                self.buffer_a = 0
-            self.image = walk_right_cycle[self.stage][self.buffer_a // 8]
-            self.buffer_a += 1
-            if self.buffer_a >= 24:
-                self.buffer_a = 0
+        if not self.crouching or self.airborne:
+            if not self.airborne:
+                if self.face is 0:
+                    self.face = 1
+                    self.buffer_a = 0
+                self.image = walk_right_cycle[self.stage][self.buffer_a // 8]
+                self.buffer_a += 1
+                if shift:
+                    self.buffer_a += 1
+                if self.buffer_a >= 24:
+                    self.buffer_a = 0
 
-        if self.delta_x >= 0:
-            if (self.delta_x < self.settings.walk_speed and not shift) or (self.delta_x < self.settings.run_speed and shift):
-                self.delta_x += self.settings.acceleration_x
-        elif self.delta_x < 0:
-            self.image = turn[self.stage][self.face]
-            self.delta_x += self.settings.decceleration_x
+            if self.delta_x >= 0:
+                if (self.delta_x < self.settings.walk_speed and not shift) or (self.delta_x < self.settings.run_speed and shift):
+                    self.delta_x += self.settings.acceleration_x
+            elif self.delta_x < 0:
+                self.image = turn[self.stage][self.face]
+                self.delta_x += self.settings.decceleration_x
 
     def move_left(self, shift):
-        if not self.airborne:
-            if self.face is 1:
-                self.face = 0
-                self.buffer_a = 0
-            self.image = walk_left_cycle[self.stage][self.buffer_a // 8]
-            self.buffer_a += 1
-            if self.buffer_a >= 24:
-                self.buffer_a = 0
-        if self.delta_x <= 0:
-            if (self.delta_x > -self.settings.walk_speed and not shift) or (self.delta_x > -self.settings.run_speed and shift):
-                self.delta_x -= self.settings.acceleration_x
-        elif self.delta_x > 0:
-            self.image = turn[self.stage][self.face]
-            self.delta_x -= self.settings.decceleration_x
+        if not self.crouching or self.airborne:
+            if not self.airborne:
+                if self.face is 1:
+                    self.face = 0
+                    self.buffer_a = 0
+                self.image = walk_left_cycle[self.stage][self.buffer_a // 8]
+                self.buffer_a += 1
+                if shift:
+                    self.buffer_a += 1
+                if self.buffer_a >= 24:
+                    self.buffer_a = 0
+            if self.delta_x <= 0:
+                if (self.delta_x > -self.settings.walk_speed and not shift) or (self.delta_x > -self.settings.run_speed and shift):
+                    self.delta_x -= self.settings.acceleration_x
+            elif self.delta_x > 0:
+                self.image = turn[self.stage][self.face]
+                self.delta_x -= self.settings.decceleration_x
 
     def jump(self):
         if not self.airborne:
@@ -221,9 +213,6 @@ class Jumpman(Sprite):
                 run_bonus = (abs(self.delta_x) - self.settings.walk_speed) / 6
             add_velocity_up(self.settings.jump_speed[self.buffer_b // 3] + run_bonus, self)
         self.buffer_b += 1
-
-    def run(self):
-        pass
 
     def fire(self):
         pass
@@ -255,28 +244,33 @@ class Jumpman(Sprite):
     def update_rel_pos(self):
         self.camera.center_camera(self)
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
+        self.update_hitbox(self.stage)
 
     def update(self, floor, blocks, items, enemies, level):
         if self.stage > -1:
+            self.update_rel_pos()
+            if self.crouching:
+                self.crouch()
+            elif self.airborne and not self.crouching:
+                self.image = jump[self.stage][self.face]
+            elif self.delta_x == 0 and not self.airborne and not self.crouching:
+                self.image = face[self.stage][self.face]
+
             self.power_up(items, level)
             apply_gravity(self.settings, self)
 
             self.rect.left += self.delta_x
             self.x += self.delta_x
+            self.delta_x -= get_direction(self.delta_x) * self.settings.decceleration_x
+            if abs(self.delta_x) < 0.5:
+                self.delta_x = 0
             direction_x = get_direction(self.delta_x)
-
-            if self.airborne:
-                self.image = jump[self.stage][self.face]
             if collide_group_x(blocks, self, direction_x):
                 direction_x = 0
                 self.delta_x = 0
-            if (direction_x == 0 and not self.airborne) or collide_check_x(floor, self, direction_x):
-                self.image = face[self.stage][self.face]
+            if collide_check_x(floor, self, direction_x):
                 self.delta_x = 0
                 direction_x = 0
-            self.delta_x -= direction_x * self.settings.decceleration_x
-            if abs(self.delta_x) < 0.5:
-                self.delta_x = 0
 
             self.rect.bottom += self.delta_y
             direction_y = get_direction(self.delta_y)
@@ -290,8 +284,6 @@ class Jumpman(Sprite):
 
             collide_group_y(enemies, self, direction_y)
             collide_group_x(enemies, self, direction_x)
-
-            self.update_rel_pos()
 
             if self.invulnerable:
                 if self.invul_timer % 4 == 0:
