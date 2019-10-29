@@ -103,14 +103,15 @@ class Level:
         enemy_to_enemy_collision(self.enemies)
 
     def update_mario(self, left, right, space, shift, fire):
-        if left:
-            self.mario.move_left(shift)
-        elif right:
-            self.mario.move_right(shift)
-        if space:
-            self.mario.jump()
-        if fire:
-            self.mario.fire()
+        if self.mario.stage > -1:
+            if left:
+                self.mario.move_left(shift)
+            elif right:
+                self.mario.move_right(shift)
+            if space:
+                self.mario.jump()
+            if fire:
+                self.mario.fire()
 
     def draw_screen(self):
         self.background.draw()

@@ -186,7 +186,12 @@ class Jumpman(Sprite):
             if self.buffer_a >= 24:
                 self.buffer_a = 0
 
-        self.delta_x = self.settings.walk_speed
+        if self.delta_x >= 0:
+            if (self.delta_x < self.settings.walk_speed and not shift) or (self.delta_x < self.settings.run_speed and shift):
+                self.delta_x += self.settings.acceleration_x
+        elif self.delta_x < 0:
+            self.image = turn[self.stage][self.face]
+            self.delta_x += self.settings.decceleration_x
 
     def move_left(self, shift):
         if not self.airborne:
@@ -197,8 +202,12 @@ class Jumpman(Sprite):
             self.buffer_a += 1
             if self.buffer_a >= 24:
                 self.buffer_a = 0
-        if self.rect.left - self.settings.walk_speed >= 0:
-            self.delta_x = -self.settings.walk_speed
+        if self.delta_x <= 0:
+            if (self.delta_x > -self.settings.walk_speed and not shift) or (self.delta_x > -self.settings.run_speed and shift):
+                self.delta_x -= self.settings.acceleration_x
+        elif self.delta_x > 0:
+            self.image = turn[self.stage][self.face]
+            self.delta_x -= self.settings.decceleration_x
 
     def jump(self):
         if not self.airborne:
@@ -207,7 +216,10 @@ class Jumpman(Sprite):
             self.buffer_b = 0
 
         if self.buffer_b < 9 and self.buffer_b % 3 == 0:
-            add_velocity_up(self.settings.jump_speed[self.buffer_b // 3], self)
+            run_bonus = 0
+            if abs(self.delta_x) > self.settings.walk_speed:
+                run_bonus = (abs(self.delta_x) - self.settings.walk_speed) / 6
+            add_velocity_up(self.settings.jump_speed[self.buffer_b // 3] + run_bonus, self)
         self.buffer_b += 1
 
     def run(self):
@@ -257,8 +269,14 @@ class Jumpman(Sprite):
                 self.image = jump[self.stage][self.face]
             if collide_group_x(blocks, self, direction_x):
                 direction_x = 0
+                self.delta_x = 0
             if (direction_x == 0 and not self.airborne) or collide_check_x(floor, self, direction_x):
                 self.image = face[self.stage][self.face]
+                self.delta_x = 0
+                direction_x = 0
+            self.delta_x -= direction_x * self.settings.decceleration_x
+            if abs(self.delta_x) < 0.5:
+                self.delta_x = 0
 
             self.rect.bottom += self.delta_y
             direction_y = get_direction(self.delta_y)
@@ -274,7 +292,6 @@ class Jumpman(Sprite):
             collide_group_x(enemies, self, direction_x)
 
             self.update_rel_pos()
-            self.delta_x = 0
 
             if self.invulnerable:
                 if self.invul_timer % 4 == 0:
