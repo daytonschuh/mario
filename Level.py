@@ -62,7 +62,7 @@ class Level:
             new_enemy = Bowser(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'blooper':
             new_enemy = Blooper(self.screen, self.settings, self.camera, x, y)
-        elif enemy is 'cheepcheep':
+        elif enemy is 'cheep_cheep':
             new_enemy = Cheep_Cheep(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'lava_bubble':
             new_enemy = Lava_Bubble(self.screen, self.settings, self.camera, x, y)
