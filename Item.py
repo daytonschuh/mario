@@ -100,6 +100,7 @@ class FireFlower(Mushroom):
     def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
         super().__init__(screen, settings, camera, x, y, scores, block_spawn, true_x)
         self.delta_x = 0
+        self.score = 200
         self.image = flower_a
         self.frame = 0
         if block_spawn:
@@ -119,12 +120,16 @@ class FireFlower(Mushroom):
         if self.frame >= 16:
             self.frame = 0
 
+    def eat_flower(self):
+        self.kill()
+        self.scores.scores += self.score
+
 
 class Star(Mushroom):
     def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
         super().__init__(screen, settings, camera, x, y, scores, block_spawn, true_x)
         self.image = star
-        self.score = 0
+        self.score = 200
         self.delta_x = 2
         if block_spawn:
             self.asset_id = self.settings.no_collision_id
@@ -143,12 +148,16 @@ class Star(Mushroom):
         if self.asset_id == self.settings.mushroom_id:
             self.asset_id = self.settings.green_mushroom_id
 
+    def eat_star(self):
+        self.kill()
+        self.scores.scores += self.score
+
 
 class GreenMushroom(Mushroom):
     def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
-        super().__init__(screen, settings, camera, x, y, score, block_spawn, true_x)
+        super().__init__(screen, settings, camera, x, y, scores, block_spawn, true_x)
         self.image = green_mushroom
-        self.score = 0
+        self.score = 2000
         if block_spawn:
             self.asset_id = self.settings.no_collision_id
         else:
@@ -158,6 +167,11 @@ class GreenMushroom(Mushroom):
         super().update(floor, blocks)
         if self.asset_id == self.settings.mushroom_id:
             self.asset_id = self.settings.green_mushroom_id
+
+    def eat_green_mushroom(self):
+        self.kill()
+        #Give player 1+ life
+        self.scores.scores += self.score
 
 
 class Coin(Sprite):

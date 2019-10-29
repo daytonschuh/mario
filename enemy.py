@@ -8,12 +8,16 @@ goomba_walk_2 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_2.png')
 goomba_death = pygame.image.load('Resources/Images/Enemies/Goomba/death.png')
 koopa_walk_left_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_left_1.png')
 koopa_walk_left_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_left_2.png')
-koopa_wl_cycle = [koopa_walk_left_1, koopa_walk_left_2]
 koopa_walk_right_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_right_1.png')
 koopa_walk_right_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_right_2.png')
-koopa_wr_cycle = [koopa_walk_right_1, koopa_walk_right_2]
 koopa_hiding = pygame.image.load('Resources/Images/Enemies/Green_Koopa/transition.png')
 koopa_shell = pygame.image.load('Resources/Images/Enemies/Green_Koopa/death.png')
+koopa_jump_left_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/jump_left_1.png')
+koopa_jump_left_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/jump_left_2.png')
+koopa_jump_right_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/jump_right_1.png')
+koopa_jump_right_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/jump_right_2.png')
+piranha_plant_open = pygame.image.load('Resources/Images/Enemies/Piranha_Plant/nom_1.png')
+piranha_plant_close = pygame.image.load('Resources/Images/Enemies/Piranha_Plant/nom_2.png')
 
 class Enemy(Sprite):
     """ Base class for enemies. """
@@ -57,6 +61,27 @@ class Enemy(Sprite):
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
+
+    def adjust_hitbox(self, settings, x, y):
+        self.rect.left = x * settings.block_size + self.camera.x_pos
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.x = self.rect.left
+
+        bottom = self.rect.bottom
+        left = self.rect.left
+
+        size_a = self.image.get_size()
+
+        self.image = koopa_walk_left_1
+        size_b = self.image.get_size()
+
+        c_x = size_b[0] - size_a[0]
+        c_y = size_b[1] - size_a[1]
+
+        self.rect.inflate_ip(c_x, c_y)
+
+        self.rect.bottom = bottom
+        self.rect.left = left
 
 
 class Blooper(Enemy):
@@ -222,8 +247,6 @@ class Goomba(Enemy):
                 # death sound
                 # settings.points += 100
 
-    # jumping on it kills it
-
 
 class Hammer_Bro(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
@@ -245,35 +268,32 @@ class Koopa_Paratroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.image_a = koopa_walk_left_1
-        self.frames = [koopa_walk_left_1, koopa_walk_left_2]
+        self.asset_id = self.settings.koopa_troopa_id
+        self.face = 0
+        self.image_a = koopa_jump_left_1
+        self.frames = [koopa_jump_left_1, koopa_jump_left_2], [koopa_jump_right_1, koopa_jump_right_2]
         self.rect = self.image.get_rect()
-        self.rect.left = x * settings.block_size + self.camera.x_pos
-        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
-        self.x = self.rect.left
-
-        bottom = self.rect.bottom
-        left = self.rect.left
-
-        size_a = self.image.get_size()
-
-        self.image = koopa_walk_left_1
-        size_b = self.image.get_size()
-
-        c_x = size_b[0] - size_a[0]
-        c_y = size_b[1] - size_a[1]
-
-        self.rect.inflate_ip(c_x, c_y)
-
-        self.rect.bottom = bottom
-        self.rect.left = left
+        self.adjust_hitbox(settings, x, y)
 
     def hit(self):
         self.image = koopa_shell
         self.state = 1
         self.wait = 1000
-        self.asset_id = self.settings.no_collision_id
+        if self.settings.koopa_paratroopa_id == self.asset_id:
+            self.asset_id = self.settings.koopa_troopa_id
+        if self.settings.koopa_troopa_id == self.asset_id:
+            self.asset_id = self.settings.koopa_shell_id
+        if self.settings.koopa_shell_id == self.asset_id:
+            # depending on collision, hit it that way
+            pass
         print("Enemy Down")
+
+    def land(self):
+        super().land()
+        self.bounce()
+
+    def bounce(self):
+        add_velocity_up(15, self)
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
@@ -304,12 +324,12 @@ class Koopa_Paratroopa(Enemy):
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
                     self.delta_y = False
 
-            # animate death
+            # Koopa currently in his shell
             if self.state == 1:
-                # death animation
+                # Wait until it's safe to come out!
                 self.wait -= 1
                 if self.wait == 0:
-                    self.asset_id = self.settings.goomba_id
+                    self.asset_id = self.settings.koopa_troopa_id
                     self.state = 0
 
 
@@ -317,34 +337,18 @@ class Koopa_Troopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
+        self.face = 0
         self.image_a = koopa_walk_left_1
-        self.frames = [koopa_walk_left_1, koopa_walk_left_2]
+        self.frames = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
         self.rect = self.image.get_rect()
-        self.rect.left = x * settings.block_size + self.camera.x_pos
-        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
-        self.x = self.rect.left
-
-        bottom = self.rect.bottom
-        left = self.rect.left
-
-        size_a = self.image.get_size()
-
-        self.image = koopa_walk_left_1
-        size_b = self.image.get_size()
-
-        c_x = size_b[0] - size_a[0]
-        c_y = size_b[1] - size_a[1]
-
-        self.rect.inflate_ip(c_x, c_y)
-
-        self.rect.bottom = bottom
-        self.rect.left = left
+        self.adjust_hitbox(settings, x, y)
+        self.asset_id = self.settings.koopa_troopa_id
 
     def hit(self):
         self.image = koopa_shell
         self.state = 1
         self.wait = 1000
-        self.asset_id = self.settings.no_collision_id
+        self.asset_id = self.settings.koopa_shell_id
         print("Enemy Down")
 
     def behavior(self, enemies, floor, blocks, mario):
@@ -353,7 +357,7 @@ class Koopa_Troopa(Enemy):
                 # animate walking
                 apply_gravity(self.settings, self)
                 if self.buffer % 8 == 0:
-                    self.image = self.frames[self.buffer // 8]
+                    self.image = self.frames[self.face][self.buffer // 8]
                 self.buffer += 1
                 if self.buffer >= 16:
                     self.buffer = 0
@@ -363,12 +367,14 @@ class Koopa_Troopa(Enemy):
                 self.x += self.delta_x
                 direction_x = get_direction(self.delta_x)
 
-                reverse = False
-                if collide_check_x(floor, self, direction_x):
-                    reverse = True
-                if collide_group_x(blocks, self, direction_x):
-                    reverse = True
-                if reverse:
+                if direction_x > 0:
+                    self.face = 1
+                elif direction_x < 0:
+                    self.face = 0
+
+                # Turns the koopa around if he hits an enemy or wall
+                if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x))\
+                        and self.settings.koopa_troopa_id == self.asset_id:
                     self.delta_x *= -1
 
                 self.rect.bottom += self.delta_y
@@ -376,13 +382,13 @@ class Koopa_Troopa(Enemy):
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
                     self.delta_y = False
 
-            # animate death
-            if self.state == 1:
-                # death animation
-                self.wait -= 1
-                if self.wait == 0:
-                    self.asset_id = self.settings.goomba_id
-                    self.state = 0
+                # Koopa currently in his shell
+                if self.state == 1:
+                    # Wait until it's safe to come out!
+                    self.wait -= 1
+                    if self.wait == 0:
+                        self.asset_id = self.settings.koopa_troopa_id
+                        self.state = 0
 
 
 class Lava_Bubble(Enemy):
@@ -409,17 +415,20 @@ class Lava_Bubble(Enemy):
 
 
 class Piranha_Plant(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-            super().__init__(screen, settings, camera, x, y)
-            self.active = False
-            self.image = goomba_walk_1
-            self.frames = [goomba_walk_1, goomba_walk_2]
-            self.asset_id = 31
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = piranha_plant_open
+        self.frames = [piranha_plant_open, piranha_plant_close]
+        self.rect = self.image.get_rect()
+        self.adjust_hitbox(settings, x, y)
 
-    def behavior(self):
+        self.asset_id = self.settings.piranha_plant_id
+
+    def behavior(self, enemies, floor, blocks, mario):
         # moving up
         if 0 == self.state:
-            self.y -= 10
+            self.rect.bottom -= 10
             if self.y > self.pos[1]+30:
                 self.state = 1
         # delay
@@ -439,7 +448,7 @@ class Piranha_Plant(Enemy):
             if 0 == self.wait:
                 self.state = 0
     # up and down delay
-    # behind pipe, in front of backdrop"""
+    # behind pipe, in front of backdrop
     pass
 
 
