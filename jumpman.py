@@ -54,6 +54,7 @@ fire_transform_b_r = pygame.image.load('Resources/Images/Mario_transitions/fire_
 fire_transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_1_l.png')
 fire_transform_b_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_2_l.png')
 fire_transform = [[fire_transform_a_l, fire_transform_b_l], [fire_transform_a_r, fire_transform_b_r]]
+death = pygame.image.load('Resources/Images/baby_mario/death.png')
 
 
 class Jumpman(Sprite):
@@ -84,30 +85,56 @@ class Jumpman(Sprite):
         self.invincible = 0
         self.invulnerable = False
         self.invul_timer = 100
+        self.death_timer = 240
 
     def update_mask(self):
         self.mask = pygame.mask.from_surface(self.image)
 
     def update_hitbox(self, next_stage):
-        bottom = self.rect.bottom
-        left = self.rect.left
+        if next_stage > 0:
+            bottom = self.rect.bottom
+            left = self.rect.left
 
-        image_a = face[self.stage][1]
-        size_a = image_a.get_size()
+            image_a = face[self.stage][1]
+            size_a = image_a.get_size()
 
-        self.stage = next_stage
+            self.stage = next_stage
 
-        self.image = face[self.stage][1]
-        size_b = self.image.get_size()
+            self.image = face[1][1]
+            size_b = self.image.get_size()
 
-        c_x = size_b[0] - size_a[0]
-        c_y = size_b[1] - size_a[1]
+            c_x = size_b[0] - size_a[0]
+            c_y = size_b[1] - size_a[1]
 
-        self.rect.inflate_ip(c_x, c_y)
-        self.update_mask()
+            self.rect.inflate_ip(c_x, c_y)
+            self.update_mask()
 
-        self.rect.bottom = bottom
-        self.rect.left = left
+            self.rect.bottom = bottom
+            self.rect.left = left
+
+        if next_stage == 0:
+            bottom = self.rect.bottom
+            left = self.rect.left
+
+            image_a = face[1][1]
+            size_a = image_a.get_size()
+
+            self.stage = next_stage
+
+            self.image = face[0][1]
+            size_b = self.image.get_size()
+
+            c_x = size_b[0] - size_a[0]
+            c_y = size_b[1] - size_a[1]
+
+            self.rect.inflate_ip(c_x, c_y)
+            self.update_mask()
+
+            self.rect.bottom = bottom
+            self.rect.left = left
+
+    def crouch(self):
+        pass
 
     def transform(self, next_stage, level):
         if next_stage == 1:
@@ -196,9 +223,17 @@ class Jumpman(Sprite):
 
     def take_damage(self):
         if self.invulnerable is False:
-            print("Mario got hit!")
-            self.invul_timer = 100
-            self.invulnerable = True
+            if self.stage > 0:
+                print("Mario got hit!")
+                self.invul_timer = 100
+                self.invulnerable = True
+                self.stage = 0
+                self.update_hitbox(0)
+            else:
+                print("Mario died!")
+                self.stage = -1
+                self.image = death
+                self.delta_y = 0
 
     def land(self):
         self.airborne = False
@@ -210,43 +245,52 @@ class Jumpman(Sprite):
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
 
     def update(self, floor, blocks, items, enemies, level):
-        self.power_up(items, level)
-        apply_gravity(self.settings, self)
+        if self.stage > -1:
+            self.power_up(items, level)
+            apply_gravity(self.settings, self)
 
-        self.rect.left += self.delta_x
-        self.x += self.delta_x
-        direction_x = get_direction(self.delta_x)
+            self.rect.left += self.delta_x
+            self.x += self.delta_x
+            direction_x = get_direction(self.delta_x)
 
-        if self.airborne:
-            self.image = jump[self.stage][self.face]
-        if collide_group_x(blocks, self, direction_x):
-            direction_x = 0
-        if (direction_x == 0 and not self.airborne) or collide_check_x(floor, self, direction_x):
-            self.image = face[self.stage][self.face]
+            if self.airborne:
+                self.image = jump[self.stage][self.face]
+            if collide_group_x(blocks, self, direction_x):
+                direction_x = 0
+            if (direction_x == 0 and not self.airborne) or collide_check_x(floor, self, direction_x):
+                self.image = face[self.stage][self.face]
 
-        self.rect.bottom += self.delta_y
-        direction_y = get_direction(self.delta_y)
+            self.rect.bottom += self.delta_y
+            direction_y = get_direction(self.delta_y)
 
-        if collide_group_y(blocks, self, direction_y):
-            direction_y = 0
-            self.delta_y = 0
-        if collide_check_y(floor, self, direction_y):
-            direction_y = 0
-            self.delta_y = 0
+            if collide_group_y(blocks, self, direction_y):
+                direction_y = 0
+                self.delta_y = 0
+            if collide_check_y(floor, self, direction_y):
+                direction_y = 0
+                self.delta_y = 0
 
-        collide_group_y(enemies, self, direction_y)
-        collide_group_x(enemies, self, direction_x)
+            collide_group_y(enemies, self, direction_y)
+            collide_group_x(enemies, self, direction_x)
 
-        self.update_rel_pos()
-        self.delta_x = 0
+            self.update_rel_pos()
+            self.delta_x = 0
 
-        if self.invulnerable:
-            if self.invul_timer % 4 == 0:
-                self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
+            if self.invulnerable:
+                if self.invul_timer % 4 == 0:
+                    self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
 
-            if self.invul_timer == 0:
-                self.invulnerable = False
-            self.invul_timer -= 1
+                if self.invul_timer == 0:
+                    self.invulnerable = False
+                self.invul_timer -= 1
+        else:
+            self.image = death
+            if self.death_timer == 180:
+                add_velocity_up(15, self)
+            elif self.death_timer < 180:
+                apply_gravity(self.settings, self)
+                self.rect.bottom += self.delta_y
+            self.death_timer -= 1
 
     def draw(self):
         self.screen.blit(self.image, self.rect)

@@ -95,11 +95,11 @@ class Bowser(Enemy):
         self.image = bowser_walk
         self.frames = bowser_walk[self.face]
         self.asset_id = 31 or 32
-        
+
     def behavior(self):
         # choose some slightly random interval to shoot at mario
         # random.randint[] use value as a countdown
-        # walk / jump towards mario 
+        # walk / jump towards mario
         # kill when mario picks up axe and bridge collapse"""
     pass
 
@@ -201,7 +201,6 @@ class Goomba(Enemy):
                 direction_y = get_direction(self.delta_y)
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
                     self.delta_y = False
-
 
             # animate death
             if self.state == 1:
