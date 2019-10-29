@@ -7,6 +7,9 @@ i_block = pygame.image.load("Resources/Images/Blocks/i_block.png")
 d_block = pygame.image.load("Resources/Images/Blocks/d_block.png")
 ub_block = pygame.image.load("Resources/Images/Blocks/u_block.png")
 ud_block = pygame.image.load("Resources/Images/Blocks/ud_block.png")
+flag_pole = pygame.image.load("Resources/Images/Blocks/flag_pole.png")
+flag = pygame.image.load("Resources/Images/Blocks/flag.png")
+
 
 class Block(Sprite):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
@@ -124,3 +127,40 @@ class UndergroundBrickBlock(BrickBlock):
             else:
                 self.destroy = True
                 self.image = ud_block
+
+
+class FlagPole(Sprite):
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__()
+        self.screen = screen
+        self.settings = settings
+        self.camera = camera
+        self.image = flag_pole
+        self.rect = self.image.get_rect()
+        self.rect.left = x * settings.block_size + self.camera.x_pos + 12
+        self.x = self.rect.left
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.flag_image = flag
+        self.flag_rect = self.flag_image.get_rect()
+        self.flag_rect.right = self.rect.centerx
+        self.flag_rect.top = self.rect.top + 24
+        self.flag_x = self.flag_rect.left
+        self.asset_id = self.settings.flag_id
+        self.grabbed = False
+
+    def grab(self):
+        self.grabbed = True
+
+    def update(self):
+        self.rect.left = self.x - self.camera.x_pos
+        self.flag_rect.left = self.flag_x - self.camera.x_pos
+        if self.grabbed:
+            if self.flag_rect.bottom < self.rect.bottom:
+                self.flag_rect.y += 3
+            else:
+                self.grabbed = False
+                self.asset_id = self.settings.auto_id
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.flag_image, self.flag_rect)

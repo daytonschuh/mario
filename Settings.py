@@ -17,6 +17,7 @@ class Settings:
         self.acceleration_x = 1
         self.decceleration_x = 0.2
         self.invincible_time = 600
+        self.flag_fall = 3
 
         # Enemy Variables
         self.enemy_walk_speed = 1
@@ -31,6 +32,8 @@ class Settings:
         self.invisible_block_id = 1
         self.platform_id = 2
         self.bounce_id = 3
+        self.flag_id = 4
+        self.auto_id = 5
 
         self.no_collision_id = 10
         self.item_id = 11

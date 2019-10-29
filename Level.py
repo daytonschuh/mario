@@ -19,7 +19,7 @@ class Level:
         self.floor = Background(self.screen, self.settings, self.camera, floor_img)
 
         self.mario = Jumpman(self.screen, self.settings, self.camera, 0, 0, mario_pos)
-        self.flag_pos = flag_pos
+        self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1])
         self.time = time
         self.score = 0
         self.world = "1-1"
@@ -93,17 +93,26 @@ class Level:
                 self.place_block(block_type, x + column, y + row, item)
 
     def update(self):
-        self.mario.update(self.floor, self.blocks, self.items, self.enemies, self)
-        self.enemies.update(self.enemies, self.floor, self.blocks, self.mario)
-        self.items.update(self.floor, self.blocks)
-        self.blocks.update()
-        self.background.update()
-        self.floor.update()
-        self.scores.update_text()
-        enemy_to_enemy_collision(self.enemies)
+        if self.flag.grabbed is False:
+            self.mario.update(self.floor, self.blocks, self.items, self.enemies, self.flag, self)
+            self.enemies.update(self.enemies, self.floor, self.blocks, self.mario)
+            self.items.update(self.floor, self.blocks)
+            self.blocks.update()
+            self.background.update()
+            self.floor.update()
+            self.scores.update_text()
+            enemy_to_enemy_collision(self.enemies)
+            self.flag.update()
+
+        else:
+            self.mario.update(self.floor, self.blocks, self.items, self.enemies, self.flag, self)
+            self.blocks.update()
+            self.background.update()
+            self.floor.update()
+            self.flag.update()
 
     def update_mario(self, left, right, space, shift, down, fire):
-        if self.mario.stage > -1:
+        if self.mario.stage > -1 and self.flag.asset_id is not self.settings.auto_id:
             if down:
                 if self.mario.stage > 0:
                     self.mario.crouching = True
@@ -124,3 +133,4 @@ class Level:
         self.scores.draw_text()
         self.items.draw(self.screen)
         self.blocks.draw(self.screen)
+        self.flag.draw()

@@ -60,6 +60,10 @@ crouch_r = pygame.image.load('Resources/Images/Papa_mario/crouch_right.png')
 f_crouch_l = pygame.image.load('Resources/Images/Fire_mario/crouch_left.png')
 f_crouch_r = pygame.image.load('Resources/Images/Fire_mario/crouch_right.png')
 crouch = [[crouch_l, crouch_r], [f_crouch_l, f_crouch_r]]
+l_grab = pygame.image.load('Resources/Images/baby_mario/flagpole.png')
+b_grab = pygame.image.load('Resources/Images/Papa_mario/flagpole.png')
+f_grab = pygame.image.load('Resources/Images/Fire_mario/flagpole.png')
+grab = [l_grab, b_grab, f_grab]
 
 
 class Jumpman(Sprite):
@@ -246,60 +250,81 @@ class Jumpman(Sprite):
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
         self.update_hitbox(self.stage)
 
-    def update(self, floor, blocks, items, enemies, level):
-        if self.stage > -1:
-            self.update_rel_pos()
-            if self.crouching:
-                self.crouch()
-            elif self.airborne and not self.crouching:
-                self.image = jump[self.stage][self.face]
-            elif self.delta_x == 0 and not self.airborne and not self.crouching:
-                self.image = face[self.stage][self.face]
+    def update(self, floor, blocks, items, enemies, flag, level):
+        if flag.grabbed is False:
+            if flag.asset_id == self.settings.auto_id:
+                self.move_right(False)
+            if self.stage > -1:
+                self.update_rel_pos()
+                if self.crouching:
+                    self.crouch()
+                elif self.airborne and not self.crouching:
+                    self.image = jump[self.stage][self.face]
+                elif self.delta_x == 0 and not self.airborne and not self.crouching:
+                    self.image = face[self.stage][self.face]
 
-            self.power_up(items, level)
-            apply_gravity(self.settings, self)
-
-            self.rect.left += self.delta_x
-            self.x += self.delta_x
-            self.delta_x -= get_direction(self.delta_x) * self.settings.decceleration_x
-            if abs(self.delta_x) < 0.5:
-                self.delta_x = 0
-            direction_x = get_direction(self.delta_x)
-            if collide_group_x(blocks, self, direction_x):
-                direction_x = 0
-                self.delta_x = 0
-            if collide_check_x(floor, self, direction_x):
-                self.delta_x = 0
-                direction_x = 0
-
-            self.rect.bottom += self.delta_y
-            direction_y = get_direction(self.delta_y)
-
-            if collide_group_y(blocks, self, direction_y):
-                direction_y = 0
-                self.delta_y = 0
-            if collide_check_y(floor, self, direction_y):
-                direction_y = 0
-                self.delta_y = 0
-
-            collide_group_y(enemies, self, direction_y)
-            collide_group_x(enemies, self, direction_x)
-
-            if self.invulnerable:
-                if self.invul_timer % 4 == 0:
-                    self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
-
-                if self.invul_timer == 0:
-                    self.invulnerable = False
-                self.invul_timer -= 1
-        else:
-            self.image = death
-            if self.death_timer == 180:
-                add_velocity_up(15, self)
-            elif self.death_timer < 180:
+                self.power_up(items, level)
                 apply_gravity(self.settings, self)
+
+                self.rect.left += self.delta_x
+                self.x += self.delta_x
+                self.delta_x -= get_direction(self.delta_x) * self.settings.decceleration_x
+                if abs(self.delta_x) < 0.5:
+                    self.delta_x = 0
+                direction_x = get_direction(self.delta_x)
+                if collide_group_x(blocks, self, direction_x):
+                    direction_x = 0
+                    self.delta_x = 0
+                if collide_check_x(floor, self, direction_x):
+                    self.delta_x = 0
+                    direction_x = 0
+
                 self.rect.bottom += self.delta_y
-            self.death_timer -= 1
+                direction_y = get_direction(self.delta_y)
+
+                if collide_group_y(blocks, self, direction_y):
+                    direction_y = 0
+                    self.delta_y = 0
+                if collide_check_y(floor, self, direction_y):
+                    direction_y = 0
+                    self.delta_y = 0
+
+                collide_group_y(enemies, self, direction_y)
+                collide_group_x(enemies, self, direction_x)
+
+                if self.invulnerable:
+                    if self.invul_timer % 4 == 0:
+                        self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
+
+                    if self.invul_timer == 0:
+                        self.invulnerable = False
+                    self.invul_timer -= 1
+
+                if collide_rect(flag, self):
+                    flag.grab()
+                    for item in items:
+                        item.kill()
+                    for enemy in enemies:
+                        enemy.kill()
+
+            else:
+                self.image = death
+                if self.death_timer == 180:
+                    add_velocity_up(15, self)
+                elif self.death_timer < 180:
+                    apply_gravity(self.settings, self)
+                    self.rect.bottom += self.delta_y
+                self.death_timer -= 1
+
+        else:
+                self.delta_x = 0
+                self.image = grab[self.stage]
+                self.rect.right = flag.flag_rect.right
+                if self.rect.bottom + self.settings.flag_fall < flag.rect.bottom:
+                    self.rect.bottom += self.settings.flag_fall
+                else:
+                    self.rect.bottom = flag.rect.bottom
+
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
