@@ -18,6 +18,13 @@ koopa_jump_right_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/jum
 koopa_jump_right_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/jump_right_2.png')
 piranha_plant_open = pygame.image.load('Resources/Images/Enemies/Piranha_Plant/nom_1.png')
 piranha_plant_close = pygame.image.load('Resources/Images/Enemies/Piranha_Plant/nom_2.png')
+fireball_up_1 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/up_1.png')
+fireball_up_2 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/up_2.png')
+fireball_up_3 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/up_3.png')
+fireball_down_1 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_1.png')
+fireball_down_2 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_2.png')
+fireball_down_3 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_3.png')
+
 
 class Enemy(Sprite):
     """ Base class for enemies. """
@@ -264,14 +271,18 @@ class Hammer_Bro(Enemy):
     pass
 
 
+""" TODO: Maybe make a class for hammers thrown by the hammer bro """
+
+
 class Koopa_Paratroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.asset_id = self.settings.koopa_troopa_id
+        self.asset_id = self.settings.koopa_paratroopa_id
         self.face = 0
         self.image_a = koopa_jump_left_1
         self.frames = [koopa_jump_left_1, koopa_jump_left_2], [koopa_jump_right_1, koopa_jump_right_2]
+        self.frames2 = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
         self.rect = self.image.get_rect()
         self.adjust_hitbox(settings, x, y)
 
@@ -298,31 +309,43 @@ class Koopa_Paratroopa(Enemy):
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             if self.state == 0:
-                # animate walking
+                # animate movement
                 apply_gravity(self.settings, self)
-                if self.buffer % 8 == 0:
-                    self.image = self.frames[self.buffer // 8]
-                self.buffer += 1
-                if self.buffer >= 16:
-                    self.buffer = 0
+                if self.asset_id == self.settings.koopa_paratroopa_id:
+                    if self.buffer % 8 == 0:
+                        self.image = self.frames[self.face][self.buffer // 16]
+                    self.buffer += 1
+                    if self.buffer >= 32:
+                        self.buffer = 0
+
+                else:
+                    if self.buffer % 8 == 0:
+                        self.image = self.frames2[self.face][self.buffer // 16]
+                    self.buffer += 1
+                    if self.buffer >= 32:
+                        self.buffer = 0
 
                 # check collisions
                 self.rect.left += self.delta_x
                 self.x += self.delta_x
                 direction_x = get_direction(self.delta_x)
 
-                reverse = False
-                if collide_check_x(floor, self, direction_x):
-                    reverse = True
-                if collide_group_x(blocks, self, direction_x):
-                    reverse = True
-                if reverse:
+                if direction_x > 0:
+                    self.face = 1
+                elif direction_x < 0:
+                    self.face = 0
+
+                # Turns the koopa around if he hits an enemy or wall
+                if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x)) \
+                        and self.settings.koopa_troopa_id == self.asset_id:
                     self.delta_x *= -1
 
                 self.rect.bottom += self.delta_y
                 direction_y = get_direction(self.delta_y)
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
-                    self.delta_y = False
+                    self.delta_y = 0
+                    if direction_y > 0:
+                        self.land()
 
             # Koopa currently in his shell
             if self.state == 1:
@@ -392,26 +415,59 @@ class Koopa_Troopa(Enemy):
 
 
 class Lava_Bubble(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-           super().__init__(screen, settings, camera, x, y)
-           self.active = False
-           self.image = goomba_walk_1
-           self.frames = [goomba_walk_1, goomba_walk_2]
-           self.asset_id = 32
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = fireball_up_1
+        self.frames = [fireball_up_1, fireball_up_2, fireball_up_3],[fireball_down_1, fireball_down_2, fireball_down_3]
+        self.face = 0
+        self.rect = self.image.get_rect()
+        self.adjust_hitbox(settings, x, y)
+        self.asset_id = self.settings.lava_bubble_id
 
-    def behavior(self):
-        if not self.airborne:
-            self.image = jump[self.face]
-            self.airborne = True
-            add_velocity_up(self.settings.jump_speed[6], self)
+    def hit(self):
+        # can't be killed
+        pass
 
-        if self.airborne:
-            self.image = lava_bubble_falling
-            self.y += 10
-            if 0 == self.y:
-                self.airborne = False
-    # perhaps just like Piranha plant up and down with delay"""
-    pass
+    def behavior(self, enemies, floor, blocks, mario):
+        """ TODO: change fireball direction based on up / down """
+        ###########################################################
+        direction_y = get_direction(self.delta_y)
+        if direction_y > 0:
+            self.face = 1
+        elif direction_y < 0:
+            self.face = 0
+        ###########################################################
+
+        # animate
+        if self.buffer % 8 == 0:
+            self.image = self.frames[self.face][self.buffer // 16]
+        self.buffer += 1
+        if self.buffer >= 32:
+            self.buffer = 0
+
+        # moving up
+        if 0 == self.state:
+            self.rect.bottom -= 1
+            if self.rect.bottom < self.settings.HEIGHT - 100:
+                self.wait = 20
+                self.state = 1
+        # delay
+        if 1 == self.state:
+            self.wait -= 1
+            if 0 == self.wait:
+                self.state = 2
+        # moving down
+        if 2 == self.state:
+            self.rect.bottom += 1
+            if self.rect.bottom > self.settings.HEIGHT - 50:
+                self.wait = 250
+                self.state = 3
+        # second delay
+        if 3 == self.state:
+            self.wait -= 1
+            if 0 == self.wait:
+                self.state = 0
 
 
 class Piranha_Plant(Enemy):
@@ -422,14 +478,25 @@ class Piranha_Plant(Enemy):
         self.frames = [piranha_plant_open, piranha_plant_close]
         self.rect = self.image.get_rect()
         self.adjust_hitbox(settings, x, y)
-
         self.asset_id = self.settings.piranha_plant_id
 
+    def hit(self):
+        # can be killed with fireball
+        pass
+
     def behavior(self, enemies, floor, blocks, mario):
+        # animate
+        if self.buffer % 8 == 0:
+            self.image = self.frames[self.buffer // 16]
+        self.buffer += 1
+        if self.buffer >= 32:
+            self.buffer = 0
+
         # moving up
         if 0 == self.state:
-            self.rect.bottom -= 10
-            if self.y > self.pos[1]+30:
+            self.rect.bottom -= 1
+            if self.rect.bottom < self.settings.HEIGHT - 100:
+                self.wait = 200
                 self.state = 1
         # delay
         if 1 == self.state:
@@ -438,9 +505,9 @@ class Piranha_Plant(Enemy):
                 self.state = 2
         # moving down
         if 2 == self.state:
-            self.y += 10
-            if self.y == self.pos[1]:
-                self.wait = 100
+            self.rect.bottom += 1
+            if self.rect.bottom > self.settings.HEIGHT - 50:
+                self.wait = 350
                 self.state = 3
         # second delay
         if 3 == self.state:
@@ -448,9 +515,12 @@ class Piranha_Plant(Enemy):
             if 0 == self.wait:
                 self.state = 0
     # up and down delay
-    # behind pipe, in front of backdrop
+    # behind pipe, in front of backdrop?
     pass
 
+
+
+""" ANYTHING BEYOND THIS POINT DOES NOT NEED TO BE IMPLEMENTED BEFORE THE DEADLINE """
 
 class Spiny_Egg(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
