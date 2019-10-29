@@ -124,3 +124,19 @@ class UndergroundBrickBlock(BrickBlock):
             else:
                 self.destroy = True
                 self.image = ud_block
+                
+class Platform(Block):
+    def __init__(self, screen, settings, camera, x, y, level):
+        super().__init__(screen, settings, camera, x, y, level)
+        self.image = platform
+        self.active = True
+        self.rect = self.image.get_rect()
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.asset_id = self.settings.one_way_platform_id
+
+    def update(self):
+        super().update()
+        if self.active:
+            self.rect.bottom -= 1
+            if self.rect.bottom < 0:
+                self.rect.bottom += self.settings.HEIGHT
