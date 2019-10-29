@@ -33,18 +33,18 @@ class Level:
 
     def place_item(self, item, x, y, block_spawn=False, true_x=None):
         if item == "Coin":
-            new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+            new_item = Coin(self.screen, self.settings, self.camera, x, y, self.scores, block_spawn, true_x)
         elif item == "Power-Up":
             if self.mario.stage == 0:
-                new_item = Mushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+                new_item = Mushroom(self.screen, self.settings, self.camera, x, y, self.scores, block_spawn, true_x)
             else:
-                new_item = FireFlower(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+                new_item = FireFlower(self.screen, self.settings, self.camera, x, y, self.scores, block_spawn, true_x)
         elif item == "1-Up":
-            new_item = GreenMushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+            new_item = GreenMushroom(self.screen, self.settings, self.camera, x, y, self.scores, block_spawn, true_x)
         elif item == "Star":
-            new_item = Star(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+            new_item = Star(self.screen, self.settings, self.camera, x, y, self.scores, block_spawn, true_x)
         else:
-            new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+            new_item = Coin(self.screen, self.settings, self.camera, x, y, self.scores, block_spawn, true_x)
         self.items.add(new_item)
 
     def place_enemy(self, enemy, x, y):
@@ -103,15 +103,14 @@ class Level:
         enemy_to_enemy_collision(self.enemies)
 
     def update_mario(self, left, right, space, shift, fire):
-        if self.mario.stage > -1:
-            if left:
-                self.mario.move_left(shift)
-            elif right:
-                self.mario.move_right(shift)
-            if space:
-                self.mario.jump()
-            if fire:
-                self.mario.fire()
+        if left:
+            self.mario.move_left(shift)
+        elif right:
+            self.mario.move_right(shift)
+        if space:
+            self.mario.jump()
+        if fire:
+            self.mario.fire()
 
     def draw_screen(self):
         self.background.draw()

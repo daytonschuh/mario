@@ -57,7 +57,7 @@ class SuperMario:
             self.left = True
         if event.key == pygame.K_SPACE:
             self.space = True
-        if event.key == pygame.K_LSHIFT:
+        if event.key == pygame.KMOD_SHIFT:
             self.shift = True
         if event.key == pygame.K_f:
             self.fire = True
@@ -69,7 +69,7 @@ class SuperMario:
             self.left = False
         if event.key == pygame.K_SPACE:
             self.space = False
-        if event.key == pygame.K_LSHIFT:
+        if event.key == pygame.KMOD_SHIFT:
             self.shift = False
         if event.key == pygame.K_f:
             self.fire = False

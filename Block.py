@@ -51,6 +51,7 @@ class QuestionBlock(Block):
             if self.item is not None:
                 self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
 
+
     def update(self):
         super().update()
         if self.active:
