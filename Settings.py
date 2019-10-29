@@ -10,12 +10,12 @@ class Settings:
         # Physics Variables
         self.gravity = 0.8
         self.gravity_max = 20
-
         # Mario Variables
         self.jump_speed = [12, 6, 3]
-        self.run_speed = 12
-        self.walk_speed = 6
+        self.run_speed = 6
+        self.walk_speed = 3
         self.acceleration_x = 1
+        self.decceleration_x = 0.2
         self.invincible_time = 600
 
         # Enemy Variables

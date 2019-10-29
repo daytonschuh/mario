@@ -3,7 +3,6 @@ from pygame.sprite import Sprite
 from Timer import Timer
 from physics import *
 
-
 coin1 = pygame.image.load('Resources/Images/Items/coin.png')
 coin2 = pygame.image.load('Resources/Images/Items/coin2.png')
 coin3 = pygame.image.load('Resources/Images/Items/coin3.png')
@@ -19,10 +18,8 @@ flower_c = pygame.image.load('Resources/Images/Items/flower_c.png')
 flower_d = pygame.image.load('Resources/Images/Items/flower_d.png')
 flower = [flower_a, flower_b, flower_c, flower_d]
 
-
-
 class Mushroom(Sprite):
-    def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -40,8 +37,7 @@ class Mushroom(Sprite):
         self.block_spawn = block_spawn
         self.delta_x = 1
         self.delta_y = 0
-        self.score = 1000
-        self.scores = scores
+        self.score = 100
         self.rise_timer = 48
         self.rise = -1
         if block_spawn:
@@ -91,14 +87,10 @@ class Mushroom(Sprite):
     def draw(self):
         self.screen.blit(self.image, self.rect)
 
-    def eat_mushroom(self):
-        self.kill()
-        self.scores.scores += self.score
-
 
 class FireFlower(Mushroom):
-    def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
-        super().__init__(screen, settings, camera, x, y, scores, block_spawn, true_x)
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__(screen, settings, camera, x, y, block_spawn, true_x)
         self.delta_x = 0
         self.image = flower_a
         self.frame = 0
@@ -121,8 +113,8 @@ class FireFlower(Mushroom):
 
 
 class Star(Mushroom):
-    def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
-        super().__init__(screen, settings, camera, x, y, scores, block_spawn, true_x)
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__(screen, settings, camera, x, y, block_spawn, true_x)
         self.image = star
         self.score = 0
         self.delta_x = 2
@@ -145,8 +137,8 @@ class Star(Mushroom):
 
 
 class GreenMushroom(Mushroom):
-    def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
-        super().__init__(screen, settings, camera, x, y, score, block_spawn, true_x)
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__(screen, settings, camera, x, y, block_spawn, true_x)
         self.image = green_mushroom
         self.score = 0
         if block_spawn:
@@ -161,7 +153,7 @@ class GreenMushroom(Mushroom):
 
 
 class Coin(Sprite):
-    def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -169,8 +161,7 @@ class Coin(Sprite):
         self.state = 0
         self.image = coin[self.state]
         self.rect = self.image.get_rect()
-        self.scores = scores
-        self.score = 500
+        self.score = 100
         if true_x is None:
             self.x = x * settings.block_size + self.camera.x_pos
         else:
@@ -202,11 +193,7 @@ class Coin(Sprite):
             self.rect.bottom += self.delta_y
             apply_gravity(self.settings, self)
             if self.delta_y >= self.settings.gravity_max/2:
-                self.eat_coin()
-
-    def eat_coin(self):
-        self.kill()
-        self.scores.scores += self.score
+                self.kill()
 
     def spawn(self):
         pass
