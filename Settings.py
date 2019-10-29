@@ -50,3 +50,4 @@ class Settings:
         self.koopa_shell_id = 33
         self.piranha_plant_id = 34
         self.lava_bubble_id = 35
+        self.one_way_platform_id = 36

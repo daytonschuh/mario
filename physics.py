@@ -143,6 +143,12 @@ def check_event_collision_y(solid, entity, direction, asset_id):
                 entity.rect.bottom = solid.rect.top
                 entity.land()
         return True
+    
+    elif asset_id is 36:
+        if collide_rect(entity, solid):
+            entity.rect.bottom = solid.rect.top - 2
+            entity.land()
+        return True
 
     if asset_id is 10:
         return True
