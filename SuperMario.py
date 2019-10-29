@@ -27,7 +27,7 @@ class SuperMario:
         self.level = world_1_1(self.screen, self.settings)
 
         # SET EVENTS
-        self.left, self.right, self.space, self.shift, self.fire = [False] * 5
+        self.left, self.right, self.space, self.shift, self.down, self.fire = [False] * 6
 
         # SET SOUNDS
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
@@ -57,8 +57,10 @@ class SuperMario:
             self.left = True
         if event.key == pygame.K_SPACE:
             self.space = True
-        if event.key == pygame.KMOD_SHIFT:
+        if event.key == pygame.K_LSHIFT:
             self.shift = True
+        if event.key == pygame.K_s:
+            self.down = True
         if event.key == pygame.K_f:
             self.fire = True
 
@@ -69,13 +71,15 @@ class SuperMario:
             self.left = False
         if event.key == pygame.K_SPACE:
             self.space = False
-        if event.key == pygame.KMOD_SHIFT:
+        if event.key == pygame.K_LSHIFT:
             self.shift = False
+        if event.key == pygame.K_s:
+            self.down = False
         if event.key == pygame.K_f:
             self.fire = False
 
     def do_event(self):
-        self.level.update_mario(self.left, self.right, self.space, self.shift, self.fire)
+        self.level.update_mario(self.left, self.right, self.space, self.shift, self.down, self.fire)
 
     def check_play_button(self, mouse_pos):
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)

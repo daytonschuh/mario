@@ -51,7 +51,6 @@ class QuestionBlock(Block):
             if self.item is not None:
                 self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
 
-
     def update(self):
         super().update()
         if self.active:
@@ -106,6 +105,7 @@ class InvisibleBlock(QuestionBlock):
         if self.asset_id is self.settings.invisible_block_id:
             self.image = q_block
             self.asset_id = self.settings.block_id
+
 
 class UndergroundBrickBlock(BrickBlock):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
