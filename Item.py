@@ -155,7 +155,7 @@ class Star(Mushroom):
 
 class GreenMushroom(Mushroom):
     def __init__(self, screen, settings, camera, x, y, scores, block_spawn=False, true_x=None):
-        super().__init__(screen, settings, camera, x, y, score, block_spawn, true_x)
+        super().__init__(screen, settings, camera, x, y, scores, block_spawn, true_x)
         self.image = green_mushroom
         self.score = 2000
         if block_spawn:
