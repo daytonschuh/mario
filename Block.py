@@ -9,6 +9,7 @@ ub_block = pygame.image.load("Resources/Images/Blocks/u_block.png")
 ud_block = pygame.image.load("Resources/Images/Blocks/ud_block.png")
 flag_pole = pygame.image.load("Resources/Images/Blocks/flag_pole.png")
 flag = pygame.image.load("Resources/Images/Blocks/flag.png")
+platform = pygame.image.load("Resources/Images/Blocks/platform.png")
 
 
 class Block(Sprite):
