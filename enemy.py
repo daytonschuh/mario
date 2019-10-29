@@ -6,7 +6,14 @@ from itertools import combinations
 goomba_walk_1 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_1.png')
 goomba_walk_2 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_2.png')
 goomba_death = pygame.image.load('Resources/Images/Enemies/Goomba/death.png')
-
+koopa_walk_left_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_left_1.png')
+koopa_walk_left_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_left_2.png')
+koopa_wl_cycle = [koopa_walk_left_1, koopa_walk_left_2]
+koopa_walk_right_1 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_right_1.png')
+koopa_walk_right_2 = pygame.image.load('Resources/Images/Enemies/Green_Koopa/walk_right_2.png')
+koopa_wr_cycle = [koopa_walk_right_1, koopa_walk_right_2]
+koopa_hiding = pygame.image.load('Resources/Images/Enemies/Green_Koopa/transition.png')
+koopa_shell = pygame.image.load('Resources/Images/Enemies/Green_Koopa/death.png')
 
 class Enemy(Sprite):
     """ Base class for enemies. """
@@ -88,6 +95,7 @@ class Bill_Blaster(Enemy):
             shoot"""
     pass
 
+
 class Bowser(Enemy):
     """def __init__(self, screen, settings, camera, x, y)
         super().__init__(screen, settings, camera, x, y)
@@ -95,13 +103,14 @@ class Bowser(Enemy):
         self.image = bowser_walk
         self.frames = bowser_walk[self.face]
         self.asset_id = 31 or 32
-        
+
     def behavior(self):
         # choose some slightly random interval to shoot at mario
         # random.randint[] use value as a countdown
-        # walk / jump towards mario 
+        # walk / jump towards mario
         # kill when mario picks up axe and bridge collapse"""
     pass
+
 
 class Bullet_Bill(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
@@ -202,7 +211,6 @@ class Goomba(Enemy):
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
                     self.delta_y = False
 
-
             # animate death
             if self.state == 1:
                 # death animation
@@ -277,34 +285,75 @@ class Koopa_Paratroopa(Enemy):
 
 
 class Koopa_Troopa(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-            super().__init__(screen, settings, camera, x, y)
-            self.active = False
-            self.image = goomba_walk_1
-            self.frames = [goomba_walk_1, goomba_walk_2]
-            self.asset_id = 30
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image_a = koopa_walk_left_1
+        self.frames = [koopa_walk_left_1, koopa_walk_left_2]
+        self.rect = self.image.get_rect()
+        self.rect.left = x * settings.block_size + self.camera.x_pos
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.x = self.rect.left
 
-    # walks back and forth
-    def behavior(self):
-        if 0 == self.state:
-            self.x -= self.velocity
-            if koopa_troopa collides with wall:
-                self.velocity *= -1
+        bottom = self.rect.bottom
+        left = self.rect.left
 
-            if mario.rect.bottom collides with koopa_troopa.rect.top:
-                self.state = 1
-                self.image = koopa_troopa_shell
-                self.velocity = 0
+        size_a = self.image.get_size()
 
-        if 1 == self.state:
-            if mario.rect collides with self.rect.right:
-                self.velocity = -12
-            else if mario.rect colldes with self.rect.left:
-                self.velocity = 12
-            if koopa troopa shell hits wall:
-                self.velocity *= -1"""
+        self.image = koopa_walk_left_1
+        size_b = self.image.get_size()
 
-    pass
+        c_x = size_b[0] - size_a[0]
+        c_y = size_b[1] - size_a[1]
+
+        self.rect.inflate_ip(c_x, c_y)
+
+        self.rect.bottom = bottom
+        self.rect.left = left
+
+    def hit(self):
+        self.image = koopa_shell
+        self.state = 1
+        self.wait = 1000
+        self.asset_id = self.settings.no_collision_id
+        print("Enemy Down")
+
+    def behavior(self, enemies, floor, blocks, mario):
+        if self.active:
+            if self.state == 0:
+                # animate walking
+                apply_gravity(self.settings, self)
+                if self.buffer % 8 == 0:
+                    self.image = self.frames[self.buffer // 8]
+                self.buffer += 1
+                if self.buffer >= 16:
+                    self.buffer = 0
+
+                # check collisions
+                self.rect.left += self.delta_x
+                self.x += self.delta_x
+                direction_x = get_direction(self.delta_x)
+
+                reverse = False
+                if collide_check_x(floor, self, direction_x):
+                    reverse = True
+                if collide_group_x(blocks, self, direction_x):
+                    reverse = True
+                if reverse:
+                    self.delta_x *= -1
+
+                self.rect.bottom += self.delta_y
+                direction_y = get_direction(self.delta_y)
+                if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
+                    self.delta_y = False
+
+            # animate death
+            if self.state == 1:
+                # death animation
+                self.wait -= 1
+                if self.wait == 0:
+                    self.asset_id = self.settings.goomba_id
+                    self.state = 0
 
 
 class Lava_Bubble(Enemy):
