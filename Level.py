@@ -50,6 +50,22 @@ class Level:
     def place_enemy(self, enemy, x, y):
         if enemy is 'goomba':
             new_enemy = Goomba(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'koopa':
+            new_enemy = Koopa_Troopa(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'piranha_plant':
+            new_enemy = Piranha_Plant(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'koopa_paratroopa':
+            new_enemy = Koopa_Paratroopa(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'fire_bar':
+            new_enemy = Fire_Bar(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'bowser':
+            new_enemy = Bowser(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'blooper':
+            new_enemy = Blooper(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'cheepcheep':
+            new_enemy = Cheep_Cheep(self.screen, self.settings, self.camera, x, y)
+        elif enemy is 'lava_bubble':
+            new_enemy = Lava_Bubble(self.screen, self.settings, self.camera, x, y)
         else:
             new_enemy = Enemy(self.screen, self.settings, self.camera, x, y)
         self.enemies.add(new_enemy)
