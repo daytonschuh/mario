@@ -35,9 +35,14 @@ class Level:
         if item == "Coin":
             new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         elif item == "Power-Up":
-            new_item = Mushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+            if self.mario.stage == 0:
+                new_item = Mushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+            else:
+                new_item = FireFlower(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         elif item == "1-Up":
             new_item = GreenMushroom(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
+        elif item == "Star":
+            new_item = Star(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         else:
             new_item = Coin(self.screen, self.settings, self.camera, x, y, block_spawn, true_x)
         self.items.add(new_item)

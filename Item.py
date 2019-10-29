@@ -11,7 +11,12 @@ coin5 = pygame.image.load('Resources/Images/Items/coin5.png')
 coin = [coin1, coin2, coin3, coin4, coin5]
 mushroom = pygame.image.load('Resources/Images/Items/mushroom.png')
 green_mushroom = pygame.image.load('Resources/Images/Items/green_mushroom.png')
-
+star = pygame.image.load('Resources/Images/Items/star.png')
+flower_a = pygame.image.load('Resources/Images/Items/flower_a.png')
+flower_b = pygame.image.load('Resources/Images/Items/flower_b.png')
+flower_c = pygame.image.load('Resources/Images/Items/flower_c.png')
+flower_d = pygame.image.load('Resources/Images/Items/flower_d.png')
+flower = [flower_a, flower_b, flower_c, flower_d]
 
 class Mushroom(Sprite):
     def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
@@ -21,6 +26,8 @@ class Mushroom(Sprite):
         self.camera = camera
         self.image = mushroom
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+
         if true_x is None:
             self.x = x * settings.block_size + self.camera.x_pos
         else:
@@ -68,13 +75,65 @@ class Mushroom(Sprite):
             self.rect.bottom += self.delta_y
             direction_y = get_direction(self.delta_y)
             if collide_group_y(blocks, self, direction_y):
-                direction_y = 0
                 self.delta_y = 0
+                if direction_y > 0:
+                    self.land()
+                direction_y = 0
             if collide_check_y(floor, self, direction_y):
                 self.delta_y = 0
+                if direction_y > 0:
+                    self.land()
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
+
+
+class FireFlower(Mushroom):
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__(screen, settings, camera, x, y, block_spawn, true_x)
+        self.delta_x = 0
+        self.image = flower_a
+        self.frame = 0
+        if block_spawn:
+            self.asset_id = self.settings.no_collision_id
+        else:
+            self.asset_id = self.settings.flower_id
+
+    def update(self, floor, blocks):
+        super().update(floor, blocks)
+        if self.asset_id == self.settings.mushroom_id:
+            self.asset_id = self.settings.flower_id
+
+        if self.frame % 4 == 0:
+            self.image = flower[self.frame//4]
+
+        self.frame += 1
+        if self.frame >= 16:
+            self.frame = 0
+
+
+class Star(Mushroom):
+    def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
+        super().__init__(screen, settings, camera, x, y, block_spawn, true_x)
+        self.image = star
+        self.score = 0
+        self.delta_x = 2
+        if block_spawn:
+            self.asset_id = self.settings.no_collision_id
+        else:
+            self.asset_id = self.settings.star_id
+
+    def land(self):
+        super().land()
+        self.bounce()
+
+    def bounce(self):
+        add_velocity_up(15, self)
+
+    def update(self, floor, blocks):
+        super().update(floor, blocks)
+        if self.asset_id == self.settings.mushroom_id:
+            self.asset_id = self.settings.green_mushroom_id
 
 
 class GreenMushroom(Mushroom):
@@ -85,12 +144,14 @@ class GreenMushroom(Mushroom):
         if block_spawn:
             self.asset_id = self.settings.no_collision_id
         else:
-            self.asset_id = self.settings.green_mushroom_idmushroom_id
+            self.asset_id = self.settings.green_mushroom_id
 
     def update(self, floor, blocks):
         super().update(floor, blocks)
         if self.asset_id == self.settings.mushroom_id:
             self.asset_id = self.settings.green_mushroom_id
+
+
 class Coin(Sprite):
     def __init__(self, screen, settings, camera, x, y, block_spawn=False, true_x=None):
         super().__init__()
@@ -133,7 +194,6 @@ class Coin(Sprite):
             apply_gravity(self.settings, self)
             if self.delta_y >= self.settings.gravity_max/2:
                 self.kill()
-
 
     def spawn(self):
         pass

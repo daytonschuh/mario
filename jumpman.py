@@ -118,6 +118,14 @@ class Jumpman(Sprite):
                 pygame.time.wait(50)
             self.update_hitbox(next_stage)
 
+        if next_stage == 2:
+            for i in range(9):
+                self.image = fire_transform[self.face][i % 2]
+                level.draw_screen()
+                pygame.display.flip()
+                pygame.time.wait(50)
+            self.update_hitbox(next_stage)
+
     def power_up(self, items, level):
         for item in items:
             if collide_rect(item, self):
@@ -129,7 +137,7 @@ class Jumpman(Sprite):
                 elif item.asset_id is self.settings.green_mushroom_id:
                     pass
                 elif item.asset_id is self.settings.flower_id:
-                    pass
+                    self.transform(2, level)
                 elif item.asset_id is self.settings.coin_id:
                     pass
                 if item.asset_id is not self.settings.no_collision_id:
