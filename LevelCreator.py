@@ -65,9 +65,19 @@ def world_1_2(screen, settings):
     new_level.place_block('q', 12, 4)
     new_level.place_block('q', 13, 4)
     new_level.place_block('q', 14, 4)
-    new_level.place_block('ub', 29, 5)
-    new_level.place_block('ub', 39, 4)
-    #new_level.mass_place_blocks('ub', 10, 5, 5)
+    new_level.place_block('ub', 29, 5, "10-Coin")
+    new_level.mass_place_blocks('ub', 39, 4, 3, 1)
+    new_level.mass_place_blocks('ub', 39, 5, 1, 2)
+    new_level.mass_place_blocks('ub', 41, 5, 1, 2)
+    new_level.mass_place_blocks('ub', 42, 6, 2, 1)
+    new_level.mass_place_blocks('ub', 44, 4, 1, 3)
+    new_level.mass_place_blocks('ub', 45, 4, 2, 1)
+    new_level.place_block('ub', 46, 5)
+    new_level.place_block('ub', 46, 6, "Star")
+    new_level.mass_place_blocks('ub', 52, 4, 1, 5)
+    new_level.mass_place_blocks('ub', 53, 4, 1, 5)
+    new_level.mass_place_blocks('ub', 54, 2, 1, 3)
+    new_level.mass_place_blocks('ub', 55, 2, 1, 3)
     return new_level
 
 def world_1_2_part2(screen, settings):
