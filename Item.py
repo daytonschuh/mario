@@ -146,7 +146,7 @@ class Star(Mushroom):
     def update(self, floor, blocks):
         super().update(floor, blocks)
         if self.asset_id == self.settings.mushroom_id:
-            self.asset_id = self.settings.green_mushroom_id
+            self.asset_id = self.settings.star_id
 
     def eat_star(self):
         self.kill()
