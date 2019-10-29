@@ -82,12 +82,26 @@ class Bill_Blaster(Enemy):
         self.frames = [goomba_walk_1, goomba_walk_2]
         self.asset_id = 0 # treat like a block
 
-    def behavior(self):def behavior(self):
+    def behavior(self):
         # shoots when mario crosses in the path
         if mario.rect.right == self.y:
-            pew pew nigga"""
+            shoot"""
     pass
 
+class Bowser(Enemy):
+    """def __init__(self, screen, settings, camera, x, y)
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = bowser_walk
+        self.frames = bowser_walk[self.face]
+        self.asset_id = 31 or 32
+        
+    def behavior(self):
+        # choose some slightly random interval to shoot at mario
+        # random.randint[] use value as a countdown
+        # walk / jump towards mario 
+        # kill when mario picks up axe and bridge collapse"""
+    pass
 
 class Bullet_Bill(Enemy):
     """def __init__(self, screen, settings, camera, x, y):

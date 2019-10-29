@@ -59,7 +59,11 @@ def world_1_1(screen, settings):
 def world_1_2(screen, settings):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', (500, 600), (120,120), 500)
-
+    new_level.place_block('q', 10, 4)
+    new_level.place_block('q', 11, 4)
+    new_level.place_block('q', 12, 4)
+    new_level.place_block('q', 13, 4)
+    new_level.place_block('q', 14, 4)
     return new_level
 
 def world_1_2_part2(screen, settings):

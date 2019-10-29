@@ -5,7 +5,7 @@ e_block = pygame.image.load("Resources/Images/Blocks/e_block.png")
 q_block = pygame.image.load("Resources/Images/Blocks/q_block.png")
 i_block = pygame.image.load("Resources/Images/Blocks/i_block.png")
 d_block = pygame.image.load("Resources/Images/Blocks/d_block.png")
-ub_block = b_block
+ub_block = pygame.image.load("Resources/Images/Blocks/u_block.png")
 
 class Block(Sprite):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
