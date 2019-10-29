@@ -55,6 +55,11 @@ fire_transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/fire_
 fire_transform_b_l = pygame.image.load('Resources/Images/Mario_transitions/fire_mario_2_l.png')
 fire_transform = [[fire_transform_a_l, fire_transform_b_l], [fire_transform_a_r, fire_transform_b_r]]
 death = pygame.image.load('Resources/Images/baby_mario/death.png')
+b_crouch_l = pygame.image.load('Resources/Images/Papa_mario/crouch_left.png')
+b_crouch_r = pygame.image.load('Resources/Images/Papa_mario/crouch_right.png')
+f_crouch_l = pygame.image.load('Resources/Images/Fire_mario/crouch_left.png')
+f_crouch_r = pygame.image.load('Resources/Images/Fire_mario/crouch_right.png')
+crouch = [[face_left, face_right], [b_crouch_l, b_crouch_r], [f_crouch_l, f_crouch_r]]
 
 
 class Jumpman(Sprite):
@@ -69,10 +74,11 @@ class Jumpman(Sprite):
         self.image = face[self.stage][1]
         self.rect = self.image.get_rect()
         self.mask = None
-        self.update_mask()
+        self.update_mask(face_right)
         self.set_pos(start_pos)
         self.swim = swim
         self.asset_id = 99
+        self.crouching = False
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -87,63 +93,51 @@ class Jumpman(Sprite):
         self.invul_timer = 100
         self.death_timer = 240
 
-    def update_mask(self):
-        self.mask = pygame.mask.from_surface(self.image)
+    def update_mask(self, image):
+        self.mask = pygame.mask.from_surface(image)
 
-    def update_hitbox(self, next_stage):
-        if next_stage > 0:
+    def update_hitbox(self, hitbox_size):
+        image = self.image
+
+        if hitbox_size == 0 and self.state is not 0:
             bottom = self.rect.bottom
             left = self.rect.left
-
             image_a = face[self.stage][1]
             size_a = image_a.get_size()
-
-            self.stage = next_stage
-
-            self.image = face[1][1]
-            size_b = self.image.get_size()
-
+            image_b = face_right
+            size_b = image_b.get_size()
             c_x = size_b[0] - size_a[0]
             c_y = size_b[1] - size_a[1]
-
             self.rect.inflate_ip(c_x, c_y)
-            self.update_mask()
+            self.update_mask(face_right)
 
-            self.rect.bottom = bottom
-            self.rect.left = left
-
-        if next_stage == 0:
+        elif hitbox_size == 1 and self.state == 0:
             bottom = self.rect.bottom
             left = self.rect.left
-
-            image_a = face[1][1]
+            image_a = face[self.stage][1]
             size_a = image_a.get_size()
-
-            self.stage = next_stage
-
-            self.image = face[0][1]
-            size_b = self.image.get_size()
-
+            image_b = big_face_right
+            size_b = image_b.get_size()
             c_x = size_b[0] - size_a[0]
             c_y = size_b[1] - size_a[1]
-
             self.rect.inflate_ip(c_x, c_y)
-            self.update_mask()
-
-            self.rect.bottom = bottom
+            self.update_mask(big_face_right)
             self.rect.left = left
+            self.rect.bottom = bottom
 
     def crouch(self):
-        pass
+        self.update_hitbox(0)
+        self.image = crouch[self.stage][self.face]
 
     def transform(self, next_stage, level):
+        self.update_hitbox(next_stage)
+
         if next_stage == 1:
             for i in range(9):
                 self.image = transform[self.face][i % 2]
                 level.draw_screen()
                 pygame.display.flip()
                 pygame.time.wait(50)
-            self.update_hitbox(next_stage)
 
         if next_stage == 2:
             for i in range(9):
@@ -151,7 +145,6 @@ class Jumpman(Sprite):
                 level.draw_screen()
                 pygame.display.flip()
                 pygame.time.wait(50)
-            self.update_hitbox(next_stage)
 
     def power_up(self, items, level):
         for item in items:
@@ -161,10 +154,12 @@ class Jumpman(Sprite):
                 elif item.asset_id is self.settings.mushroom_id and self.stage is 0:
                     if self.stage == 0:
                         self.transform(1, level)
+                        self.stage = 1
                 elif item.asset_id is self.settings.green_mushroom_id:
                     pass
                 elif item.asset_id is self.settings.flower_id:
                     self.transform(2, level)
+                    self.stage = 2
                 elif item.asset_id is self.settings.coin_id:
                     pass
                 if item.asset_id is not self.settings.no_collision_id:
@@ -293,6 +288,9 @@ class Jumpman(Sprite):
 
             self.update_rel_pos()
 
+            if self.crouching:
+                self.crouch()
+
             if self.invulnerable:
                 if self.invul_timer % 4 == 0:
                     self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
@@ -300,6 +298,9 @@ class Jumpman(Sprite):
                 if self.invul_timer == 0:
                     self.invulnerable = False
                 self.invul_timer -= 1
+
+            self.crouching = False
+
         else:
             self.image = death
             if self.death_timer == 180:

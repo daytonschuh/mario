@@ -102,7 +102,7 @@ class Level:
         self.scores.update_text()
         enemy_to_enemy_collision(self.enemies)
 
-    def update_mario(self, left, right, space, shift, fire):
+    def update_mario(self, left, right, space, shift, down, fire):
         if self.mario.stage > -1:
             if left:
                 self.mario.move_left(shift)
@@ -110,6 +110,8 @@ class Level:
                 self.mario.move_right(shift)
             if space:
                 self.mario.jump()
+            if down:
+                self.mario.crouching = True
             if fire:
                 self.mario.fire()
 

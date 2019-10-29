@@ -106,6 +106,7 @@ class InvisibleBlock(QuestionBlock):
             self.image = q_block
             self.asset_id = self.settings.block_id
 
+
 class UndergroundBrickBlock(BrickBlock):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
         super().__init__(screen, settings, camera, x, y, level, item)
