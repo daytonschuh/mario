@@ -8,10 +8,11 @@ from Scoring import *
 from Block import *
 from enemy import *
 from Item import *
+from LevelCreator import *
 
 
 class Level:
-    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time):
+    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time, world):
         self.screen = screen
         self.settings = settings
         self.camera = Camera(self.settings, pygame.image.load(bg_img))
@@ -22,14 +23,21 @@ class Level:
         self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1])
         self.time = time
         self.score = 0
-        self.world = "1-1"
+        self.world = world
         self.coins = 0
         self.loss = False
 
         self.enemies = Group()
         self.blocks = Group()
         self.items = Group()
+        self.warps = Group()
         self.scores = Scoring(self.screen, self.score, self.world, self.coins)
+
+        self.screen_fill = False
+
+    def place_warp(self, level_name, direction, x, y):
+        new_warp = Warp(self.screen, self.settings, self.camera, x, y, direction, level_name)
+        self.warps.add(new_warp)
 
     def place_item(self, item, x, y, block_spawn=False, true_x=None):
         if item == "Coin":
@@ -105,6 +113,7 @@ class Level:
             self.scores.update_text()
             enemy_to_enemy_collision(self.enemies)
             self.flag.update()
+            self.warps.update()
 
         else:
             self.mario.update(self.floor, self.blocks, self.items, self.enemies, self.flag, self)
@@ -114,7 +123,9 @@ class Level:
             self.flag.update()
 
     def update_mario(self, left, right, space, shift, down, fire):
-        if self.mario.stage > -1 and self.flag.asset_id is not self.settings.auto_id:
+        for warp in self.warps:
+            warp.check(self.mario, down, left, right)
+        if self.mario.stage > -1 and self.flag.asset_id is not self.settings.auto_id and self.mario.my_warp is None:
             if down:
                 if self.mario.stage > 0:
                     self.mario.crouching = True
@@ -129,10 +140,18 @@ class Level:
 
     def draw_screen(self):
         self.background.draw()
-        self.floor.draw()
         self.mario.draw()
         self.enemies.draw(self.screen)
+        self.floor.draw()
         self.scores.draw_text()
         self.items.draw(self.screen)
         self.blocks.draw(self.screen)
         self.flag.draw()
+        self.warps.draw(self.screen)
+
+        if self.mario.my_warp is not None:
+            if self.mario.my_warp.do_load is True:
+                self.world = self.mario.my_warp.level_name
+                self.screen.fill((0, 0, 0))
+                pygame.display.flip()
+                time.wait(100)

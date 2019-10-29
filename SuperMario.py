@@ -24,6 +24,7 @@ class SuperMario:
         # SET GAME HEADER
         #self.scores = Scoring(self)
         # SET LEVEL
+        self.level_name = "1-1"
         self.level = world_1_1(self.screen, self.settings)
 
         # SET EVENTS
@@ -31,6 +32,16 @@ class SuperMario:
 
         # SET SOUNDS
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
+
+    def check_level(self):
+        print(self.level_name)
+
+        if self.level_name == self.level.world:
+            return
+        else:
+            if self.level.world == "1-2_A":
+                self.level_name = "1-2_A"
+                self.level = world_1_2(self.screen, self.settings)
 
     def check_events(self):
         for event in pygame.event.get():
@@ -128,6 +139,7 @@ class SuperMario:
             if self.game_active is True:
                 self.do_event()
                 self.draw_screen()
+                self.check_level()
 
             pygame.display.flip()
 

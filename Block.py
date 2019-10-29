@@ -182,3 +182,38 @@ class FlagPole(Sprite):
     def draw(self):
         self.screen.blit(self.image, self.rect)
         self.screen.blit(self.flag_image, self.flag_rect)
+
+
+class Warp(Sprite):
+    def __init__(self, screen, settings, camera, x, y, direction, new_level_name):
+        super().__init__()
+        self.screen = screen
+        self.settings = settings
+        self.camera = camera
+        self.image = d_block
+        self.rect = self.image.get_rect()
+        self.rect.left = x * settings.block_size + self.camera.x_pos
+        self.x = self.rect.left
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.level_name = new_level_name
+        self.do_load = False
+        self.direction = direction
+        if direction == "left":
+            self.rect.right += 1
+        elif direction == "right":
+            self.rect.left -= 1
+        else:
+            self.direction = "down"
+            self.rect.top -= 1
+
+    def load_level(self):
+        self.do_load = True
+        print("Level Changed")
+
+    def update(self):
+        self.rect.left = self.x - self.camera.x_pos
+
+    def check(self, mario, down, left, right):
+        if collide_rect(mario, self) and down:
+            if (down and self.direction == "down") or (right and self.direction == "right") or (left and self.direction == "left"):
+                mario.my_warp = self

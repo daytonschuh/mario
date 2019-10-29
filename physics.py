@@ -180,18 +180,24 @@ def enemy_to_enemy_collision(enemies):
             one.delta_x *= -1
             two.delta_x *= -1
 
-
 '''
-def warp(gate, entity, screen):
-    while entity.rect.center_x is not gate.rect.center_x
-        if entity.rect.center_x < gate.rect.center_x:
-            entity.rect.center_x += 1
-        elif entity.rect.center_x > gate.rect.center_x:
-            entity.rect.center_x -= 1
-        entity.draw()
-        pygame.time.sleep(1/60)
+def warp(gate, entity, level):
+    entity.get_base_image()
+    while entity.rect.centerx != gate.rect.centerx:
+        if abs(entity.rect.centerx - gate.rect.centerx) < 1:
+            entity.rect.centerx = gate.rect.centerx
+            entity.x = gate.rect.centerx
+        elif entity.rect.centerx < gate.rect.centerx:
+            entity.rect.centerx += 1
+            entity.x += 1
+        elif entity.rect.centerx > gate.rect.centerx:
+            entity.rect.centerx -= 1
+            entity.x -= 1
+        level.draw_screen()
+        pygame.time.wait(10)
 
-    while entity.rect.top is not gate.rect.top:
-        entity.rect.y -= 1
-        pygame.time.sleep(1/60)
+    while entity.rect.top < gate.rect.bottom:
+        entity.rect.y += 1
+        level.draw_screen()
+        pygame.time.wait(10)
 '''

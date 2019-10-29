@@ -96,6 +96,7 @@ class Jumpman(Sprite):
         self.invulnerable = False
         self.invul_timer = 100
         self.death_timer = 240
+        self.my_warp = None
 
     def update_mask(self, image):
         self.mask = pygame.mask.from_surface(image)
@@ -161,7 +162,9 @@ class Jumpman(Sprite):
                     item.kill()
 
     def set_pos(self, start_pos):
-        self.rect.left, self.rect.bottom = start_pos
+        self.rect.left = start_pos[0] * self.settings.block_size
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + start_pos[1]) * self.settings.block_size)
+
 
     def save_stage(self):
         pass
@@ -250,8 +253,47 @@ class Jumpman(Sprite):
         self.rect.left = self.x - self.camera.x_pos + (self.settings.WIDTH / 2)
         self.update_hitbox(self.stage)
 
+    def warp(self, level):
+        if self.my_warp.direction == "down":
+            if self.rect.centerx != self.my_warp.rect.centerx:
+                if abs(self.my_warp.rect.centerx - self.rect.centerx) < 1:
+                    self.rect.centerx = self.my_warp.rect.centerx
+                    self.x.centerx = self.my_warp.rect.centerx
+                elif self.my_warp.rect.centerx > self.rect.centerx:
+                    self.rect.centerx += 1.5
+                    self.x += 1.5
+                else:
+                    self.rect.centerx -= 1
+                    self.x += 1
+
+            elif self.rect.top < self.my_warp.rect.centery:
+                self.rect.top += 1
+
+            else:
+                self.my_warp.load_level()
+
+        else:
+            if self.rect.left < self.my_warp.rect.centerx and self.my_warp.direction == "right":
+                self.rect.left += 1.5
+                self.x += 1.5
+
+            elif self.rect.right > self.my_warp.rect.centerx and self.my_warp.direction == "left":
+                self.rect.left -= 1.5
+                self.x -= 1.5
+            else:
+                self.my_warp.load_level()
+
+    def get_base_image(self):
+        self.image = face[self.stage][self.face]
+        self.update_hitbox(self.stage)
+
     def update(self, floor, blocks, items, enemies, flag, level):
         if flag.grabbed is False:
+            if self.my_warp is not None:
+                self.get_base_image()
+                self.warp(level)
+                return
+
             if flag.asset_id == self.settings.auto_id:
                 self.move_right(False)
             if self.stage > -1:
@@ -278,6 +320,10 @@ class Jumpman(Sprite):
                 if collide_check_x(floor, self, direction_x):
                     self.delta_x = 0
                     direction_x = 0
+                if self.rect.left < 0:
+                    c_x = self.rect.left
+                    self.rect.left = 0
+                    self.x -= c_x
 
                 self.rect.bottom += self.delta_y
                 direction_y = get_direction(self.delta_y)
@@ -324,7 +370,6 @@ class Jumpman(Sprite):
                     self.rect.bottom += self.settings.flag_fall
                 else:
                     self.rect.bottom = flag.rect.bottom
-
 
     def draw(self):
         self.screen.blit(self.image, self.rect)

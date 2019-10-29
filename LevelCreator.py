@@ -1,9 +1,13 @@
 from Level import Level
 
 
-def world_1_1(screen, settings):
+def world_1_1(screen, settings, start_pos=None):
+    if start_pos is None:
+        start_pos = [8, 1]
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-1/level_1_background.png', 'Resources/Images/Backgrounds/World_1/1-1/level_1_floor.png', (500, 600), [198, 2], 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-1/level_1_background.png', 'Resources/Images/Backgrounds/World_1/1-1/level_1_floor.png', start_pos, [198, 2], 500, "1-1")
+
+    new_level.place_warp("1-2_A", 'down', 28.5, 2)
 
     new_level.place_enemy('goomba', 22, 1)
     new_level.place_enemy('lava_bubble', 20, 1)
@@ -57,9 +61,10 @@ def world_1_1(screen, settings):
 
     return new_level
 
+
 def world_1_2(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', (500, 600), (120,120), 500, "1-2_A")
     new_level.mass_place_blocks('ub', 6, 11, 83, 1)
     new_level.place_block('ub', 89, 11, "Power-Up")
     new_level.mass_place_blocks('ub', 89, 11, 49, 1)
