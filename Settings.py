@@ -42,3 +42,8 @@ class Settings:
         self.coin_id = 24
 
         self.goomba_id = 30
+        self.koopa_troopa_id = 31
+        self.koopa_paratroopa_id = 32
+        self.koopa_shell_id = 33
+        self.piranha_plant_id = 34
+        self.lava_bubble_id = 35
