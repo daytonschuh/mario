@@ -157,16 +157,19 @@ class Jumpman(Sprite):
         for item in items:
             if collide_rect(item, self):
                 if item.asset_id is self.settings.star_id:
+                    item.eat_star()
                     self.invincible = self.settings.invincible_time
                 elif item.asset_id is self.settings.mushroom_id and self.stage is 0:
+                    item.eat_mushroom()
                     if self.stage == 0:
                         self.transform(1, level)
                 elif item.asset_id is self.settings.green_mushroom_id:
-                    pass
+                    item.eat_green_mushroom()
                 elif item.asset_id is self.settings.flower_id:
                     self.transform(2, level)
+                    item.eat_flower()
                 elif item.asset_id is self.settings.coin_id:
-                    pass
+                    item.eat_coin()
                 if item.asset_id is not self.settings.no_collision_id:
                     item.kill()
 
