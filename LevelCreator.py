@@ -119,7 +119,13 @@ def world_1_2(screen, settings):
     new_level.mass_place_blocks('ub', 84, 5, 6, 1)
     new_level.mass_place_blocks('ub', 84, 6, 6, 1)
     new_level.mass_place_blocks('ub', 145, 5, 5, 1)
+    new_level.place_block('plt',140, 0)
+    new_level.place_block('plt',140, 5)
+    new_level.place_block('plt',140, 10)
     new_level.place_block('ub', 150, 5, "Power-Up")
+    new_level.place_block('plt', 155, 0)
+    new_level.place_block('plt', 155, 5)
+    new_level.place_block('plt', 155, 10)
     new_level.mass_place_blocks('ub', 160, 11, 10, 1)
 
     return new_level
