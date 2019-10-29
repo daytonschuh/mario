@@ -159,6 +159,7 @@ class Jumpman(Sprite):
                 if item.asset_id is self.settings.star_id:
                     self.invincible = self.settings.invincible_time
                 elif item.asset_id is self.settings.mushroom_id and self.stage is 0:
+                    item.eat_mushroom()
                     if self.stage == 0:
                         self.transform(1, level)
                 elif item.asset_id is self.settings.green_mushroom_id:
