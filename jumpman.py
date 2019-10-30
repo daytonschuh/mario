@@ -71,7 +71,7 @@ fire = [fire_left, fire_right]
 
 
 class Jumpman(Sprite):
-    def __init__(self, screen, settings, camera, stage, style, start_pos, swim=False):
+    def __init__(self, screen, settings, camera, stage, style, start_pos, swim=True):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -121,7 +121,7 @@ class Jumpman(Sprite):
         return
 
     def crouch(self):
-        if self.stage > 0:
+        if self.stage > 0 and not self.swim:
             self.update_hitbox(0)
             self.image = crouch[self.stage-1][self.face]
         self.crouching = False
@@ -170,7 +170,6 @@ class Jumpman(Sprite):
         self.rect.left = start_pos[0] * self.settings.block_size
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + start_pos[1]) * self.settings.block_size)
 
-
     def save_stage(self):
         pass
 
@@ -214,7 +213,7 @@ class Jumpman(Sprite):
                 self.delta_x -= self.settings.decceleration_x
 
     def jump(self):
-        if not self.airborne:
+        if not self.airborne or self.swim:
             self.airborne = True
             self.buffer_a = 0
             self.buffer_b = 0
