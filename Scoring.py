@@ -40,6 +40,10 @@ class Scoring:
         if self.timer == 0:
             self.timer.out_of_time = True
 
+    def set_stats(self, score, time):
+        self.scores = score
+        self.timer = time
+
     def run_clock(self):
         self.clock.tick()
         if self.clock.check():

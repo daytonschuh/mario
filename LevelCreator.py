@@ -231,7 +231,7 @@ def world_1_3(screen, settings, start_pos=None):
         start_pos = [3, 1]
 
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', start_pos, [152, 2], 500, "1-3", settings.W_1_3, settings.W_1_4, settings.W_1_3)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', [6,12], (120,120), 500, "1-3")
     new_level.mass_place_blocks('invis_plt', 18, 1, 4, 1)
     new_level.mass_place_blocks('invis_plt', 24, 4, 8, 1)
     new_level.mass_place_blocks('invis_plt', 26, 8, 5, 1)
@@ -277,8 +277,6 @@ def world_1_3(screen, settings, start_pos=None):
     new_level.place_item('Coin', 121, 8)
     new_level.mass_place_blocks('invis_plt', 122, 4, 4, 1)
     new_level.place_block('horiz_plt', 127, 7,)
-
-
 
     return new_level
 

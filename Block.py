@@ -142,9 +142,9 @@ class Platform(Block):
     def update(self):
         super().update()
         if self.active:
-                self.rect.bottom -= 1
-                if self.rect.bottom < 0:
-                    self.rect.bottom += self.settings.HEIGHT
+            self.rect.bottom -= 1
+            if self.rect.bottom < 0:
+                self.rect.bottom += self.settings.HEIGHT
 
 
 class horizontal_Platform(Block):
