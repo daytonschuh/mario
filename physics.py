@@ -103,16 +103,19 @@ def collide_group_y(group, entity, direction):
 
 
 def check_event_collision_x(solid, entity, direction, asset_id):
-    if asset_id is 0:
+    if asset_id == 0:
         return False
 
-    if asset_id is 1:
+    if asset_id == 1:
         return True
 
-    if asset_id is 10:
+    if asset_id == 2 or asset_id == 36 or asset_id == 37:
         return True
 
-    if asset_id is 30 and entity.asset_id is 99:
+    if asset_id == 10:
+        return True
+
+    if asset_id == 30 and entity.asset_id == 99:
         if collide_rect(entity, solid):
             entity.take_damage()
             return True
@@ -124,42 +127,50 @@ def check_event_collision_y(solid, entity, direction, asset_id):
     if asset_id < 0:
         return False
 
-    if asset_id is 0:
+    if asset_id == 0:
         test_rect = entity.rect.copy()
         test_rect.y += direction
         if collide_rect(entity, solid) or pygame.Rect.colliderect(test_rect, solid.rect):
             if entity.rect.top - entity.delta_y >= solid.rect.bottom:
                 if not solid.active:
                     entity.rect.top = solid.y_pos
-                    if entity.asset_id is 99:
+                    if entity.asset_id == 99:
                         solid.hit(entity)
 
-    elif asset_id is 1:
+    elif asset_id == 1:
         if collide_rect(entity, solid):
             if entity.rect.top - entity.delta_y <= solid.rect.bottom:
                 return True
             else:
-                if entity.asset_id is 99:
+                if entity.asset_id == 99:
                     solid.hit(entity)
 
     # Platform collision
-    elif asset_id is 2:
+    elif asset_id == 2:
         if collide_rect(entity, solid):
             if entity.rect.bottom - entity.delta_y <= solid.rect.top:
                 entity.rect.bottom = solid.rect.top
                 entity.land()
         return True
     
-    elif asset_id is 36:
+    elif asset_id == 36:
         if collide_rect(entity, solid):
-            entity.rect.bottom = solid.rect.top - 2
-            entity.land()
+            if entity.rect.bottom - entity.delta_y - 2 <= solid.rect.top:
+                entity.rect.bottom = solid.rect.top - 2
+                entity.land()
         return True
 
-    if asset_id is 10:
+    elif asset_id == 37:
+        if collide_rect(entity, solid):
+            if entity.rect.bottom - entity.delta_y <= solid.rect.top:
+                entity.rect.bottom = solid.rect.top + 4
+                entity.land()
         return True
 
-    if asset_id is 30 and entity.asset_id is 99:
+    if asset_id == 10:
+        return True
+
+    if asset_id == 30 and entity.asset_id == 99:
         if collide_rect(entity, solid):
             if entity.rect.bottom - entity.delta_y <= solid.rect.top and direction > 0:
                 entity.bounce()

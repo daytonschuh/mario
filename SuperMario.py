@@ -26,7 +26,7 @@ class SuperMario:
         self.game_time = 0
         self.game_coin = 0
         # SET LEVEL
-        self.level = world_1_1(self.screen, self.settings )
+        self.level = world_1_2_sub_sub(self.screen, self.settings)
         self.level_id = self.level.level_id
 
         # SET EVENTS
@@ -34,7 +34,7 @@ class SuperMario:
 
         # SET SOUNDS
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
-    
+
     def check_level(self):
         if self.level_id == self.level.level_id:
             return
@@ -67,6 +67,24 @@ class SuperMario:
                 self.level = world_1_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+
+            elif self.level_id == self.settings.W_1_2_sub:
+                if old_id == self.settings.W_1_2_sub_sub:
+                    start_pos = [115.5, 3]
+                self.level = world_1_2_sub(self.screen, self.settings, start_pos)
+                self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
+
+            elif self.level_id == self.settings.W_1_2_sub_sub:
+                self.level = world_1_2_sub_sub(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
+                self.level.scores.timer = self.game_time
+            elif self.level_id == self.settings.W_1_2_exit:
+                self.level = world_1_2_exit(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
+                self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_3:
                 self.level = world_1_3(self.screen, self.settings)
@@ -119,7 +137,8 @@ class SuperMario:
                 self.level.scores.coins = self.game_coin
 
             print("Level " + self.level.world + " loaded")
-
+            
+            
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
