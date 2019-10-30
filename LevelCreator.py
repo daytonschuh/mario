@@ -200,8 +200,14 @@ def world_1_3(screen, settings):
 
 def world_1_4(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_background.png', 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_floor.png', (500, 600), (120,120), 500)
-
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_background.png', 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_floor.png', [3,2], (120,120), 500, "1-4")
+    new_level.place_block('q', 29.5, 7, "Power-Up")
+    new_level.place_block('i', 106.5, 4, "Coin")
+    new_level.place_block('i', 109.5, 4, "Coin")
+    new_level.place_block('i', 112.5, 4, "Coin")
+    new_level.place_block('i', 107.5, 8, "Coin")
+    new_level.place_block('i', 110.5, 8, "Coin")
+    new_level.place_block('i', 113.5, 8, "Coin")
     return new_level
 
 def world_2_1(screen, settings, start_pos=None):
