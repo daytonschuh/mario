@@ -159,9 +159,48 @@ def world_1_4(screen, settings):
 
     return new_level
 
-def world_2_1(screen, settings):
+def world_2_1(screen, settings, start_pos=None):
+    if start_pos is None:
+        start_pos = [8, 1]
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_background.png', 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_floor.png', (500, 600), (120,120), 500)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_background.png', 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_floor.png', start_pos, (200, 2), 500, "2-1")
+
+    new_level.place_enemy("goomba", 24, 6)
+    new_level.place_enemy("koopa", 32, 1)
+    new_level.place_enemy("koopa", 33, 1)
+    new_level.place_enemy("goomba", 42, 1)
+    new_level.place_enemy("goomba", 43.5, 1)
+    new_level.place_enemy("pirahna_plant", 46, 6)
+
+
+
+    new_level.place_block('b', 15, 4)
+    new_level.place_block('b', 16, 4, "Power-Up")
+    new_level.place_block('b', 17, 4)
+    new_level.place_block('i', 28, 4)
+    new_level.place_block('i', 28, 8, "1-Up")
+    new_level.mass_place_blocks('b', 29, 8, 3, 1)
+    new_level.place_block('q', 53, 4, "Power-Up")
+    new_level.mass_place_blocks('q', 53, 8, 5, 1)
+    new_level.mass_place_blocks('q', 54, 4, 4, 1)
+    new_level.place_block('b', 68, 4)
+    new_level.place_block('b', 69, 8, "Star")
+    new_level.mass_place_blocks('b', 70, 8, 3, 1)
+    new_level.mass_place_blocks('q', 79, 4, 4, 1)
+    new_level.mass_place_blocks('b', 81, 8, 2, 1)
+    new_level.place_block('b', 83, 8, "Coin")
+    new_level.mass_place_blocks('b', 84, 8, 2, 1)
+    new_level.mass_place_blocks('q', 85, 4, 3, 1)
+    new_level.mass_place_blocks('b', 92, 8, 4, 1)
+    new_level.place_block('b', 125, 8, "Power-Up")
+    new_level.mass_place_blocks('b', 126, 8, 3, 1)
+    new_level.place_block('b', 161, 4, "Coin")
+    new_level.mass_place_blocks('b', 164, 8, 5, 1)
+    new_level.place_block('q', 170, 4)
+    new_level.place_block('b', 172, 8, "Power-Up")
+    new_level.mass_place_blocks('b', 185, 4, 2, 1)
+    new_level.place_block('i', 186, 8, "Coin")
+
 
     return new_level
 
