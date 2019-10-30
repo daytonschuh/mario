@@ -7,7 +7,7 @@ def world_1_1(screen, settings, start_pos=None):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-1/level_1_background.png', 'Resources/Images/Backgrounds/World_1/1-1/level_1_floor.png', start_pos, [198, 2], 500, "1-1", settings.W_1_1, settings.W_1_2, settings.W_1_1)
 
-    new_level.place_warp(settings.W_1_1_sub, 'down', 28.5, 2)
+    new_level.place_warp(settings.W_1_1_sub, 'down', 57.5, 4)
 
     new_level.place_enemy('goomba', 22, 1)
     new_level.place_enemy('lava_bubble', 20, 1)
@@ -251,6 +251,8 @@ def world_2_1(screen, settings, start_pos=None):
 
     new_level.place_block('e', 189, 4)
 
+    new_level.place_warp(settings.W_2_1_sub, "down", 103.5, 4)
+
     new_level.place_enemy("goomba", 24, 6)
     new_level.place_enemy("koopa", 32, 1)
     new_level.place_enemy("koopa", 33, 1)
@@ -351,7 +353,7 @@ def world_2_2(screen, settings, start_pos=None):
         start_pos = [3, 1]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_background.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_floor.png', start_pos, [-32, 1], 500, "2-2", settings.W_2_2, None, settings.W_2_2)
-    new_level.place_warp("2-2_water", 'right', 10, 1)
+    new_level.place_warp(settings.W_2_2_sub, 'right', 10, 1)
     return new_level
 
 def world_2_2_water(screen, settings, start_pos=None):
@@ -359,7 +361,7 @@ def world_2_2_water(screen, settings, start_pos=None):
         start_pos = [3, 10]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_water_bg.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_water_floor.png', start_pos, [-32, 1], 500, "2-2",  settings.W_2_2_sub, None, settings.W_2_2, True)
-    new_level.place_warp("2-2_exit", 'right', 189.9, 5)
+    new_level.place_warp(settings.W_2_2_exit, 'right', 189.9, 5)
     return new_level
 
 def world_2_2_exit(screen, settings, start_pos=None):
