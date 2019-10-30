@@ -221,6 +221,7 @@ class Coin(Sprite):
     def eat_coin(self):
         self.kill()
         self.scores.scores += self.score
+        self.scores.add_coin()
 
     def spawn(self):
         pass
