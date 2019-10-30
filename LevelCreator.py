@@ -149,7 +149,7 @@ def world_1_2_part3(screen, settings):
 
 def world_1_3(screen, settings):
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', [99,12], (120,120), 500, "1-3")
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', [6,12], (120,120), 500, "1-3")
     new_level.mass_place_blocks('invis_plt', 18, 1, 4, 1)
     new_level.mass_place_blocks('invis_plt', 24, 4, 8, 1)
     new_level.mass_place_blocks('invis_plt', 26, 8, 5, 1)
