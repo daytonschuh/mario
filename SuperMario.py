@@ -24,7 +24,7 @@ class SuperMario:
         # SET GAME HEADER
         #self.scores = Scoring(self)
         # SET LEVEL
-        self.level = world_1_1(self.screen, self.settings)
+        self.level = world_1_3(self.screen, self.settings)
         self.level_id = self.level.level_id
 
         # SET EVENTS
@@ -52,6 +52,17 @@ class SuperMario:
 
             elif self.level_id == self.settings.W_1_2:
                 self.level = world_1_2(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_1_2_sub:
+                if old_id == self.settings.W_1_2_sub_sub:
+                    start_pos = [115.5, 3]
+                self.level = world_1_2_sub(self.screen, self.settings, start_pos)
+
+            elif self.level_id == self.settings.W_1_2_sub_sub:
+                self.level = world_1_2_sub_sub(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_1_2_exit:
+                self.level = world_1_2_exit(self.screen, self.settings)
 
             elif self.level_id == self.settings.W_1_3:
                 self.level = world_1_3(self.screen, self.settings)

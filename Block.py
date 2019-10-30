@@ -142,12 +142,10 @@ class Platform(Block):
     def update(self):
         super().update()
         if self.active:
-            if self.direction == 'horizontal':
-                self.rect.right += 1
-            else:
                 self.rect.bottom -= 1
                 if self.rect.bottom < 0:
                     self.rect.bottom += self.settings.HEIGHT
+
 
 class horizontal_Platform(Block):
     def __init__(self, screen, settings, camera, x, y, level):
@@ -212,7 +210,11 @@ class vertical_Platform(Block):
             if self.track == 175:
                 self.speed *= -1
                 self.track = 0
-                
+            if self.speed > 0:
+                self.asset_id = self.settings.down_platform_id
+            else:
+                self.asset_id = self.settings.one_way_platform_id
+
 
 class Uni_directional_platform(Block):
     def __init__(self, screen, settings, camera, x, y, level):
