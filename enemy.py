@@ -44,7 +44,12 @@ fireball_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_le
 fireball_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_left_3.png')
 fireball_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_right_1.png')
 fireball_right_2 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_right_3.png')
-
+cc_left_1 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_left_1.png')
+cc_left_2 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_left_2.png')
+cc_right_1 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_right_1.png')
+cc_right_2 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_right_2.png')
+cc_move = [[cc_left_1,cc_left_2],[cc_right_1,cc_right_2]]
+fire_bar = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar.png')
 
 class Enemy(Sprite):
     """ Base class for enemies. """
@@ -219,17 +224,48 @@ class Bowser(Enemy):
 
 
 class Cheep_Cheep(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-        super().__init__(screen, settings, camera, x, y)
+    def __init__(self, screen, settings, camera, x, y, swim=False):
+        super().__init__(screen, settings, camera, x, y, swim=False)
         self.active = False
-        self.image = goomba_walk_1
-        self.frames = [goomba_walk_1, goomba_walk_2]
+        self.image = cc_left_1
+        self.face = 0
+        self.frames = cc_move[self.face][self.buffer]
         self.asset_id = 30
+        self.adjust_hitbox(settings, x, y)
+        self.swim = swim
 
-    def behavior(self):
-    # gravity affected jumping enemy
-    # comes from off screen
-    # track x to know when to jump"""
+    def hit(self):
+        pass
+
+    def behavior(self, enemies, floor, blocks, mario):
+        if self.active:
+            if self.state == 0:
+                # animate walking
+                if not self.swim:
+                    apply_gravity(self.settings, self)
+                if self.buffer % 8 == 0:
+                    self.image = cc_move[self.face][self.buffer // 32]
+                self.buffer += 1
+                if self.buffer >= 64:
+                    self.buffer = 0
+
+                # check collisions
+                self.rect.left += self.delta_x
+                self.x += self.delta_x
+                direction_x = get_direction(self.delta_x)
+
+                self.rect.bottom += self.delta_y
+
+            # animate death
+            if self.state == 1:
+                # death animation
+                self.buffer += 1
+                if self.buffer > 16:
+                    self.kill()
+                    self.state = 0
+
+                # death sound
+                # settings.points += 100
     pass
 
 
@@ -237,7 +273,7 @@ class Fire_Bar(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.original_image = fireball_down_3
+        self.original_image = fire_bar
         self.image = self.original_image
         self.angle = 0
         self.adjust_hitbox(settings, x, y)
@@ -245,6 +281,8 @@ class Fire_Bar(Enemy):
     def rotate(self):
         """Rotate the image of the sprite around its center."""
         self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect(left=self.rect.left)
+        self.rect = self.image.get_rect(center=self.rect.center)
         self.angle += 1 % 360
 
     def hit(self):
