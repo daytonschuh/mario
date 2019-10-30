@@ -177,7 +177,7 @@ def world_1_2_sub(screen, settings, start_pos=None):
 
 def world_1_2_sub_sub(screen, settings, start_pos=None):
     if start_pos is None:
-        start_pos = [3, 10]
+        start_pos = [2, 10]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part2_floor.png', start_pos, [-32, 1], 500, "1-2", settings.W_1_2_sub_sub, None, settings.W_1_2)
 
@@ -221,7 +221,7 @@ def world_1_2_exit(screen, settings, start_pos=None):
     if start_pos is None:
         start_pos = [4.5, 1]
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part3_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part3_floor.png', start_pos, [22, 2], 500, "1-2", settings.W_1_2_exit, settings.W_1_3, settings.W_1_2)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_exit_background.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_exit_floor.png', start_pos, [22, 2], 500, "1-2", settings.W_1_2_exit, settings.W_1_3, settings.W_1_2)
     new_level.place_enemy("piranha_plant", 3.5, 3)
     return new_level
 
@@ -231,7 +231,7 @@ def world_1_3(screen, settings, start_pos=None):
         start_pos = [3, 1]
 
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', [6,12], (120,120), 500, "1-3")
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', [6,12], (120,120), 500, "1-3", settings.W_1_3, settings.W_1_4, settings.W_1_3, se)
     new_level.mass_place_blocks('invis_plt', 18, 1, 4, 1)
     new_level.mass_place_blocks('invis_plt', 24, 4, 8, 1)
     new_level.mass_place_blocks('invis_plt', 26, 8, 5, 1)
