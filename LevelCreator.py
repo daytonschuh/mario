@@ -95,9 +95,11 @@ def world_1_1_sub(screen, settings, start_pos=None):
     return new_level
 
 
-def world_1_2(screen, settings):
+def world_1_2(screen, settings, start_pos=None):
+    if start_pos is None:
+        start_pos = [8, 1]
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', [3, 12], (120,120), 500, "1-2_A")
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', [3, 12], (120,120), 500, "1-2_A", settings.W_1_2, None, settings.W_1_2)
     new_level.mass_place_blocks('ub', 6, 11, 83, 1)
     new_level.place_block('ub', 89, 11, "Power-Up")
     new_level.mass_place_blocks('ub', 89, 11, 49, 1)
