@@ -22,9 +22,11 @@ class SuperMario:
         self.exit_button = Button(self, "EXIT", self.settings.WIDTH/2 - 100, self.settings.HEIGHT/2 + 100)
 
         # SET GAME HEADER
-        #self.scores = Scoring(self)
+        self.game_score = 0
+        self.game_time = 0
+        self.game_coin = 0
         # SET LEVEL
-        self.level = world_1_1(self.screen, self.settings)
+        self.level = world_1_1(self.screen, self.settings )
         self.level_id = self.level.level_id
 
         # SET EVENTS
@@ -37,6 +39,11 @@ class SuperMario:
         if self.level_id == self.level.level_id:
             return
         else:
+            self.level.scores.set_stats(self.game_score, self.game_time)
+            print(str(self.level.scores.scores))
+            print(str(self.level.scores.timer))
+            print(str(self.game_score))
+            print(str(self.game_time))
             old_id = self.level_id
             start_pos = None
             if self.level.level_id is not None:
@@ -46,41 +53,63 @@ class SuperMario:
                 if old_id == self.settings.W_1_1_sub:
                     start_pos = [163.5, 2]
                 self.level = world_1_1(self.screen, self.settings, start_pos)
+                self.level.scores.scores = self.game_score
+                self.level.scores.timer = self.game_time
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_1_1_sub:
                 self.level = world_1_1_sub(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.timer = self.game_time
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_1_2:
                 self.level = world_1_2(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             elif self.level_id == self.settings.W_1_3:
                 self.level = world_1_3(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             elif self.level_id == self.settings.W_1_4:
                 self.level = world_1_4(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             elif self.level_id == self.settings.W_2_1:
                 if old_id == self.settings.W_2_1_sub:
                     start_pos = [115.5, 3]
                 self.level = world_2_1(self.screen, self.settings, start_pos)
+                self.level.scores.scores = self.game_score
+                self.level.scores.timer = self.game_time
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_1_sub:
                 self.level = world_2_1_sub(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.timer = self.game_time
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_2:
                 self.level = world_2_2(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             elif self.level_id == self.settings.W_2_2_sub:
                 self.level = world_2_2_water(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.timer = self.game_time
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_2_exit:
                 self.level = world_2_2_exit(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             elif self.level_id == self.settings.W_2_3:
                 self.level = world_2_3(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             elif self.level_id == self.settings.W_2_4:
                 self.level = world_2_4(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
 
             print("Level " + self.level.world + " loaded")
 
@@ -161,6 +190,10 @@ class SuperMario:
 
     def run_game(self):
         while True:
+            self.game_time = self.level.scores.timer
+            self.game_score = self.level.scores.scores
+            self.game_coin = self.level.scores.coins
+
             self.clock.tick(60)
 
             if self.level.scores.timer <= 0:
