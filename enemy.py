@@ -128,7 +128,7 @@ class Blooper(Enemy):
         self.asset_id = 30 # enemy can only be killed by fireball
         self.adjust_hitbox(settings, x, y)
         self.y = self.rect.bottom
-        self.delta_y = 500
+        self.delta_y = 1
 
     def hit(self):
         pass
