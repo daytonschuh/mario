@@ -72,12 +72,21 @@ class SuperMario:
                 if old_id == self.settings.W_1_2_sub_sub:
                     start_pos = [115.5, 3]
                 self.level = world_1_2_sub(self.screen, self.settings, start_pos)
+                self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
+                self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_2_sub_sub:
                 self.level = world_1_2_sub_sub(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
+                self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_2_exit:
                 self.level = world_1_2_exit(self.screen, self.settings)
+                self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
+                self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_3:
                 self.level = world_1_3(self.screen, self.settings)
@@ -118,6 +127,7 @@ class SuperMario:
                 self.level = world_2_2_exit(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_2_3:
                 self.level = world_2_3(self.screen, self.settings)
