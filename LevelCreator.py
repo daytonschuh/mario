@@ -222,7 +222,7 @@ def world_1_2_exit(screen, settings, start_pos=None):
         start_pos = [4.5, 1]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part3_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_part3_floor.png', start_pos, [22, 2], 500, "1-2", settings.W_1_2_exit, settings.W_1_3, settings.W_1_2)
-    new_level.place_enemy("piranha_plant", 4.5, 3)
+    new_level.place_enemy("piranha_plant", 3.5, 3)
     return new_level
 
 
@@ -277,6 +277,8 @@ def world_1_3(screen, settings, start_pos=None):
     new_level.place_item('Coin', 121, 8)
     new_level.mass_place_blocks('invis_plt', 122, 4, 4, 1)
     new_level.place_block('horiz_plt', 127, 7,)
+
+
 
     return new_level
 
@@ -419,7 +421,7 @@ def world_2_2_exit(screen, settings, start_pos=None):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_exit_background.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_exit_floor.png', start_pos, [22, 2], 500, "2-2", settings.W_2_2_exit, settings.W_2_3, settings.W_2_2)
 
-    new_level.place_enemy("piranha_plant", 4.5, 3)
+    new_level.place_enemy("piranha_plant", 3.5, 2)
     return new_level
 
 def world_2_3(screen, settings, start_pos=None):
