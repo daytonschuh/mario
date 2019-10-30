@@ -142,10 +142,86 @@ class Platform(Block):
     def update(self):
         super().update()
         if self.active:
-            self.rect.bottom -= 1
-            if self.rect.bottom < 0:
-                self.rect.bottom += self.settings.HEIGHT
+            if self.direction == 'horizontal':
+                self.rect.right += 1
+            else:
+                self.rect.bottom -= 1
+                if self.rect.bottom < 0:
+                    self.rect.bottom += self.settings.HEIGHT
 
+class horizontal_Platform(Block):
+    def __init__(self, screen, settings, camera, x, y, level):
+        super().__init__(screen, settings, camera, x, y, level)
+        self.image = platform
+        self.active = True
+        self.rect = self.image.get_rect()
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.rect.x = self.rect.right
+        self.asset_id = self.settings.one_way_platform_id
+        self.track = 0
+        self.speed = 2
+
+    def update(self):
+        super().update()
+        if self.active:
+            self.x += self.speed
+            self.track += 1
+            if self.track == 150:
+                self.speed *= -1
+                self.track = 0
+
+
+class invert_horizontal_Platform(Block):
+    def __init__(self, screen, settings, camera, x, y, level):
+        super().__init__(screen, settings, camera, x, y, level)
+        self.image = platform
+        self.active = True
+        self.rect = self.image.get_rect()
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.rect.x = self.rect.right
+        self.asset_id = self.settings.one_way_platform_id
+        self.track = 0
+        self.speed = 2
+
+    def update(self):
+        super().update()
+        if self.active:
+            self.x -= self.speed
+            self.track += 1
+            if self.track == 150:
+                self.speed *= -1
+                self.track = 0
+
+
+class vertical_Platform(Block):
+    def __init__(self, screen, settings, camera, x, y, level):
+        super().__init__(screen, settings, camera, x, y, level)
+        self.image = platform
+        self.active = True
+        self.rect = self.image.get_rect()
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.asset_id = self.settings.one_way_platform_id
+        self.track = 0
+        self.speed = 2
+
+    def update(self):
+        super().update()
+        if self.active:
+            self.rect.bottom += self.speed
+            self.track += 1
+            if self.track == 175:
+                self.speed *= -1
+                self.track = 0
+                
+
+class Uni_directional_platform(Block):
+    def __init__(self, screen, settings, camera, x, y, level):
+        super().__init__(screen, settings, camera, x, y, level)
+        self.image = i_block
+        self.active = True
+        self.rect = self.image.get_rect()
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.asset_id = self.settings.platform_id
 
 class FlagPole(Sprite):
     def __init__(self, screen, settings, camera, x, y):
