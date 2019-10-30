@@ -34,7 +34,7 @@ class SuperMario:
 
         # SET SOUNDS
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
-
+    
     def check_level(self):
         if self.level_id == self.level.level_id:
             return
@@ -66,14 +66,17 @@ class SuperMario:
             elif self.level_id == self.settings.W_1_2:
                 self.level = world_1_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_1_3:
                 self.level = world_1_3(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_1_4:
                 self.level = world_1_4(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_1:
                 if old_id == self.settings.W_2_1_sub:
@@ -92,6 +95,7 @@ class SuperMario:
             elif self.level_id == self.settings.W_2_2:
                 self.level = world_2_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_2_sub:
                 self.level = world_2_2_water(self.screen, self.settings)
@@ -102,14 +106,17 @@ class SuperMario:
             elif self.level_id == self.settings.W_2_2_exit:
                 self.level = world_2_2_exit(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_3:
                 self.level = world_2_3(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_4:
                 self.level = world_2_4(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
+                self.level.scores.coins = self.game_coin
 
             print("Level " + self.level.world + " loaded")
 
