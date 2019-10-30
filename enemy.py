@@ -225,7 +225,7 @@ class Bowser(Enemy):
 
 class Cheep_Cheep(Enemy):
     def __init__(self, screen, settings, camera, x, y, swim=False):
-        super().__init__(screen, settings, camera, x, y, swim=False)
+        super().__init__(screen, settings, camera, x, y)
         self.active = False
         self.image = cc_left_1
         self.face = 0
