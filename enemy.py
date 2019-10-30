@@ -134,6 +134,7 @@ class Blooper(Enemy):
         self.adjust_hitbox(settings, x, y)
         self.y = self.rect.bottom
         self.delta_y = 1
+        self.delta_x = -5
 
     def hit(self):
         pass
@@ -142,26 +143,28 @@ class Blooper(Enemy):
         if self.active:
             apply_gravity(self.settings, self, True)
 
-            if self.rising:
+            if self.delta_y < 0:
                 self.image = blooper_1
 
-                if self.rect.left < mario.rect.left:
+                if self.rect.left < mario.rect.left - 6:
                     self.rect.left -= self.delta_x
                     self.x -= self.delta_x
-                else:
+                elif self.rect.right > mario.rect.right + 6:
                     self.rect.left += self.delta_x
                     self.x += self.delta_x
 
-            else:
+            self.rect.bottom += self.delta_y
+            self.y += self.delta_y
+
+            if self.delta_y > 0:
                 self.image = blooper_2
 
-                if self.rect.bottom <= mario.rect.bottom-48:
-                    self.rising = False
-                    self.rect.bottom += self.delta_y
-                    self.y += self.delta_y
-                else:
-                    self.rising = True
-                    add_velocity_up(20, self)
+            if self.delta_y > 0 and self.rect.bottom >= mario.rect.top-10:
+                self.delta_y = 0
+                add_velocity_up(8, self)
+
+            if self.rect.top < 48:
+                self.rect.top = 48
 
 
 class Bowser(Enemy):
@@ -460,7 +463,7 @@ class Koopa_Troopa(Enemy):
         self.frames = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
         self.rect = self.image.get_rect()
         self.adjust_hitbox(settings, x, y)
-        self.asset_id = self.settings.koopa_troopa_id
+        self.asset_id = 30
 
     def fire_hit(self):
         self.image = pygame.transform.flip(koopa_shell, False, True)
@@ -473,7 +476,7 @@ class Koopa_Troopa(Enemy):
         self.image = koopa_shell
         self.state = 1
         self.wait = 1000
-        self.asset_id = self.settings.koopa_shell_id
+        self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
 
     def behavior(self, enemies, floor, blocks, mario):
