@@ -206,18 +206,44 @@ def world_1_4(screen, settings):
 
 def world_2_1(screen, settings, start_pos=None):
     if start_pos is None:
-        start_pos = [8, 1]
+        start_pos = [10, 1]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_background.png', 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_floor.png', start_pos, (200, 2), 500, "2-1")
+
+    new_level.place_block('e', 189, 4)
 
     new_level.place_enemy("goomba", 24, 6)
     new_level.place_enemy("koopa", 32, 1)
     new_level.place_enemy("koopa", 33, 1)
     new_level.place_enemy("goomba", 42, 1)
     new_level.place_enemy("goomba", 43.5, 1)
-    new_level.place_enemy("pirahna_plant", 46, 6)
-
-
+    new_level.place_enemy("pirahna_plant", 46.5, 5)
+    new_level.place_enemy("koopa", 55, 5)
+    new_level.place_enemy("goomba", 59, 1)
+    new_level.place_enemy("goomba", 60.5, 1)
+    new_level.place_enemy("koopa", 66, 1)
+    new_level.place_enemy("goomba", 68, 1)
+    new_level.place_enemy("goomba", 69.5, 1)
+    new_level.place_enemy("goomba", 71, 1)
+    new_level.place_enemy("pirahna_plant", 74.5, 5)
+    new_level.place_enemy("goomba", 87, 1)
+    new_level.place_enemy("goomba", 88.5, 1)
+    new_level.place_enemy("goomba", 90, 1)
+    new_level.place_enemy("goomba", 102.5, 5)
+    new_level.place_enemy("pirahna_plant", 103.5, 5)
+    new_level.place_enemy("goomba", 114.5, 3)
+    new_level.place_enemy("pirahna_plant", 115.5, 3)
+    new_level.place_enemy("goomba", 120, 1)
+    new_level.place_enemy("pirahna_plant", 122.5, 5)
+    new_level.place_enemy("pirahna_plant", 130.5, 5)
+    new_level.place_enemy("koopa", 137, 1)
+    new_level.place_enemy("koopa_paratroopa", 152, 1)
+    new_level.place_enemy("goomba", 163, 1)
+    new_level.place_enemy("goomba", 164.5, 1)
+    new_level.place_enemy("koopa_paratroopa", 170, 1)
+    new_level.place_enemy("koopa_paratroopa", 172, 1)
+    new_level.place_enemy("pirahna_plant", 176.5, 4)
+    new_level.place_enemy("koopa", 185, 1)
 
     new_level.place_block('b', 15, 4)
     new_level.place_block('b', 16, 4, "Power-Up")
@@ -246,11 +272,34 @@ def world_2_1(screen, settings, start_pos=None):
     new_level.mass_place_blocks('b', 185, 4, 2, 1)
     new_level.place_block('i', 186, 8, "Coin")
 
-
     return new_level
+
 
 def world_2_1_part2(screen, settings):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_part2_background.png', 'Resources/Images/Backgrounds/World_2/2-1/level_2_1_part2_floor.png', (500, 600), (120,120), 500)
 
+    return new_level
+
+def world_2_2(screen, settings, start_pos=None):
+    if start_pos is None:
+        start_pos = [3, 1]
+    new_level = \
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_background.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_floor.png', start_pos, [-32, 1], 500, "2-2")
+    new_level.place_warp("2-2_water", 'right', 10, 1)
+    return new_level
+
+def world_2_2_water(screen, settings, start_pos=None):
+    if start_pos is None:
+        start_pos = [170, 10]
+    new_level = \
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_water_bg.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_water_floor.png', start_pos, [-32, 1], 500, "2-2_water", True)
+    new_level.place_warp("2-2_exit", 'right', 189.9, 5)
+    return new_level
+
+def world_2_2_exit(screen, settings, start_pos=None):
+    if start_pos is None:
+        start_pos = [4.5, 1]
+    new_level = \
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_exit_background.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_exit_floor.png', start_pos, [22, 2], 500, "2-2_exit")
     return new_level

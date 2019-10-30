@@ -334,6 +334,8 @@ class Jumpman(Sprite):
                 self.my_warp.load_level()
 
         else:
+            if self.rect.bottom < self.my_warp.rect.bottom:
+                self.rect.bottom = self.my_warp.rect.bottom
             if self.rect.left < self.my_warp.rect.centerx and self.my_warp.direction == "right":
                 self.rect.left += 1.5
                 self.x += 1.5

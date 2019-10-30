@@ -24,8 +24,8 @@ class SuperMario:
         # SET GAME HEADER
         #self.scores = Scoring(self)
         # SET LEVEL
-        self.level_name = "1-1"
-        self.level = world_1_1(self.screen, self.settings)
+        self.level_name = "2-2"
+        self.level = world_2_2(self.screen, self.settings)
 
         # SET EVENTS
         self.left, self.right, self.space, self.shift, self.down, self.fire = [False] * 6
@@ -40,6 +40,16 @@ class SuperMario:
             if self.level.world == "1-2_A":
                 self.level_name = "1-2_A"
                 self.level = world_1_2(self.screen, self.settings)
+                print("Level " + self.level_name + " loaded")
+
+            elif self.level.world == "2-2_water":
+                self.level_name = "2-2_water"
+                self.level = world_2_2_water(self.screen, self.settings)
+                print("Level " + self.level_name + " loaded")
+
+            elif self.level.world == "2-2_exit":
+                self.level_name = "2-2_exit"
+                self.level = world_2_2_exit(self.screen, self.settings)
                 print("Level " + self.level_name + " loaded")
 
     def check_events(self):

@@ -275,9 +275,9 @@ class Warp(Sprite):
         self.do_load = False
         self.direction = direction
         if direction == "left":
-            self.rect.right += 1
+            self.x += 1
         elif direction == "right":
-            self.rect.left -= 1
+            self.x -= 1
         else:
             self.direction = "down"
             self.rect.top -= 1
@@ -289,6 +289,6 @@ class Warp(Sprite):
         self.rect.left = self.x - self.camera.x_pos
 
     def check(self, mario, down, left, right):
-        if collide_rect(mario, self) and down:
+        if collide_rect(mario, self):
             if (down and self.direction == "down") or (right and self.direction == "right") or (left and self.direction == "left"):
                 mario.my_warp = self
