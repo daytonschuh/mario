@@ -8,6 +8,7 @@ from Scoring import *
 from Block import *
 from enemy import *
 from Item import *
+from Fireball import *
 from LevelCreator import *
 
 
@@ -31,6 +32,7 @@ class Level:
         self.blocks = Group()
         self.items = Group()
         self.warps = Group()
+        self.fireballs = Group()
         self.scores = Scoring(self.screen, self.score, self.world, self.coins)
 
         self.screen_fill = False
@@ -114,6 +116,7 @@ class Level:
             enemy_to_enemy_collision(self.enemies)
             self.flag.update()
             self.warps.update()
+            self.fireballs.update(self.floor, self.enemies, self.blocks)
 
         else:
             self.mario.update(self.floor, self.blocks, self.items, self.enemies, self.flag, self)
@@ -121,6 +124,7 @@ class Level:
             self.background.update()
             self.floor.update()
             self.flag.update()
+            self.fireballs.update(self.floor, self.enemies, self.blocks)
 
     def update_mario(self, left, right, space, shift, down, fire):
         for warp in self.warps:
@@ -136,7 +140,7 @@ class Level:
             if space:
                 self.mario.jump()
             if fire:
-                self.mario.fire()
+                self.mario.fire(self.fireballs)
 
     def draw_screen(self):
         self.background.draw()
@@ -148,6 +152,7 @@ class Level:
         self.blocks.draw(self.screen)
         self.flag.draw()
         self.warps.draw(self.screen)
+        self.fireballs.draw(self.screen)
 
         if self.mario.my_warp is not None:
             if self.mario.my_warp.do_load is True:

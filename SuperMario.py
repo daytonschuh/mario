@@ -34,14 +34,13 @@ class SuperMario:
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
 
     def check_level(self):
-        print(self.level_name)
-
         if self.level_name == self.level.world:
             return
         else:
             if self.level.world == "1-2_A":
                 self.level_name = "1-2_A"
                 self.level = world_1_2(self.screen, self.settings)
+                print("Level " + self.level_name + " loaded")
 
     def check_events(self):
         for event in pygame.event.get():

@@ -34,6 +34,7 @@ class Settings:
         self.bounce_id = 3
         self.flag_id = 4
         self.auto_id = 5
+        self.fire_id = 6
 
         self.no_collision_id = 10
         self.item_id = 11

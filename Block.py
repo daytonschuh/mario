@@ -208,7 +208,6 @@ class Warp(Sprite):
 
     def load_level(self):
         self.do_load = True
-        print("Level Changed")
 
     def update(self):
         self.rect.left = self.x - self.camera.x_pos

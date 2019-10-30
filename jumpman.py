@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 from pygame import *
 from physics import *
+from Fireball import *
 
 face_left = pygame.image.load('Resources/Images/Baby_mario/face_left.png')
 face_right = pygame.image.load('Resources/Images/Baby_mario/face_right.png')
@@ -64,6 +65,9 @@ l_grab = pygame.image.load('Resources/Images/baby_mario/flagpole.png')
 b_grab = pygame.image.load('Resources/Images/Papa_mario/flagpole.png')
 f_grab = pygame.image.load('Resources/Images/Fire_mario/flagpole.png')
 grab = [l_grab, b_grab, f_grab]
+fire_left = pygame.image.load('Resources/Images/Fire_mario/fire_left.png')
+fire_right = pygame.image.load('Resources/Images/Fire_mario/fire_right.png')
+fire = [fire_left, fire_right]
 
 
 class Jumpman(Sprite):
@@ -72,7 +76,7 @@ class Jumpman(Sprite):
         self.screen = screen
         self.settings = settings
         self.camera = camera
-        self.stage = stage
+        self.stage = 2
         self.style = style
         self.state = 0
         self.image = face[self.stage][1]
@@ -83,6 +87,7 @@ class Jumpman(Sprite):
         self.swim = swim
         self.asset_id = 99
         self.crouching = False
+        self.fireball_delay = 0
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -221,8 +226,12 @@ class Jumpman(Sprite):
             add_velocity_up(self.settings.jump_speed[self.buffer_b // 3] + run_bonus, self)
         self.buffer_b += 1
 
-    def fire(self):
-        pass
+    def fire(self, fireballs):
+        if self.stage == 2 and len(fireballs) < 2 and self.fireball_delay == 0:
+            x = self.x + self.settings.WIDTH / 2 - self.settings.block_size / 6 + self.face * face[self.stage][1].get_size()[1] / 2
+            new_fireball = Fireball(self.screen, self.settings, self.camera, x, self.rect.centery, self.face)
+            fireballs.add(new_fireball)
+            self.fireball_delay = 20
 
     def bounce(self):
         self.buffer_b = 0
@@ -297,9 +306,14 @@ class Jumpman(Sprite):
             if flag.asset_id == self.settings.auto_id:
                 self.move_right(False)
             if self.stage > -1:
+                if self.fireball_delay > 0:
+                    self.fireball_delay -= 1
+
                 self.update_rel_pos()
                 if self.crouching:
                     self.crouch()
+                elif self.fireball_delay > 4:
+                    self.image = fire[self.face]
                 elif self.airborne and not self.crouching:
                     self.image = jump[self.stage][self.face]
                 elif self.delta_x == 0 and not self.airborne and not self.crouching:
