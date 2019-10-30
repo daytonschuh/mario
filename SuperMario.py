@@ -24,8 +24,8 @@ class SuperMario:
         # SET GAME HEADER
         #self.scores = Scoring(self)
         # SET LEVEL
-        self.level_name = "2-2"
-        self.level = world_2_2(self.screen, self.settings)
+        self.level = world_2_1_sub(self.screen, self.settings)
+        self.level_id = self.level.level_id
 
         # SET EVENTS
         self.left, self.right, self.space, self.shift, self.down, self.fire = [False] * 6
@@ -34,23 +34,54 @@ class SuperMario:
         #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
 
     def check_level(self):
-        if self.level_name == self.level.world:
+        if self.level_id == self.level.level_id:
             return
         else:
-            if self.level.world == "1-2_A":
-                self.level_name = "1-2_A"
+            old_id = self.level_id
+            start_pos = None
+            self.level_id = self.level.level_id
+
+            if self.level_id == self.settings.W_1_1:
+                if old_id == self.settings.W_1_1_sub:
+                    start_pos = [120, 10]
+                self.level = world_1_1(self.screen, self.settings, start_pos)
+
+            elif self.level_id == self.settings.W_1_1_sub:
+                self.level = world_1_1_sub(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_1_2:
                 self.level = world_1_2(self.screen, self.settings)
-                print("Level " + self.level_name + " loaded")
 
-            elif self.level.world == "2-2_water":
-                self.level_name = "2-2_water"
+            elif self.level_id == self.settings.W_1_3:
+                self.level = world_1_3(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_1_4:
+                self.level = world_1_4(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_2_1:
+                if old_id == self.settings.W_2_1_sub:
+                    start_pos = [120, 10]
+                self.level = world_2_1(self.screen, self.settings, start_pos)
+
+            elif self.level_id == self.settings.W_2_1_sub:
+                self.level = world_2_1(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_2_2:
+                self.level = world_2_2(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_2_2_sub:
                 self.level = world_2_2_water(self.screen, self.settings)
-                print("Level " + self.level_name + " loaded")
 
-            elif self.level.world == "2-2_exit":
-                self.level_name = "2-2_exit"
+            elif self.level_id == self.settings.W_2_2:
                 self.level = world_2_2_exit(self.screen, self.settings)
-                print("Level " + self.level_name + " loaded")
+
+            elif self.level_id == self.settings.W_2_3:
+                self.level = world_2_3(self.screen, self.settings)
+
+            elif self.level_id == self.settings.W_2_4:
+                self.level = world_2_4(self.screen, self.settings)
+
+            print("Level " + self.level.world + " loaded")
 
     def check_events(self):
         for event in pygame.event.get():

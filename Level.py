@@ -13,7 +13,7 @@ from LevelCreator import *
 
 
 class Level:
-    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time, world, swim=False):
+    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time, world, level_id, next_id, respawn_id, swim=False, castle=False):
         self.screen = screen
         self.settings = settings
         self.camera = Camera(self.settings, pygame.image.load(bg_img))
@@ -24,7 +24,10 @@ class Level:
         self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1])
         self.time = time
         self.score = 0
+
         self.world = world
+        self.level_id = level_id
+        self.next_id = next_id
         self.coins = 0
         self.loss = False
 
@@ -166,16 +169,21 @@ class Level:
         self.mario.draw()
         self.enemies.draw(self.screen)
         self.floor.draw()
-        self.scores.draw_text()
         self.items.draw(self.screen)
         self.blocks.draw(self.screen)
         self.flag.draw()
         self.warps.draw(self.screen)
         self.fireballs.draw(self.screen)
+        self.scores.draw_text()
 
         if self.mario.my_warp is not None:
             if self.mario.my_warp.do_load is True:
-                self.world = self.mario.my_warp.level_name
+                self.level_id = self.mario.my_warp.level_id
                 self.screen.fill((0, 0, 0))
                 pygame.display.flip()
                 time.wait(100)
+        elif self.mario.reset_timer == 0:
+            self.level_id = self.next_id
+            self.screen.fill((0, 0, 0))
+            pygame.display.flip()
+            time.wait(100)

@@ -1,7 +1,7 @@
 # store all game settings here
 class Settings:
     def __init__(self):
-        self.WIDTH = 1200
+        self.WIDTH = 1200#768
         self.HEIGHT = 672
         self.fps = 30
         self.bg_speed = 1 # speed of the background
@@ -57,3 +57,20 @@ class Settings:
         self.piranha_plant_id = 34
         self.lava_bubble_id = 35
         self.one_way_platform_id = 36
+
+        # Level_ID
+        self.W_1_1 = 0
+        self.W_1_1_sub = 1
+        self.W_1_2 = 2
+        self.W_1_2_sub = 3
+        self.W_1_2_sub_sub = 4
+        self.W_1_2_exit = 5
+        self.W_1_3 = 6
+        self.W_1_4 = 7
+        self.W_2_1 = 8
+        self.W_2_1_sub = 9
+        self.W_2_2 = 10
+        self.W_2_2_sub = 11
+        self.W_2_2_exit = 12
+        self.W_2_3 = 13
+        self.W_2_4 = 14

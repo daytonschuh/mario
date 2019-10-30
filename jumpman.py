@@ -116,6 +116,7 @@ class Jumpman(Sprite):
         self.asset_id = 99
         self.crouching = False
         self.fireball_delay = 0
+        self.reset_timer = 240
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -365,6 +366,7 @@ class Jumpman(Sprite):
                     self.move_right(False)
                 else:
                     self.swim_right()
+                self.reset_timer -= 1
 
             if self.stage > -1:
                 self.live_update(floor, blocks, items, enemies, flag, level)

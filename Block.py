@@ -261,7 +261,7 @@ class FlagPole(Sprite):
 
 
 class Warp(Sprite):
-    def __init__(self, screen, settings, camera, x, y, direction, new_level_name):
+    def __init__(self, screen, settings, camera, x, y, direction, new_level_id):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -271,7 +271,7 @@ class Warp(Sprite):
         self.rect.left = x * settings.block_size + self.camera.x_pos
         self.x = self.rect.left
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
-        self.level_name = new_level_name
+        self.level_id = new_level_id
         self.do_load = False
         self.direction = direction
         if direction == "left":
