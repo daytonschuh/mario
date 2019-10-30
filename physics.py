@@ -6,12 +6,18 @@ from pygame.mask import *
 from itertools import combinations
 
 
+def apply_gravity(settings, entity, swim=False):
+    if not swim:
+        if entity.delta_y < settings.gravity_max:
+                entity.delta_y += settings.gravity
+        else:
+                entity.delta_y = settings.gravity_max
 
-def apply_gravity(settings, entity):
-    if entity.delta_y < settings.gravity_max:
-        entity.delta_y += settings.gravity
     else:
-        entity.delta_y = settings.gravity_max
+        if entity.delta_y < settings.sink_max_speed:
+            entity.delta_y += settings.sink_speed
+        else:
+            entity.delta_y = settings.sink_max_speed
 
 
 def add_velocity_up(velocity, entity):

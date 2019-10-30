@@ -13,14 +13,14 @@ from LevelCreator import *
 
 
 class Level:
-    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time, world):
+    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time, world, swim=False):
         self.screen = screen
         self.settings = settings
         self.camera = Camera(self.settings, pygame.image.load(bg_img))
         self.background = Background(self.screen, self.settings, self.camera, bg_img)
         self.floor = Background(self.screen, self.settings, self.camera, floor_img)
 
-        self.mario = Jumpman(self.screen, self.settings, self.camera, 0, 0, mario_pos)
+        self.mario = Jumpman(self.screen, self.settings, self.camera, 0, 0, mario_pos, swim)
         self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1])
         self.time = time
         self.score = 0
@@ -134,11 +134,22 @@ class Level:
                 if self.mario.stage > 0:
                     self.mario.crouching = True
             if left:
-                self.mario.move_left(shift)
+                if not self.mario.swim:
+                    self.mario.move_left(shift)
+                else:
+                    self.mario.swim_left()
             elif right:
-                self.mario.move_right(shift)
+                if not self.mario.swim:
+                    self.mario.move_right(shift)
+                else:
+                    self.mario.swim_right()
+
             if space:
-                self.mario.jump()
+                if not self.mario.swim:
+                    self.mario.jump()
+                else:
+                    self.mario.swim_up()
+
             if fire:
                 self.mario.fire(self.fireballs)
 

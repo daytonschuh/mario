@@ -19,6 +19,11 @@ class Settings:
         self.invincible_time = 600
         self.flag_fall = 3
 
+        self.swim_up_speed = 6
+        self.sink_speed = 0.2
+        self.sink_max_speed = 3
+        self.swim_max_speed = 3
+
         # Enemy Variables
         self.enemy_walk_speed = 1
 

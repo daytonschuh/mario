@@ -68,10 +68,38 @@ grab = [l_grab, b_grab, f_grab]
 fire_left = pygame.image.load('Resources/Images/Fire_mario/fire_left.png')
 fire_right = pygame.image.load('Resources/Images/Fire_mario/fire_right.png')
 fire = [fire_left, fire_right]
+swim_left_1 = pygame.image.load('Resources/Images/Baby_mario/swim_left_1.png')
+swim_left_2 = pygame.image.load('Resources/Images/Baby_mario/swim_left_2.png')
+swim_left_3 = pygame.image.load('Resources/Images/Baby_mario/swim_left_3.png')
+swim_left_4 = pygame.image.load('Resources/Images/Baby_mario/swim_left_4.png')
+swim_right_1 = pygame.image.load('Resources/Images/Baby_mario/swim_right_1.png')
+swim_right_2 = pygame.image.load('Resources/Images/Baby_mario/swim_right_2.png')
+swim_right_3 = pygame.image.load('Resources/Images/Baby_mario/swim_right_3.png')
+swim_right_4 = pygame.image.load('Resources/Images/Baby_mario/swim_right_4.png')
+b_swim_left_1 = pygame.image.load('Resources/Images/Papa_mario/swim_left_1.png')
+b_swim_left_2 = pygame.image.load('Resources/Images/Papa_mario/swim_left_2.png')
+b_swim_left_3 = pygame.image.load('Resources/Images/Papa_mario/swim_left_3.png')
+b_swim_left_4 = pygame.image.load('Resources/Images/Papa_mario/swim_left_4.png')
+b_swim_right_1 = pygame.image.load('Resources/Images/Papa_mario/swim_right_1.png')
+b_swim_right_2 = pygame.image.load('Resources/Images/Papa_mario/swim_right_2.png')
+b_swim_right_3 = pygame.image.load('Resources/Images/Papa_mario/swim_right_3.png')
+b_swim_right_4 = pygame.image.load('Resources/Images/Papa_mario/swim_right_4.png')
+f_swim_left_1 = pygame.image.load('Resources/Images/Fire_mario/swim_left_1.png')
+f_swim_left_2 = pygame.image.load('Resources/Images/Fire_mario/swim_left_2.png')
+f_swim_left_3 = pygame.image.load('Resources/Images/Fire_mario/swim_left_3.png')
+f_swim_left_4 = pygame.image.load('Resources/Images/Fire_mario/swim_left_4.png')
+f_swim_right_1 = pygame.image.load('Resources/Images/Fire_mario/swim_right_1.png')
+f_swim_right_2 = pygame.image.load('Resources/Images/Fire_mario/swim_right_2.png')
+f_swim_right_3 = pygame.image.load('Resources/Images/Fire_mario/swim_right_3.png')
+f_swim_right_4 = pygame.image.load('Resources/Images/Fire_mario/swim_right_4.png')
+s_swim_list = [[swim_left_1, swim_left_2, swim_left_3, swim_left_4], [swim_right_1, swim_right_2, swim_right_3, swim_right_4]]
+b_swim_list = [[b_swim_left_1, b_swim_left_2, b_swim_left_3, b_swim_left_4], [b_swim_right_1, b_swim_right_2, b_swim_right_3, b_swim_right_4]]
+f_swim_list = [[f_swim_left_1, f_swim_left_2, f_swim_left_3, f_swim_left_4], [f_swim_right_1, f_swim_right_2, f_swim_right_3, f_swim_right_4]]
+swim_list = [s_swim_list, b_swim_list, f_swim_list]
 
 
 class Jumpman(Sprite):
-    def __init__(self, screen, settings, camera, stage, style, start_pos, swim=True):
+    def __init__(self, screen, settings, camera, stage, style, start_pos, swim=False):
         super().__init__()
         self.screen = screen
         self.settings = settings
@@ -94,6 +122,8 @@ class Jumpman(Sprite):
         self.delta_y = 0
         self.buffer_a = 0
         self.buffer_b = 0
+        self.buffer_c = 0
+
         self.airborne = False
         self.run = False
         self.face = 1
@@ -192,6 +222,29 @@ class Jumpman(Sprite):
             elif self.delta_x < 0:
                 self.image = turn[self.stage][self.face]
                 self.delta_x += self.settings.decceleration_x
+
+    def swim_up(self):
+        if self.buffer_b == 0:
+            self.delta_y = 0
+            self.airborne = True
+            add_velocity_up(self.settings.swim_up_speed, self)
+            self.buffer_b = 10
+
+    def swim_right(self):
+        if self.face is 0:
+            self.face = 1
+        if 0 <= self.delta_x < self.settings.swim_max_speed:
+                self.delta_x += self.settings.acceleration_x
+        elif self.delta_x < 0:
+            self.delta_x += self.settings.decceleration_x
+
+    def swim_left(self):
+        if self.face is 1:
+            self.face = 0
+        if 0 >= self.delta_x > -self.settings.swim_max_speed:
+                self.delta_x -= self.settings.acceleration_x
+        elif self.delta_x > 0:
+            self.delta_x -= self.settings.decceleration_x
 
     def move_left(self, shift):
         if not self.crouching or self.airborne:
@@ -292,7 +345,10 @@ class Jumpman(Sprite):
                 self.my_warp.load_level()
 
     def get_base_image(self):
-        self.image = face[self.stage][self.face]
+        if not self.swim:
+            self.image = face[self.stage][self.face]
+        else:
+            self.image = swim_list[self.stage][self.face][1]
         self.update_hitbox(self.stage)
 
     def update(self, floor, blocks, items, enemies, flag, level):
@@ -303,68 +359,13 @@ class Jumpman(Sprite):
                 return
 
             if flag.asset_id == self.settings.auto_id:
-                self.move_right(False)
+                if not self.swim:
+                    self.move_right(False)
+                else:
+                    self.swim_right()
+
             if self.stage > -1:
-                if self.fireball_delay > 0:
-                    self.fireball_delay -= 1
-
-                self.update_rel_pos()
-                if self.crouching:
-                    self.crouch()
-                elif self.fireball_delay > 4:
-                    self.image = fire[self.face]
-                elif self.airborne and not self.crouching:
-                    self.image = jump[self.stage][self.face]
-                elif self.delta_x == 0 and not self.airborne and not self.crouching:
-                    self.image = face[self.stage][self.face]
-
-                self.power_up(items, level)
-                apply_gravity(self.settings, self)
-
-                self.rect.left += self.delta_x
-                self.x += self.delta_x
-                self.delta_x -= get_direction(self.delta_x) * self.settings.decceleration_x
-                if abs(self.delta_x) < 0.5:
-                    self.delta_x = 0
-                direction_x = get_direction(self.delta_x)
-                if collide_group_x(blocks, self, direction_x):
-                    direction_x = 0
-                    self.delta_x = 0
-                if collide_check_x(floor, self, direction_x):
-                    self.delta_x = 0
-                    direction_x = 0
-                if self.rect.left < 0:
-                    c_x = self.rect.left
-                    self.rect.left = 0
-                    self.x -= c_x
-
-                self.rect.bottom += self.delta_y
-                direction_y = get_direction(self.delta_y)
-
-                if collide_group_y(blocks, self, direction_y):
-                    direction_y = 0
-                    self.delta_y = 0
-                if collide_check_y(floor, self, direction_y):
-                    direction_y = 0
-                    self.delta_y = 0
-
-                collide_group_y(enemies, self, direction_y)
-                collide_group_x(enemies, self, direction_x)
-
-                if self.invulnerable:
-                    if self.invul_timer % 4 == 0:
-                        self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
-
-                    if self.invul_timer == 0:
-                        self.invulnerable = False
-                    self.invul_timer -= 1
-
-                if collide_rect(flag, self):
-                    flag.grab()
-                    for item in items:
-                        item.kill()
-                    for enemy in enemies:
-                        enemy.kill()
+                self.live_update(floor, blocks, items, enemies, flag, level)
 
             else:
                 self.image = death
@@ -383,6 +384,94 @@ class Jumpman(Sprite):
                     self.rect.bottom += self.settings.flag_fall
                 else:
                     self.rect.bottom = flag.rect.bottom
+
+    def swim_update(self):
+        if self.crouching and not self.airborne:
+            self.crouch()
+        elif self.fireball_delay > 4:
+            self.image = fire[self.face]
+        elif self.airborne and not self.crouching:
+            self.image = swim_list[self.stage][self.face][0]
+        elif self.delta_x == 0 and not self.airborne and not self.crouching:
+            self.image = face[self.stage][self.face]
+
+        self.image = swim_list[self.stage][self.face][self.buffer_a // 18]
+        self.buffer_a += 1
+        if self.buffer_a >= 72:
+            self.buffer_a = 0
+
+        if self.buffer_b > 0:
+            self.buffer_b -= 1
+
+
+    def land_update(self):
+        if self.crouching:
+            self.crouch()
+        elif self.fireball_delay > 4:
+            self.image = fire[self.face]
+        elif self.airborne and not self.crouching:
+            self.image = jump[self.stage][self.face]
+        elif self.delta_x == 0 and not self.airborne and not self.crouching:
+            self.image = face[self.stage][self.face]
+
+    def live_update(self, floor, blocks, items, enemies, flag, level):
+        if self.fireball_delay > 0:
+            self.fireball_delay -= 1
+
+        self.update_rel_pos()
+
+        if not self.swim:
+            self.land_update()
+        else:
+            self.swim_update()
+
+        self.power_up(items, level)
+        apply_gravity(self.settings, self, self.swim)
+
+        self.rect.left += self.delta_x
+        self.x += self.delta_x
+        self.delta_x -= get_direction(self.delta_x) * self.settings.decceleration_x
+        if abs(self.delta_x) < 0.5:
+            self.delta_x = 0
+        direction_x = get_direction(self.delta_x)
+        if collide_group_x(blocks, self, direction_x):
+            direction_x = 0
+            self.delta_x = 0
+        if collide_check_x(floor, self, direction_x):
+            self.delta_x = 0
+            direction_x = 0
+        if self.rect.left < 0:
+            c_x = self.rect.left
+            self.rect.left = 0
+            self.x -= c_x
+
+        self.rect.bottom += self.delta_y
+        direction_y = get_direction(self.delta_y)
+
+        if collide_group_y(blocks, self, direction_y):
+            direction_y = 0
+            self.delta_y = 0
+        if collide_check_y(floor, self, direction_y):
+            direction_y = 0
+            self.delta_y = 0
+
+        collide_group_y(enemies, self, direction_y)
+        collide_group_x(enemies, self, direction_x)
+
+        if self.invulnerable:
+            if self.invul_timer % 4 == 0:
+                self.image = pygame.image.load('Resources/Images/Blocks/i_block.png')
+
+            if self.invul_timer == 0:
+                self.invulnerable = False
+            self.invul_timer -= 1
+
+        if collide_rect(flag, self):
+            flag.grab()
+            for item in items:
+                item.kill()
+            for enemy in enemies:
+                enemy.kill()
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
