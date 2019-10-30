@@ -129,7 +129,6 @@ class UndergroundBrickBlock(BrickBlock):
                 self.destroy = True
                 self.image = ud_block
 
-
 class Platform(Block):
     def __init__(self, screen, settings, camera, x, y, level):
         super().__init__(screen, settings, camera, x, y, level)
@@ -142,12 +141,9 @@ class Platform(Block):
     def update(self):
         super().update()
         if self.active:
-            if self.direction == 'horizontal':
-                self.rect.right += 1
-            else:
-                self.rect.bottom -= 1
-                if self.rect.bottom < 0:
-                    self.rect.bottom += self.settings.HEIGHT
+            self.rect.bottom -= 1
+            if self.rect.bottom < 0:
+                self.rect.bottom += self.settings.HEIGHT
 
 class horizontal_Platform(Block):
     def __init__(self, screen, settings, camera, x, y, level):
