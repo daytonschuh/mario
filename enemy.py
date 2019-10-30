@@ -24,6 +24,26 @@ fireball_up_3 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/up_3.png
 fireball_down_1 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_1.png')
 fireball_down_2 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_2.png')
 fireball_down_3 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_3.png')
+fire_bar_spin_1 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_1.png')
+fire_bar_spin_2 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_2.png')
+#fire_bar_spin_3 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_3.png')
+#fire_bar_spin_4 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_4.png')
+blooper_1 = pygame.image.load('Resources/Images/Enemies/Blooper/blooper_1.png')
+blooper_2 = pygame.image.load('Resources/Images/Enemies/Blooper/blooper_2.png')
+bowser_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_left_1.png')
+bowser_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_left_2.png')
+bowser_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_right_1.png')
+bowser_right_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_right_2.png')
+bowser_walk = [[bowser_left_1, bowser_left_2],[bowser_right_1,  bowser_right_2]]
+bowser_shoot_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_left_1.png')
+bowser_shoot_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_left_2.png')
+bowser_shoot_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_right_1.png')
+bowser_shoot_right_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_right_2.png')
+bowser_shoot = [[bowser_shoot_left_1,bowser_shoot_left_2],[bowser_shoot_right_1,bowser_shoot_right_2]]
+fireball_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_left_1.png')
+fireball_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_left_3.png')
+fireball_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_right_1.png')
+fireball_right_2 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_right_3.png')
 
 
 class Enemy(Sprite):
@@ -48,6 +68,7 @@ class Enemy(Sprite):
         self.x = self.rect.left
         self.buffer = 0
         self.asset_id = self.settings.goomba_id  # goomba is base asset id
+        self.dead = False
 
     def land(self):
         self.airborne = False
@@ -90,91 +111,111 @@ class Enemy(Sprite):
         self.rect.bottom = bottom
         self.rect.left = left
 
+    def fire_hit(self):
+        pass
+
+    def bounce(self):
+        add_velocity_up(15, self)
+
 
 class Blooper(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
+    def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.image = goomba_walk_1
-        self.frames = [goomba_walk_1, goomba_walk_2]
-        self.asset_id = 31 # enemy can only be killed by fireball
+        self.rising = False
+        self.image = blooper_1
+        self.frames = [blooper_1, blooper_2]
+        self.asset_id = 30 # enemy can only be killed by fireball
+        self.adjust_hitbox(settings, x, y)
+        self.y = self.rect.bottom
+        self.delta_y = 1
 
-    def behavior(self):def behavior(self):
+    def hit(self):
+        pass
+
+    def behavior(self, enemies, floor, blocks, mario):
         if self.active:
-            if self.y - 10 < mario.rect.centery:
-                if self.x < mario.rect.centerx:
-                    self.x += 10
+            apply_gravity(self.settings, self, True)
+
+            if self.rising:
+                self.image = blooper_1
+
+                if self.rect.left < mario.rect.left:
+                    self.rect.left -= self.delta_x
+                    self.x -= self.delta_x
                 else:
-                    self.x -= 10
-                self.y += 20
+                    self.rect.left += self.delta_x
+                    self.x += self.delta_x
 
             else:
-                self.y -= 5"""
-    pass
+                self.image = blooper_2
 
-
-class Bill_Blaster(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-        super().__init__(screen, settings, camera, x, y)
-        self.active = False
-        self.image = goomba_walk_1
-        self.frames = [goomba_walk_1, goomba_walk_2]
-        self.asset_id = 0 # treat like a block
-
-    def behavior(self):
-        # shoots when mario crosses in the path
-        if mario.rect.right == self.y:
-            shoot"""
-    pass
+                if self.rect.bottom <= mario.rect.bottom-48:
+                    self.rising = False
+                    self.rect.bottom += self.delta_y
+                    self.y += self.delta_y
+                else:
+                    self.rising = True
+                    add_velocity_up(20, self)
 
 
 class Bowser(Enemy):
-    """def __init__(self, screen, settings, camera, x, y)
+    def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.image = bowser_walk
-        self.frames = bowser_walk[self.face]
-        self.asset_id = 31 or 32
+        self.image = bowser_left_1
+        self.face = 0
+        self.frames = bowser_walk[self.face][self.buffer]
+        self.asset_id = 31
+        self.adjust_hitbox(settings, x, y)
 
-    def behavior(self):
+    def hit(self):
+        pass
+
+    def behavior(self, enemies, floor, blocks, mario):
+        if self.active:
+            if self.state == 0:
+                # animate walking
+                apply_gravity(self.settings, self)
+                if self.buffer % 8 == 0:
+                    self.image = bowser_walk[self.face][self.buffer // 32]
+                self.buffer += 1
+                if self.buffer >= 64:
+                    self.buffer = 0
+
+                # check collisions
+                self.rect.left += self.delta_x
+                self.x += self.delta_x
+                direction_x = get_direction(self.delta_x)
+
+                reverse = False
+                if collide_check_x(floor, self, direction_x):
+                    direction_x = 0
+                    reverse = True
+                if collide_group_x(blocks, self, direction_x):
+                    reverse = True
+                if reverse:
+                    self.delta_x *= -1
+
+                self.rect.bottom += self.delta_y
+                direction_y = get_direction(self.delta_y)
+                if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
+                    self.delta_y = False
+
+            # animate death
+            if self.state == 1:
+                # death animation
+                self.buffer += 1
+                if self.buffer > 16:
+                    self.kill()
+                    self.state = 0
+
+                # death sound
+                # settings.points += 100
         # choose some slightly random interval to shoot at mario
         # random.randint[] use value as a countdown
         # walk / jump towards mario
-        # kill when mario picks up axe and bridge collapse"""
-    pass
-
-
-class Bullet_Bill(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-            super().__init__(screen, settings, camera, x, y)
-            self.active = False
-            self.image = goomba_walk_1
-            self.frames = [goomba_walk_1, goomba_walk_2]
-            self.asset_id = 30
-
-    def behavior(self):
-        # just flies straight
-        if shot left:
-            self.image = facing left
-            self.x -= self.velocity
-        if shot right:
-            self.image = facing right
-            self.x += self.velocity
-        # can be bounced on"""
-    pass
-
-
-class Buzzy_Beetle(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-            super().__init__(screen, settings, camera, x, y)
-            self.active = False
-            self.image = goomba_walk_1
-            self.frames = [goomba_walk_1, goomba_walk_2]
-            self.asset_id = 30
-
-    def behavior(self):
-    # uh?"""
-    pass
+        # kill when mario picks up axe and bridge collapse
 
 
 class Cheep_Cheep(Enemy):
@@ -193,10 +234,25 @@ class Cheep_Cheep(Enemy):
 
 
 class Fire_Bar(Enemy):
-    """def behavior(self):
-    # unsure of behavior
-    # pretty sure this just spins in circles"""
-    pass
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.original_image = fireball_down_3
+        self.image = self.original_image
+        self.angle = 0
+        self.adjust_hitbox(settings, x, y)
+
+    def rotate(self):
+        """Rotate the image of the sprite around its center."""
+        self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.angle += 1 % 360
+
+    def hit(self):
+        pass
+
+    def behavior(self, enemies, floor, blocks, mario):
+        if self.active:
+            self.rotate()
 
 
 class Goomba(Enemy):
@@ -212,6 +268,17 @@ class Goomba(Enemy):
         self.buffer = 0
         self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
+
+    def fire_hit(self):
+        self.image = pygame.transform.flip(goomba_walk_1, True, False)
+        self.wait = 1000
+        # animate death sequence
+        self.bounce()
+        if self.wait > 0:
+            self.wait -= 1
+            self.rect.bottom += 1
+        else:
+            print("Enemy Down")
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
@@ -255,25 +322,6 @@ class Goomba(Enemy):
                 # settings.points += 100
 
 
-class Hammer_Bro(Enemy):
-    """def __init__(self, screen, settings, camera, x, y):
-            super().__init__(screen, settings, camera, x, y)
-            self.active = False
-            self.image = goomba_walk_1
-            self.frames = [goomba_walk_1, goomba_walk_2]
-            self.asset_id = 31
-
-    def behavior(self):
-        choices = [1000, 2000]
-        # randomly throw stuff and jump
-        random.randint(choices)
-    # throws gravity affected 'bullets'"""
-    pass
-
-
-""" TODO: Maybe make a class for hammers thrown by the hammer bro """
-
-
 class Koopa_Paratroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
@@ -299,12 +347,21 @@ class Koopa_Paratroopa(Enemy):
             pass
         print("Enemy Down")
 
+    def fire_hit(self):
+        self.image = pygame.transform.flip(koopa_shell, True, False)
+        self.wait = 1000
+        # animate death sequence
+        self.bounce()
+        if self.wait > 0:
+            self.wait -= 1
+            self.rect.bottom += 10
+        else:
+            self.kill()
+        print("Enemy Down")
+
     def land(self):
         super().land()
         self.bounce()
-
-    def bounce(self):
-        add_velocity_up(15, self)
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
@@ -367,6 +424,13 @@ class Koopa_Troopa(Enemy):
         self.adjust_hitbox(settings, x, y)
         self.asset_id = self.settings.koopa_troopa_id
 
+    def fire_hit(self):
+        self.image = pygame.transform.flip(koopa_shell, False, True)
+        self.active = False
+        # animate death sequence
+        self.bounce()
+        print("Enemy Down")
+
     def hit(self):
         self.image = koopa_shell
         self.state = 1
@@ -413,6 +477,10 @@ class Koopa_Troopa(Enemy):
                         self.asset_id = self.settings.koopa_troopa_id
                         self.state = 0
 
+        else:
+            apply_gravity(self.settings, self)
+            self.kill()
+
 
 class Lava_Bubble(Enemy):
     def __init__(self, screen, settings, camera, x, y):
@@ -426,19 +494,9 @@ class Lava_Bubble(Enemy):
         self.asset_id = self.settings.lava_bubble_id
 
     def hit(self):
-        # can't be killed
         pass
 
     def behavior(self, enemies, floor, blocks, mario):
-        """ TODO: change fireball direction based on up / down """
-        ###########################################################
-        direction_y = get_direction(self.delta_y)
-        if direction_y > 0:
-            self.face = 1
-        elif direction_y < 0:
-            self.face = 0
-        ###########################################################
-
         # animate
         if self.buffer % 8 == 0:
             self.image = self.frames[self.face][self.buffer // 16]
@@ -449,6 +507,7 @@ class Lava_Bubble(Enemy):
         # moving up
         if 0 == self.state:
             self.rect.bottom -= 1
+            self.face = 0
             if self.rect.bottom < self.settings.HEIGHT - 100:
                 self.wait = 20
                 self.state = 1
@@ -460,6 +519,7 @@ class Lava_Bubble(Enemy):
         # moving down
         if 2 == self.state:
             self.rect.bottom += 1
+            self.face = 1
             if self.rect.bottom > self.settings.HEIGHT - 50:
                 self.wait = 250
                 self.state = 3
@@ -521,6 +581,67 @@ class Piranha_Plant(Enemy):
 
 
 """ ANYTHING BEYOND THIS POINT DOES NOT NEED TO BE IMPLEMENTED BEFORE THE DEADLINE """
+
+
+class Bullet_Bill(Enemy):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 30
+
+    def behavior(self):
+        # just flies straight
+        if shot left:
+            self.image = facing left
+            self.x -= self.velocity
+        if shot right:
+            self.image = facing right
+            self.x += self.velocity
+        # can be bounced on"""
+    pass
+
+
+class Bill_Blaster(Enemy):
+    """def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.active = False
+        self.image = goomba_walk_1
+        self.frames = [goomba_walk_1, goomba_walk_2]
+        self.asset_id = 0 # treat like a block
+
+    def behavior(self):
+        # shoots when mario crosses in the path
+        if mario.rect.right == self.y:
+            shoot"""
+    pass
+
+
+class Buzzy_Beetle(Enemy):
+    """def __init__(self, screen, settings, camera, x, y):
+            super().__init__(screen, settings, camera, x, y)
+            self.active = False
+            self.image = goomba_walk_1
+            self.frames = [goomba_walk_1, goomba_walk_2]
+            self.asset_id = 30
+
+    def behavior(self):
+    # uh?"""
+    pass
+
+
+class Hammer_Bro(Enemy):
+    """def behavior(self, enemies, floor, blocks, mario):
+        choices = [1000, 2000]
+        # randomly throw stuff and jump
+        random.randint(choices)
+    # throws gravity affected 'bullets'
+    pass"""
+
+
+""" TODO: Maybe make a class for hammers thrown by the hammer bro """
+
 
 class Spiny_Egg(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
