@@ -456,7 +456,13 @@ def world_2_2_water(screen, settings, start_pos=None):
     new_level.place_enemy("blooper", 22, 1)
     new_level.place_enemy("blooper", 46, 3)
     new_level.place_enemy("blooper", 55, 2)
-    new_level.place_enemy("cheep-cheep", 76, 3)
+    new_level.place_enemy("cheep_cheep", 76, 3)
+    new_level.place_enemy("cheep_cheep", 79, 5)
+    new_level.place_enemy("cheep_cheep", 81, 2)
+    new_level.place_enemy("blooper", 83, 4)
+    new_level.place_enemy("cheep_cheep", 94, 6)
+    new_level.place_enemy("blooper", 94, 8)
+    new_level.place_enemy("cheep_cheep", 97, 9)
 
     return new_level
 

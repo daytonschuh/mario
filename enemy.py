@@ -134,7 +134,7 @@ class Blooper(Enemy):
         self.just_jumped = False
         self.image = blooper_1
         self.frames = [blooper_1, blooper_2]
-        self.asset_id = 30 # enemy can only be killed by fireball
+        self.asset_id = self.settings.no_collision_id # enemy can only be killed by fireball
         self.adjust_hitbox(settings, x, y)
         self.y = self.rect.bottom
         self.delta_y = 1
@@ -254,7 +254,7 @@ class Cheep_Cheep(Enemy):
         self.image = cc_left_1
         self.face = 0
         self.frames = cc_move[self.face][self.buffer]
-        self.asset_id = 30
+        self.asset_id = self.settings.no_collision_id
         self.adjust_hitbox(settings, x, y)
         self.swim = swim
 

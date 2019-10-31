@@ -194,8 +194,9 @@ def get_direction(delta):
 def enemy_to_enemy_collision(enemies):
     for one, two in combinations(enemies, 2):
         if one.rect.colliderect(two.rect):
-            one.delta_x *= -1
-            two.delta_x *= -1
+            if one.asset_id == 30 and two.asset_id == 30:
+                one.delta_x *= -1
+                two.delta_x *= -1
 
 '''
 def warp(gate, entity, level):
