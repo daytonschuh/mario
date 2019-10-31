@@ -10,7 +10,6 @@ def world_1_1(screen, settings, start_pos=None):
     new_level.place_warp(settings.W_1_1_sub, 'down', 57.5, 4)
 
     new_level.place_enemy('goomba', 22, 1)
-    new_level.place_enemy('lava_bubble', 20, 1)
     new_level.place_enemy('goomba', 32, 1)
     new_level.place_enemy('goomba', 43, 1)
     new_level.place_enemy('goomba', 44.5, 1)
@@ -97,7 +96,7 @@ def world_1_1_sub(screen, settings, start_pos=None):
 
 def world_1_2_sub(screen, settings, start_pos=None):
     if start_pos is None:
-        start_pos = [115, 10]
+        start_pos = [3, 10]
 
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', start_pos, [-32, 1], 500, "1-2", settings.W_1_2_sub, None, settings.W_1_2)
