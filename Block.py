@@ -56,6 +56,7 @@ class QuestionBlock(Block):
         if self.asset_id is not self.settings.static_id and entity.asset_id is 99:
             self.active = True
             add_velocity_up(self.settings.block_recoil, self)
+            self.asset_id = self.settings.bounce_id
             if self.item is "Coin":
                 self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
             elif self.item is not None:
@@ -76,6 +77,8 @@ class QuestionBlock(Block):
                 if self.item is not None:
                     self.image = e_block
                     self.asset_id = self.settings.static_id
+                else:
+                    self.asset_id = self.settings.block_id
 
 
 class BrickBlock(QuestionBlock):
@@ -93,10 +96,13 @@ class BrickBlock(QuestionBlock):
                 self.active = True
                 pygame.mixer.Sound.play(bump)
                 add_velocity_up(self.settings.block_recoil, self)
+                self.asset_id = self.settings.bounce_id
             else:
                 self.destroy = True
                 pygame.mixer.Sound.play(breakbricks)
                 self.image = d_block
+                self.asset_id = self.settings.bounce_id
+
 
     def update(self):
         super().update()

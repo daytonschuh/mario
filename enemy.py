@@ -134,7 +134,7 @@ class Blooper(Enemy):
         self.just_jumped = False
         self.image = blooper_1
         self.frames = [blooper_1, blooper_2]
-        self.asset_id = self.settings.no_collision_id # enemy can only be killed by fireball
+        self.asset_id = self.settings.lava_bubble_id # enemy can only be killed by fireball
         self.adjust_hitbox(settings, x, y)
         self.y = self.rect.bottom
         self.delta_y = 1

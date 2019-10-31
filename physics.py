@@ -109,13 +109,16 @@ def check_event_collision_x(solid, entity, direction, asset_id):
     if asset_id == 1:
         return True
 
-    if asset_id == 2 or asset_id == 36 or asset_id == 37:
+    if asset_id == 2 or asset_id == 40 or asset_id == 41:
+        return True
+
+    if asset_id == 3:
         return True
 
     if asset_id == 10:
         return True
 
-    if asset_id == 30 and entity.asset_id == 99:
+    if 30 <= asset_id <= 35 and entity.asset_id == 99:
         if collide_rect(entity, solid):
             entity.take_damage()
             return True
@@ -152,15 +155,33 @@ def check_event_collision_y(solid, entity, direction, asset_id):
                 entity.rect.bottom = solid.rect.top
                 entity.land()
         return True
+
+    elif asset_id == 3:
+        if collide_rect(entity, solid):
+            if entity.rect.bottom - entity.delta_y < solid.rect.top:
+                if 30 <= entity.asset_id <= 33:
+                    entity.hit()
+                    return True
+                elif 20 <= entity.asset_id <= 23:
+                    if entity.rect.left < solid.rect.left:
+                        entity.delta_x = -abs(entity.delta_x)
+                    elif entity.rect.left > solid.rect.left:
+                        entity.delta_x = abs(entity.delta_x)
+                    entity.rect.bottom = solid.rect.top
+                    entity.delta_y = -1
+                    add_velocity_up(6, entity)
+                    return True
+                else:
+                    return False
     
-    elif asset_id == 36:
+    elif asset_id == 40:
         if collide_rect(entity, solid):
             if entity.rect.bottom - entity.delta_y - 2 <= solid.rect.top:
                 entity.rect.bottom = solid.rect.top - 2
                 entity.land()
         return True
 
-    elif asset_id == 37:
+    elif asset_id == 41:
         if collide_rect(entity, solid):
             if entity.rect.bottom - entity.delta_y <= solid.rect.top:
                 entity.rect.bottom = solid.rect.top + 4
@@ -194,7 +215,7 @@ def get_direction(delta):
 def enemy_to_enemy_collision(enemies):
     for one, two in combinations(enemies, 2):
         if one.rect.colliderect(two.rect):
-            if one.asset_id == 30 and two.asset_id == 30:
+            if one.asset_id <= 32 and two.asset_id <= 32:
                 one.delta_x *= -1
                 two.delta_x *= -1
 
