@@ -10,7 +10,6 @@ def world_1_1(screen, settings, start_pos=None):
     new_level.place_warp(settings.W_1_1_sub, 'down', 57.5, 4)
 
     new_level.place_enemy('goomba', 22, 1)
-    new_level.place_enemy('lava_bubble', 20, 1)
     new_level.place_enemy('goomba', 32, 1)
     new_level.place_enemy('goomba', 43, 1)
     new_level.place_enemy('goomba', 44.5, 1)
@@ -102,6 +101,8 @@ def world_1_2_sub(screen, settings, start_pos=None):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_background.png', 'Resources/Images/Backgrounds/World_1/1-2/level_1_2_floor.png', start_pos, [-32, 1], 500, "1-2", settings.W_1_2_sub, None, settings.W_1_2)
 
+    new_level.place_enemy('goomba', 16, 2)
+    new_level.place_enemy('goomba', 15, 2)
     new_level.place_warp(settings.W_1_2_sub_sub, "down", 103.5, 3)
     new_level.place_warp(settings.W_1_2_exit, "right", 166, 4)
     new_level.mass_place_blocks('ub', 6, 11, 83, 1)
@@ -113,6 +114,7 @@ def world_1_2_sub(screen, settings, start_pos=None):
     new_level.place_block('q', 13, 4)
     new_level.place_block('q', 14, 4)
     new_level.place_block('ub', 29, 5, "10-Coin")
+    new_level.place_enemy('goomba', 29, 2)
     new_level.mass_place_blocks('ub', 39, 4, 3, 1)
     new_level.place_item('Coin', 40, 5)
     new_level.place_item('Coin', 45, 5)
@@ -127,6 +129,8 @@ def world_1_2_sub(screen, settings, start_pos=None):
     new_level.mass_place_blocks('ub', 45, 4, 2, 1)
     new_level.place_block('ub', 46, 5)
     new_level.place_block('ub', 46, 6, "Star")
+    new_level.place_enemy('koopa', 46, 2)
+    new_level.place_enemy('koopa', 48, 2)
     new_level.mass_place_blocks('ub', 52, 4, 1, 5)
     new_level.mass_place_blocks('ub', 53, 4, 1, 5)
     new_level.mass_place_blocks('ub', 54, 2, 1, 3)
@@ -138,6 +142,9 @@ def world_1_2_sub(screen, settings, start_pos=None):
     new_level.place_item('Coin', 59, 5)
     new_level.place_item('Coin', 60, 5)
     new_level.place_item('Coin', 61, 5)
+    new_level.place_enemy('koopa', 60, 2)
+    new_level.place_enemy('goomba', 63, 2)
+    new_level.place_enemy('goomba', 64, 2)
     new_level.mass_place_blocks('ub', 62, 5, 1, 6)
     new_level.mass_place_blocks('ub', 63, 5, 1, 6)
     new_level.mass_place_blocks('ub', 58, 9, 4, 1)
@@ -150,8 +157,11 @@ def world_1_2_sub(screen, settings, start_pos=None):
     new_level.place_block('ub', 69, 5, "Power-Up")
     new_level.mass_place_blocks('ub', 72, 4, 1, 5)
     new_level.mass_place_blocks('ub', 73, 6, 1, 3)
+    new_level.place_enemy('goomba', 73, 9)
     new_level.place_block('ub', 73, 5, "Coin")
     new_level.place_block('ub', 73, 4)
+    new_level.place_enemy('goomba', 76, 5)
+    new_level.place_enemy('goomba', 77, 5)
     new_level.mass_place_blocks('ub', 76, 4, 4, 1)
     new_level.mass_place_blocks('ub', 76, 9, 4, 1)
     new_level.place_item('Coin', 84, 8)
@@ -160,13 +170,23 @@ def world_1_2_sub(screen, settings, start_pos=None):
     new_level.place_item('Coin', 87, 8)
     new_level.place_item('Coin', 88, 8)
     new_level.place_item('Coin', 89, 8)
+    new_level.place_enemy('goomba', 98, 2)
+    new_level.place_enemy('goomba', 100, 2)
+    new_level.place_enemy('goomba', 102, 2)
+    new_level.place_enemy('piranha_plant', 103.5, 3.9)
+    new_level.place_enemy('piranha_plant', 109.5, 4.9)
+    new_level.place_enemy('goomba', 114, 2)
+    new_level.place_enemy('piranha_plant', 115.5, 2.9)
     new_level.mass_place_blocks('ub', 84, 5, 6, 1)
     new_level.mass_place_blocks('ub', 84, 6, 6, 1)
     new_level.mass_place_blocks('ub', 145, 5, 5, 1)
+    new_level.place_enemy('goomba', 132, 5.5)
+    new_level.place_enemy('goomba', 135.5, 7.5)
     new_level.place_block('plt',140, 0)
     new_level.place_block('plt',140, 5)
     new_level.place_block('plt',140, 10)
     new_level.place_block('ub', 150, 5, "Power-Up")
+    new_level.place_enemy('koopa', 151, 2)
     new_level.place_block('plt', 155, 0)
     new_level.place_block('plt', 155, 5)
     new_level.place_block('plt', 155, 10)
@@ -228,10 +248,12 @@ def world_1_2_exit(screen, settings, start_pos=None):
 
 def world_1_3(screen, settings, start_pos=None):
     if start_pos is None:
-        start_pos = [3, 1]
+        start_pos = [3, 2]
 
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', [6,12], (120,120), 500, "1-3", settings.W_1_3, settings.W_1_4, settings.W_1_3, se)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png', 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', start_pos, [152,2], 500, "1-3", settings.W_1_3, settings.W_1_4, settings.W_1_3)
+
+    new_level.place_enemy('koopa', 29, 9)
     new_level.mass_place_blocks('invis_plt', 18, 1, 4, 1)
     new_level.mass_place_blocks('invis_plt', 24, 4, 8, 1)
     new_level.mass_place_blocks('invis_plt', 26, 8, 5, 1)
@@ -246,6 +268,8 @@ def world_1_3(screen, settings, start_pos=None):
     new_level.place_item('Coin', 38, 11)
     new_level.mass_place_blocks('invis_plt', 50, 0, 4, 1)
     new_level.mass_place_blocks('invis_plt', 59, 0, 5, 1)
+    new_level.place_enemy('goomba', 42, 10)
+    new_level.place_enemy('goomba', 44, 10)
     new_level.place_item('Coin', 50, 7)
     new_level.place_item('Coin', 51, 7)
     new_level.place_block('q', 59, 3, "Power-Up")
@@ -258,6 +282,8 @@ def world_1_3(screen, settings, start_pos=None):
     new_level.place_item('Coin', 61, 9)
     new_level.place_item('Coin', 62, 9)
     new_level.place_item('Coin', 63, 9)
+    new_level.place_enemy('koopa_paratroopa', 78, 9)
+    new_level.place_enemy('goomba', 82, 9)
     new_level.place_block('horiz_plt', 83, 6)
     new_level.place_item('Coin', 85, 8)
     new_level.place_item('Coin', 86, 8)
@@ -269,6 +295,8 @@ def world_1_3(screen, settings, start_pos=None):
     new_level.place_item('Coin', 98, 9)
     new_level.mass_place_blocks('invis_plt', 104, 6, 8, 1)
     new_level.mass_place_blocks('invis_plt', 113, 0, 3, 1)
+    new_level.place_enemy('koopa', 111, 9)
+    new_level.place_enemy('koopa_paratroopa', 117, 9)
     new_level.place_item('Coin', 113, 1)
     new_level.place_item('Coin', 114, 1)
     new_level.place_item('Coin', 115, 1)
@@ -277,6 +305,7 @@ def world_1_3(screen, settings, start_pos=None):
     new_level.place_item('Coin', 121, 8)
     new_level.mass_place_blocks('invis_plt', 122, 4, 4, 1)
     new_level.place_block('horiz_plt', 127, 7,)
+    new_level.place_enemy('koopa', 137, 5)
 
     return new_level
 

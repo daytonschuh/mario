@@ -40,10 +40,6 @@ class SuperMario:
             return
         else:
             self.level.scores.set_stats(self.game_score, self.game_time)
-            print(str(self.level.scores.scores))
-            print(str(self.level.scores.timer))
-            print(str(self.game_score))
-            print(str(self.game_time))
             old_id = self.level_id
             start_pos = None
             if self.level.level_id is not None:

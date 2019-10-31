@@ -97,6 +97,9 @@ b_swim_list = [[b_swim_left_1, b_swim_left_2, b_swim_left_3, b_swim_left_4], [b_
 f_swim_list = [[f_swim_left_1, f_swim_left_2, f_swim_left_3, f_swim_left_4], [f_swim_right_1, f_swim_right_2, f_swim_right_3, f_swim_right_4]]
 swim_list = [s_swim_list, b_swim_list, f_swim_list]
 
+pygame.mixer.init()
+mariodie = pygame.mixer.Sound("Resources/Sounds/smb_mariodie.wav")
+
 
 class Jumpman(Sprite):
     def __init__(self, screen, settings, camera, stage, style, start_pos, swim=False):
@@ -303,6 +306,7 @@ class Jumpman(Sprite):
                 print("Mario died!")
                 self.stage = -1
                 self.image = death
+                pygame.mixer.Sound.play(mariodie)
                 self.delta_y = 0
 
     def land(self):

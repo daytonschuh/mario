@@ -50,6 +50,10 @@ cc_right_1 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_right_
 cc_right_2 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_right_2.png')
 cc_move = [[cc_left_1,cc_left_2],[cc_right_1,cc_right_2]]
 fire_bar = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar.png')
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+pygame.init()
+stomp = pygame.mixer.Sound("Resources/Sounds/smb_stomp.wav")
+kick = pygame.mixer.Sound("Resources/Sounds/smb_kick.wav")
 
 class Enemy(Sprite):
     """ Base class for enemies. """
@@ -127,7 +131,7 @@ class Blooper(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.rising = False
+        self.just_jumped = False
         self.image = blooper_1
         self.frames = [blooper_1, blooper_2]
         self.asset_id = 30 # enemy can only be killed by fireball
@@ -139,9 +143,26 @@ class Blooper(Enemy):
     def hit(self):
         pass
 
+    def fire_hit(self):
+        self.image = pygame.transform.flip(goomba_walk_1, True, False)
+        self.wait = 1000
+        # animate death sequence
+        self.state = 1
+        self.bounce()
+        pygame.mixer.Sound.play(kick)
+        if self.wait > 0:
+            self.wait -= 1
+            self.rect.bottom += 1
+        else:
+            print("Enemy Down")
+
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             apply_gravity(self.settings, self, True)
+
+            self.wait -= 1
+            if self.wait <= 0:
+                self.just_jumped = False
 
             if self.delta_y < 0:
                 self.image = blooper_1
@@ -159,9 +180,11 @@ class Blooper(Enemy):
             if self.delta_y > 0:
                 self.image = blooper_2
 
-            if self.delta_y > 0 and self.rect.bottom >= mario.rect.top-10:
+            if self.delta_y > 0 and self.rect.bottom >= mario.rect.top-10 and not self.just_jumped:
                 self.delta_y = 0
                 add_velocity_up(8, self)
+                self.just_jumped = True
+                self.wait = 100
 
             if self.rect.top < 48:
                 self.rect.top = 48
@@ -174,11 +197,23 @@ class Bowser(Enemy):
         self.image = bowser_left_1
         self.face = 0
         self.frames = bowser_walk[self.face][self.buffer]
-        self.asset_id = 31
+        self.asset_id = self.settings.goomba_id
         self.adjust_hitbox(settings, x, y)
 
     def hit(self):
         pass
+
+    def fire_hit(self):
+        self.image = pygame.transform.flip(goomba_walk_1, True, False)
+        self.wait = 1000
+        # animate death sequence
+        self.bounce()
+        pygame.mixer.Sound.play(kick)
+        if self.wait > 0:
+            self.wait -= 1
+            self.rect.bottom += 1
+        else:
+            print("Enemy Down")
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
@@ -195,20 +230,6 @@ class Bowser(Enemy):
                 self.rect.left += self.delta_x
                 self.x += self.delta_x
                 direction_x = get_direction(self.delta_x)
-
-                reverse = False
-                if collide_check_x(floor, self, direction_x):
-                    direction_x = 0
-                    reverse = True
-                if collide_group_x(blocks, self, direction_x):
-                    reverse = True
-                if reverse:
-                    self.delta_x *= -1
-
-                self.rect.bottom += self.delta_y
-                direction_y = get_direction(self.delta_y)
-                if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
-                    self.delta_y = False
 
             # animate death
             if self.state == 1:
@@ -240,6 +261,18 @@ class Cheep_Cheep(Enemy):
     def hit(self):
         pass
 
+    def fire_hit(self):
+        self.image = pygame.transform.flip(cc_left_1, True, False)
+        self.wait = 1000
+        # animate death sequence
+        self.bounce()
+        pygame.mixer.Sound.play(kick)
+        if self.wait > 0:
+            self.wait -= 1
+            self.rect.bottom += 1
+        else:
+            print("Enemy Down")
+
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             if self.state == 0:
@@ -269,7 +302,6 @@ class Cheep_Cheep(Enemy):
 
                 # death sound
                 # settings.points += 100
-    pass
 
 
 class Fire_Bar(Enemy):
@@ -306,6 +338,7 @@ class Goomba(Enemy):
     def hit(self):
         self.image = goomba_death
         self.state = 1
+        pygame.mixer.Sound.play(stomp)
         self.buffer = 0
         self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
@@ -315,6 +348,7 @@ class Goomba(Enemy):
         self.wait = 1000
         # animate death sequence
         self.bounce()
+        pygame.mixer.Sound.play(kick)
         if self.wait > 0:
             self.wait -= 1
             self.rect.bottom += 1
@@ -354,6 +388,7 @@ class Goomba(Enemy):
             # animate death
             if self.state == 1:
                 # death animation
+
                 self.buffer += 1
                 if self.buffer > 16:
                     self.kill()
