@@ -11,6 +11,9 @@ flag_pole = pygame.image.load("Resources/Images/Blocks/flag_pole.png")
 flag = pygame.image.load("Resources/Images/Blocks/flag.png")
 platform = pygame.image.load("Resources/Images/Blocks/platform.png")
 
+itemappear = pygame.mixer.Sound("Resources/Sounds/smb_powerup_appears.wav")
+coinappear = pygame.mixer.Sound("Resources/Sounds/smb_coin.wav")
+
 
 class Block(Sprite):
     def __init__(self, screen, settings, camera, x, y, level, item=None):
@@ -52,8 +55,13 @@ class QuestionBlock(Block):
         if self.asset_id is not self.settings.static_id and entity.asset_id is 99:
             self.active = True
             add_velocity_up(self.settings.block_recoil, self)
-            if self.item is not None:
+            if self.item is "Coin":
                 self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
+                pygame.mixer.Sound.play(coinappear)
+            elif self.item is not None:
+                self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
+                pygame.mixer.Sound.play(itemappear)
+
 
     def update(self):
         super().update()
