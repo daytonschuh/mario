@@ -18,6 +18,7 @@ flower_b = pygame.image.load('Resources/Images/Items/flower_b.png')
 flower_c = pygame.image.load('Resources/Images/Items/flower_c.png')
 flower_d = pygame.image.load('Resources/Images/Items/flower_d.png')
 flower = [flower_a, flower_b, flower_c, flower_d]
+coin_ping = pygame.mixer.Sound("Resources/Sounds/smb_coin.wav")
 
 
 
@@ -222,6 +223,7 @@ class Coin(Sprite):
         self.kill()
         self.scores.scores += self.score
         self.scores.add_coin()
+        pygame.mixer.Sound.play(coin_ping)
 
     def spawn(self):
         pass
