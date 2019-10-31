@@ -10,7 +10,6 @@ def world_1_1(screen, settings, start_pos=None):
     new_level.place_warp(settings.W_1_1_sub, 'down', 57.5, 4)
 
     new_level.place_enemy('goomba', 22, 1)
-    new_level.place_enemy('lava_bubble', 20, 1)
     new_level.place_enemy('goomba', 32, 1)
     new_level.place_enemy('goomba', 43, 1)
     new_level.place_enemy('goomba', 44.5, 1)
