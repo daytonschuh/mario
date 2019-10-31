@@ -12,7 +12,8 @@ flag = pygame.image.load("Resources/Images/Blocks/flag.png")
 platform = pygame.image.load("Resources/Images/Blocks/platform.png")
 
 itemappear = pygame.mixer.Sound("Resources/Sounds/smb_powerup_appears.wav")
-coinappear = pygame.mixer.Sound("Resources/Sounds/smb_coin.wav")
+breakbricks = pygame.mixer.Sound("Resources/Sounds/smb_breakblock.wav")
+bump = pygame.mixer.Sound("Resources/Sounds/smb_bump.wav")
 
 
 class Block(Sprite):
@@ -57,7 +58,6 @@ class QuestionBlock(Block):
             add_velocity_up(self.settings.block_recoil, self)
             if self.item is "Coin":
                 self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
-                pygame.mixer.Sound.play(coinappear)
             elif self.item is not None:
                 self.level.place_item(self.item, self.origin[0], self.origin[1], True, self.x)
                 pygame.mixer.Sound.play(itemappear)
@@ -91,9 +91,11 @@ class BrickBlock(QuestionBlock):
                 super().hit(entity)
             elif entity.stage is 0 and self.delta_y is 0:
                 self.active = True
+                pygame.mixer.Sound.play(bump)
                 add_velocity_up(self.settings.block_recoil, self)
             else:
                 self.destroy = True
+                pygame.mixer.Sound.play(breakbricks)
                 self.image = d_block
 
     def update(self):
@@ -135,6 +137,7 @@ class UndergroundBrickBlock(BrickBlock):
                 add_velocity_up(self.settings.block_recoil, self)
             else:
                 self.destroy = True
+                pygame.mixer.Sound.play(breakbricks)
                 self.image = ud_block
 
 
