@@ -379,6 +379,11 @@ class Jumpman(Sprite):
                     apply_gravity(self.settings, self)
                     self.rect.bottom += self.delta_y
                 self.death_timer -= 1
+                if self.death_timer == 0:
+                    if level.level_id == level.respawn_id:
+                        level.level_id = None
+                    else:
+                        level.level_id = level.respawn_id
 
         else:
                 self.delta_x = 0

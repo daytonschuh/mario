@@ -411,6 +411,24 @@ def world_2_2_water(screen, settings, start_pos=None):
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-2/2-2_water_bg.png', 'Resources/Images/Backgrounds/World_2/2-2/2-2_water_floor.png', start_pos, [-32, 1], 500, "2-2",  settings.W_2_2_sub, None, settings.W_2_2, True)
     new_level.place_warp(settings.W_2_2_exit, 'right', 189.9, 5)
+
+    new_level.place_item("Coin", 14, 1)
+    new_level.place_item("Coin", 15, 1)
+    new_level.place_item("Coin", 27, 8)
+    new_level.place_item("Coin", 28, 8)
+    new_level.place_item("Coin", 29, 8)
+    new_level.place_item("Coin", 36, 1)
+    new_level.place_item("Coin", 37, 1)
+    new_level.place_item("Coin", 38, 1)
+    new_level.place_item("Coin", 67, 3)
+    new_level.place_item("Coin", 68, 3)
+    new_level.place_item("Coin", 69, 3)
+
+    new_level.place_enemy("blooper", 22, 1)
+    new_level.place_enemy("blooper", 46, 3)
+    new_level.place_enemy("blooper", 55, 2)
+    new_level.place_enemy("cheep-cheep", 76, 3)
+
     return new_level
 
 def world_2_2_exit(screen, settings, start_pos=None):

@@ -26,7 +26,7 @@ class SuperMario:
         self.game_time = 0
         self.game_coin = 0
         # SET LEVEL
-        self.level = world_1_2_exit(self.screen, self.settings)
+        self.level = world_2_2_water(self.screen, self.settings)
         self.level_id = self.level.level_id
 
         # SET EVENTS
