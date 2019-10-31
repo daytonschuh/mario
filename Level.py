@@ -28,6 +28,7 @@ class Level:
         self.world = world
         self.level_id = level_id
         self.next_id = next_id
+        self.respawn_id = respawn_id
         self.coins = 0
         self.loss = False
 
@@ -167,8 +168,12 @@ class Level:
     def draw_screen(self):
         self.background.draw()
         self.mario.draw()
-        self.enemies.draw(self.screen)
-        self.floor.draw()
+        if not self.mario.swim:
+            self.enemies.draw(self.screen)
+            self.floor.draw()
+        else:
+            self.floor.draw()
+            self.enemies.draw(self.screen)
         self.items.draw(self.screen)
         self.blocks.draw(self.screen)
         self.flag.draw()
