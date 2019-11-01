@@ -197,7 +197,7 @@ class Bowser(Enemy):
         self.image = bowser_left_1
         self.face = 0
         self.frames = bowser_walk[self.face][self.buffer]
-        self.asset_id = self.settings.touch_enemy
+        self.asset_id = self.settings.tough_enemy
         self.adjust_hitbox(settings, x, y)
 
     def hit(self):
@@ -418,13 +418,13 @@ class Koopa_Paratroopa(Enemy):
         self.image = koopa_shell
         self.state = 1
         self.wait = 1000
-        if self.settings.koopa_paratroopa_id == self.asset_id:
-            self.asset_id = self.settings.koopa_troopa_id
-        if self.settings.koopa_troopa_id == self.asset_id:
-            self.asset_id = self.settings.koopa_shell_id
-        if self.settings.koopa_shell_id == self.asset_id:
+#        if self.settings.koopa_paratroopa_id == self.asset_id:
+#            self.asset_id = self.settings.koopa_troopa_id
+#        if self.settings.koopa_troopa_id == self.asset_id:
+#            self.asset_id = self.settings.koopa_shell_id
+#       if self.settings.koopa_shell_id == self.asset_id:
             # depending on collision, hit it that way
-            pass
+ #           pass
         print("Enemy Down")
 
     def fire_hit(self):
@@ -558,7 +558,7 @@ class Koopa_Troopa(Enemy):
 
                 # Turns the koopa around if he hits an enemy or wall
                 if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x))\
-                        and self.settings.koopa_troopa_id == self.asset_id:
+                        and self.settings.ground_enemy == self.asset_id:
                     self.delta_x *= -1
 
                 self.rect.bottom += self.delta_y
@@ -571,7 +571,7 @@ class Koopa_Troopa(Enemy):
                     # Wait until it's safe to come out!
                     self.wait -= 1
                     if self.wait == 0:
-                        self.asset_id = self.settings.koopa_troopa_id
+                        self.asset_id = self.settings.ground_enemy
                         self.state = 0
 
         else:
