@@ -116,7 +116,7 @@ class Jumpman(Sprite):
         self.update_mask(self.image)
         self.set_pos(start_pos)
         self.swim = swim
-        self.asset_id = 99
+        self.asset_id = self.settings.mario_id
         self.crouching = False
         self.fireball_delay = 0
         self.reset_timer = 240
@@ -182,7 +182,9 @@ class Jumpman(Sprite):
             if collide_rect(item, self):
                 if item.asset_id is self.settings.star_id:
                     item.eat_star()
-                    self.invincible = self.settings.invincible_time
+                    self.invulnerable = True
+                    self.invul_timer = 600
+                    self.asset_id = self.settings.star_power_id
                 elif item.asset_id is self.settings.mushroom_id and self.stage is 0:
                     item.eat_mushroom()
                     if self.stage == 0:
@@ -390,7 +392,8 @@ class Jumpman(Sprite):
                         level.level_id = level.respawn_id
 
         else:
-                self.delta_x = 0
+            self.delta_x = 0
+            if flag.castle is False:
                 self.image = grab[self.stage]
                 self.rect.right = flag.flag_rect.right
                 if self.rect.bottom + self.settings.flag_fall < flag.rect.bottom:
@@ -447,10 +450,7 @@ class Jumpman(Sprite):
         if abs(self.delta_x) < 0.5:
             self.delta_x = 0
         direction_x = get_direction(self.delta_x)
-        if collide_group_x(blocks, self, direction_x):
-            direction_x = 0
-            self.delta_x = 0
-        if collide_check_x(floor, self, direction_x):
+        if collide_group_x(blocks, self, direction_x) or collide_check_x(floor, self, direction_x):
             self.delta_x = 0
             direction_x = 0
         if self.rect.left < 0:
@@ -461,12 +461,11 @@ class Jumpman(Sprite):
         self.rect.bottom += self.delta_y
         direction_y = get_direction(self.delta_y)
 
-        if collide_group_y(blocks, self, direction_y):
+        if collide_group_y(blocks, self, direction_y) or collide_check_y(floor, self, direction_y):
             direction_y = 0
             self.delta_y = 0
-        if collide_check_y(floor, self, direction_y):
-            direction_y = 0
-            self.delta_y = 0
+        elif self.delta_y > self.settings.gravity:
+            self.airborne = True
 
         collide_group_y(enemies, self, direction_y)
         collide_group_x(enemies, self, direction_x)
@@ -477,6 +476,7 @@ class Jumpman(Sprite):
 
             if self.invul_timer == 0:
                 self.invulnerable = False
+                self.asset_id = self.settings.mario_id
             self.invul_timer -= 1
 
         if collide_rect(flag, self):

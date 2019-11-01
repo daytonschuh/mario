@@ -10,6 +10,7 @@ ud_block = pygame.image.load("Resources/Images/Blocks/ud_block.png")
 flag_pole = pygame.image.load("Resources/Images/Blocks/flag_pole.png")
 flag = pygame.image.load("Resources/Images/Blocks/flag.png")
 platform = pygame.image.load("Resources/Images/Blocks/platform.png")
+axe = pygame.image.load("Resources/Images/Blocks/axe.png")
 
 itemappear = pygame.mixer.Sound("Resources/Sounds/smb_powerup_appears.wav")
 breakbricks = pygame.mixer.Sound("Resources/Sounds/smb_breakblock.wav")
@@ -242,13 +243,18 @@ class Uni_directional_platform(Block):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.asset_id = self.settings.platform_id
 
+
 class FlagPole(Sprite):
-    def __init__(self, screen, settings, camera, x, y):
+    def __init__(self, screen, settings, camera, x, y, castle=False):
         super().__init__()
         self.screen = screen
         self.settings = settings
         self.camera = camera
-        self.image = flag_pole
+        self.castle = castle
+        if castle:
+            self.image = axe
+        else:
+            self.image = flag_pole
         self.rect = self.image.get_rect()
         self.rect.left = x * settings.block_size + self.camera.x_pos + 12
         self.x = self.rect.left
@@ -260,23 +266,33 @@ class FlagPole(Sprite):
         self.flag_x = self.flag_rect.left
         self.asset_id = self.settings.flag_id
         self.grabbed = False
+        self.axe_timer = 120
 
     def grab(self):
         self.grabbed = True
 
     def update(self):
         self.rect.left = self.x - self.camera.x_pos
-        self.flag_rect.left = self.flag_x - self.camera.x_pos
-        if self.grabbed:
-            if self.flag_rect.bottom < self.rect.bottom:
-                self.flag_rect.y += 3
-            else:
-                self.grabbed = False
-                self.asset_id = self.settings.auto_id
+        if not self.castle:
+            self.flag_rect.left = self.flag_x - self.camera.x_pos
+            if self.grabbed:
+                if self.flag_rect.bottom < self.rect.bottom:
+                    self.flag_rect.y += 3
+                else:
+                    self.grabbed = False
+                    self.asset_id = self.settings.auto_id
+        else:
+            if self.grabbed:
+                self.axe_timer -= 1
+                if self.axe_timer <= 0:
+                    self.image = i_block
+                    self.grabbed = False
+                    self.asset_id = self.settings.auto_id
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
-        self.screen.blit(self.flag_image, self.flag_rect)
+        if not self.castle:
+            self.screen.blit(self.flag_image, self.flag_rect)
 
 
 class Warp(Sprite):

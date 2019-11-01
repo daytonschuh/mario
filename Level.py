@@ -21,7 +21,7 @@ class Level:
         self.floor = Background(self.screen, self.settings, self.camera, floor_img)
 
         self.mario = Jumpman(self.screen, self.settings, self.camera, 0, 0, mario_pos, swim)
-        self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1])
+        self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1], castle)
         self.time = time
         self.score = 0
 

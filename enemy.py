@@ -76,7 +76,7 @@ class Enemy(Sprite):
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.x = self.rect.left
         self.buffer = 0
-        self.asset_id = self.settings.goomba_id  # goomba is base asset id
+        self.asset_id = self.settings.ground_enemy  # goomba is base asset id
         self.dead = False
 
     def land(self):
@@ -134,7 +134,7 @@ class Blooper(Enemy):
         self.just_jumped = False
         self.image = blooper_1
         self.frames = [blooper_1, blooper_2]
-        self.asset_id = self.settings.lava_bubble_id # enemy can only be killed by fireball
+        self.asset_id = self.settings.no_jump_phase_enemy # enemy can only be killed by fireball
         self.adjust_hitbox(settings, x, y)
         self.y = self.rect.bottom
         self.delta_y = 1
@@ -197,7 +197,7 @@ class Bowser(Enemy):
         self.image = bowser_left_1
         self.face = 0
         self.frames = bowser_walk[self.face][self.buffer]
-        self.asset_id = self.settings.goomba_id
+        self.asset_id = self.settings.touch_enemy
         self.adjust_hitbox(settings, x, y)
 
     def hit(self):
@@ -254,7 +254,10 @@ class Cheep_Cheep(Enemy):
         self.image = cc_left_1
         self.face = 0
         self.frames = cc_move[self.face][self.buffer]
-        self.asset_id = self.settings.no_collision_id
+        if swim:
+            self.asset_id = self.settings.no_jump_phase_enemy
+        else:
+            self.asset_id = self.settings.ground_enemy
         self.adjust_hitbox(settings, x, y)
         self.swim = swim
 
@@ -334,6 +337,7 @@ class Goomba(Enemy):
         self.active = False
         self.image = goomba_walk_1
         self.frames = [goomba_walk_1, goomba_walk_2]
+        self.asset_id = self.settings.ground_enemy
 
     def hit(self):
         self.image = goomba_death
@@ -402,7 +406,7 @@ class Koopa_Paratroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
-        self.asset_id = self.settings.koopa_paratroopa_id
+        self.asset_id = self.settings.ground_enemy
         self.face = 0
         self.image_a = koopa_jump_left_1
         self.frames = [koopa_jump_left_1, koopa_jump_left_2], [koopa_jump_right_1, koopa_jump_right_2]
@@ -498,13 +502,14 @@ class Koopa_Troopa(Enemy):
         self.frames = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
         self.rect = self.image.get_rect()
         self.adjust_hitbox(settings, x, y)
-        self.asset_id = 30
+        self.asset_id = self.settings.ground_enemy
 
     def fire_hit(self):
         self.image = pygame.transform.flip(koopa_shell, False, True)
         self.active = False
         # animate death sequence
         self.bounce()
+        self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
 
     def hit(self):
@@ -513,6 +518,22 @@ class Koopa_Troopa(Enemy):
         self.wait = 1000
         self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
+
+    def kick(self, direction):
+        # Hit is used when:
+            # Mario jumps on a moving shell
+            # Mario jumps on a non-shell koopa(paratroopa)
+        # Kick is used when:
+            # Mario touches a shell(and shell only) when its delta_x = 0
+            # Direction parameter is so mario kicks it away from him, +1 is to the right, -1 if to the left
+        # Check asset_id of 33 in Physics for more shell information
+
+        # When mario kicks the shell it is possible he will get hit immediately
+            # Potential Solutions
+                # give it a asset_id of 33 for the first few frames of motion
+                #
+        # To minimize the above risk the shell movespeed must be >= Mario's max runs peed (6)
+        pass
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
@@ -567,7 +588,7 @@ class Lava_Bubble(Enemy):
         self.face = 0
         self.rect = self.image.get_rect()
         self.adjust_hitbox(settings, x, y)
-        self.asset_id = self.settings.lava_bubble_id
+        self.asset_id = self.settings.pure_phase_enemy
 
     def hit(self):
         pass
@@ -614,7 +635,7 @@ class Piranha_Plant(Enemy):
         self.frames = [piranha_plant_open, piranha_plant_close]
         self.rect = self.image.get_rect()
         self.adjust_hitbox(settings, x, y)
-        self.asset_id = self.settings.piranha_plant_id
+        self.asset_id = self.settings.no_jump_phase_enemy
 
     def hit(self):
         # can be killed with fireball

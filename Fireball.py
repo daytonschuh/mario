@@ -44,8 +44,8 @@ class Fireball(Sprite):
 
         for enemy in enemies:
             if collide_rect(self, enemy):
-                #enemy.fire_hit()
-                enemy.kill()
+                enemy.fire_hit()
+                #enemy.kill()
                 self.kill()
 
         if collide_group_x(blocks, self, self.direction):

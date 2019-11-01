@@ -50,16 +50,22 @@ class Settings:
         self.flower_id = 23
         self.coin_id = 24
 
-        self.goomba_id = 30
-        self.koopa_troopa_id = 31
-        self.koopa_paratroopa_id = 32
-        self.koopa_shell_id = 33
-        self.piranha_plant_id = 34
-        self.lava_bubble_id = 35
-        self.cheep_id = 36
+        # Goombas, Koopas, Koopa Paratroopas, Non-Water Cheep-Cheeps
+        self.ground_enemy = 30
+        # Pirahna Plant, Water Cheep-Cheep, Blooper
+        self.no_jump_phase_enemy = 31
+        # Lava Bubble
+        self.pure_phase_enemy = 32
+        # Koopa, Koopa Paratroopa (SHELLS ONLY)
+        self.slide_enemy = 33
+        # Bowser
+        self.tough_enemy = 34
 
         self.one_way_platform_id = 40
         self.down_platform_id = 40
+
+        self.mario_id = 99
+        self.star_power_id = 100
 
         # Level_ID
         self.W_1_1 = 0
