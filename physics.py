@@ -99,7 +99,7 @@ def collide_group_y(group, entity, direction):
 
 
 def check_event_collision_x(solid, entity, direction):
-    if solid.asset_id == 2 or solid.asset_id == 40 or solid.asset_id == 41:
+    if solid.asset_id == 1 or solid.asset_id == 2 or solid.asset_id == 40 or solid.asset_id == 41:
         return True
 
     if solid.asset_id == 3:
@@ -128,23 +128,27 @@ def check_event_collision_x(solid, entity, direction):
 
 
 def check_event_collision_y(solid, entity, direction):
+
     if solid.asset_id == 0:
         test_rect = entity.rect.copy()
-        test_rect.y += direction
+        test_rect.y -= entity.delta_y
         if collide_rect(entity, solid) or pygame.Rect.colliderect(test_rect, solid.rect):
-            if entity.rect.top - entity.delta_y >= solid.rect.bottom:
+            if entity.rect.top - entity.delta_y >= solid.rect.top:
                 if not solid.active:
-                    entity.rect.top = solid.rect.bottom
-                    if entity.asset_id == 99:
+                    if entity.asset_id >= 99:
+                        entity.rect.top = solid.rect.bottom
                         solid.hit(entity)
+                        return True
+        return False
 
     elif solid.asset_id == 1:
         if collide_rect(entity, solid):
             if entity.rect.top - entity.delta_y <= solid.rect.bottom:
                 return True
             else:
-                if entity.asset_id == 99:
+                if entity.asset_id >= 99:
                     solid.hit(entity)
+                    return False
 
     # Platform collision
     elif solid.asset_id == 2:
