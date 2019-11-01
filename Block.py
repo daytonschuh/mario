@@ -301,7 +301,7 @@ class Warp(Sprite):
         self.screen = screen
         self.settings = settings
         self.camera = camera
-        self.image = d_block
+        self.image = i_block
         self.rect = self.image.get_rect()
         self.rect.left = x * settings.block_size + self.camera.x_pos
         self.x = self.rect.left
