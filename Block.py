@@ -160,9 +160,25 @@ class Platform(Block):
     def update(self):
         super().update()
         if self.active:
-            self.rect.bottom -= 1
+            self.rect.bottom -= 3
             if self.rect.bottom < 0:
                 self.rect.bottom += self.settings.HEIGHT
+
+class invert_Platform(Block):
+    def __init__(self, screen, settings, camera, x, y, level):
+        super().__init__(screen, settings, camera, x, y, level)
+        self.image = platform
+        self.active = True
+        self.rect = self.image.get_rect()
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
+        self.asset_id = self.settings.one_way_platform_id
+
+    def update(self):
+        super().update()
+        if self.active:
+            self.rect.bottom += 3
+            if self.rect.bottom > self.settings.HEIGHT:
+                self.rect.bottom -= self.settings.HEIGHT
 
 
 class horizontal_Platform(Block):
