@@ -571,7 +571,23 @@ def world_2_3(screen, settings, start_pos=None):
 
 def world_2_4(screen, settings, start_pos=None):
     if start_pos is None:
-        start_pos = [6, 4]
+        start_pos = [139, 4]
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-4/2-4_background.png', 'Resources/Images/Backgrounds/World_2/2-4/2-4_floor.png', start_pos, [-32, 1], 500, "2-4", settings.W_2_4, settings.W_1_1, settings.W_2_4, False, True)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-4/2-4_background.png', 'Resources/Images/Backgrounds/World_2/2-4/2-4_floor.png', start_pos, [141, 5], 500, "2-4", settings.W_2_4, settings.W_1_1, settings.W_2_4, False, True)
+    new_level.place_block('plt', 85, 0)
+    new_level.place_block('plt', 85, 9)
+    new_level.place_block('invert_plt', 88, 0)
+    new_level.place_block('invert_plt', 88, 9)
+    new_level.place_block('q', 23, 10, "Power-Up")
+    new_level.place_enemy("lava_bubble", 16.5, 4)
+    new_level.place_enemy("lava_bubble", 30, 4)
+    new_level.place_item("Coin", 102, 1)
+    new_level.place_item("Coin", 103, 1)
+    new_level.place_item("Coin", 104, 1)
+    new_level.place_item("Coin", 102, 5)
+    new_level.place_item("Coin", 103, 5)
+    new_level.place_item("Coin", 104, 5)
+    new_level.place_block('horiz_plt', 134, 7,)
+    new_level.place_enemy("bowser", 139, 5.5)
+
     return new_level
