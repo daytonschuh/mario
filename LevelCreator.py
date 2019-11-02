@@ -309,12 +309,12 @@ def world_1_3(screen, settings, start_pos=None):
 
     return new_level
 
-def world_1_4(screen, settings, start_pos):
+def world_1_4(screen, settings, start_pos=None):
     if start_pos is None:
         start_pos = [10, 1]
 
     new_level = \
-        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_background.png', 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_floor.png', start_pos, [120,120], 500, "1-4", settings.W_1_4, settings.W_2_1, settings.W_1_4, False, True)
+        Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_background.png', 'Resources/Images/Backgrounds/World_1/1-4/level_1_4_floor.png', start_pos, [140, 5], 500, "1-4", settings.W_1_4, settings.W_2_1, settings.W_1_4, False, True)
     new_level.place_block('q', 29.5, 7, "Power-Up")
     new_level.place_block('i', 106.5, 4, "Coin")
     new_level.place_block('i', 109.5, 4, "Coin")
@@ -322,6 +322,8 @@ def world_1_4(screen, settings, start_pos):
     new_level.place_block('i', 107.5, 8, "Coin")
     new_level.place_block('i', 110.5, 8, "Coin")
     new_level.place_block('i', 113.5, 8, "Coin")
+    new_level.place_block('horiz_plt', 128, 7,)
+    new_level.place_enemy("bowser", 138, 5.5)
     return new_level
 
 
