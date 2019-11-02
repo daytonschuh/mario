@@ -603,9 +603,9 @@ class Lava_Bubble(Enemy):
 
         # moving up
         if 0 == self.state:
-            self.rect.bottom -= 1
+            self.rect.bottom -= 7
             self.face = 0
-            if self.rect.bottom < self.settings.HEIGHT - 100:
+            if self.rect.bottom < self.settings.HEIGHT - 300:
                 self.wait = 20
                 self.state = 1
         # delay
@@ -615,10 +615,10 @@ class Lava_Bubble(Enemy):
                 self.state = 2
         # moving down
         if 2 == self.state:
-            self.rect.bottom += 1
+            self.rect.bottom += 7
             self.face = 1
-            if self.rect.bottom > self.settings.HEIGHT - 50:
-                self.wait = 250
+            if self.rect.bottom > self.settings.HEIGHT + 300:
+                self.wait = 1
                 self.state = 3
         # second delay
         if 3 == self.state:
