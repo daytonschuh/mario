@@ -571,7 +571,7 @@ def world_2_3(screen, settings, start_pos=None):
 
 def world_2_4(screen, settings, start_pos=None):
     if start_pos is None:
-        start_pos = [139, 4]
+        start_pos = [2, 4]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-4/2-4_background.png', 'Resources/Images/Backgrounds/World_2/2-4/2-4_floor.png', start_pos, [141, 5], 500, "2-4", settings.W_2_4, settings.W_1_1, settings.W_2_4, False, True)
     new_level.place_block('plt', 85, 0)
