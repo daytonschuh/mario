@@ -99,6 +99,8 @@ class Level:
             new_block = UndergroundBrickBlock(self.screen, self.settings, self.camera, x, y, self, item)
         elif block_type is 'plt':
             new_block = Platform(self.screen, self.settings, self.camera, x, y, self)
+        elif block_type is 'invert_plt':
+            new_block = invert_Platform(self.screen, self.settings, self.camera, x, y, self)
         elif block_type is 'horiz_plt':
             new_block = horizontal_Platform(self.screen, self.settings, self.camera, x, y, self)
         elif block_type is 'invert_horiz_plt':
