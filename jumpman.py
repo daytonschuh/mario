@@ -1,7 +1,4 @@
-import pygame
-from pygame.sprite import Sprite
 from pygame import *
-from physics import *
 from Fireball import *
 
 face_left = pygame.image.load('Resources/Images/Baby_mario/face_left.png')
@@ -34,7 +31,8 @@ big_walk_left_3 = pygame.image.load('Resources/Images/Papa_mario/walk_left_3.png
 fire_walk_left_1 = pygame.image.load('Resources/Images/Fire_mario/walk_left_1.png')
 fire_walk_left_2 = pygame.image.load('Resources/Images/Fire_mario/walk_left_2.png')
 fire_walk_left_3 = pygame.image.load('Resources/Images/Fire_mario/walk_left_3.png')
-walk_left_cycle = [[walk_left_1, walk_left_2, walk_left_3], [big_walk_left_1, big_walk_left_2, big_walk_left_3], [fire_walk_left_1, fire_walk_left_2, fire_walk_left_3]]
+walk_left_cycle = [[walk_left_1, walk_left_2, walk_left_3], [big_walk_left_1, big_walk_left_2, big_walk_left_3],
+                   [fire_walk_left_1, fire_walk_left_2, fire_walk_left_3]]
 walk_right_1 = pygame.image.load('Resources/Images/Baby_mario/walk_right_1.png')
 walk_right_2 = pygame.image.load('Resources/Images/Baby_mario/walk_right_2.png')
 walk_right_3 = pygame.image.load('Resources/Images/Baby_mario/walk_right_3.png')
@@ -44,7 +42,8 @@ big_walk_right_3 = pygame.image.load('Resources/Images/Papa_mario/walk_right_3.p
 fire_walk_right_1 = pygame.image.load('Resources/Images/Fire_mario/walk_right_1.png')
 fire_walk_right_2 = pygame.image.load('Resources/Images/Fire_mario/walk_right_2.png')
 fire_walk_right_3 = pygame.image.load('Resources/Images/Fire_mario/walk_right_3.png')
-walk_right_cycle = [[walk_right_1, walk_right_2, walk_right_3], [big_walk_right_1, big_walk_right_2, big_walk_right_3], [fire_walk_right_1, fire_walk_right_2, fire_walk_right_3]]
+walk_right_cycle = [[walk_right_1, walk_right_2, walk_right_3], [big_walk_right_1, big_walk_right_2, big_walk_right_3],
+                    [fire_walk_right_1, fire_walk_right_2, fire_walk_right_3]]
 transform_a_r = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_1.png')
 transform_b_r = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_2.png')
 transform_a_l = pygame.image.load('Resources/Images/Mario_transitions/transition_to_adult_1_l.png')
@@ -92,9 +91,12 @@ f_swim_right_1 = pygame.image.load('Resources/Images/Fire_mario/swim_right_1.png
 f_swim_right_2 = pygame.image.load('Resources/Images/Fire_mario/swim_right_2.png')
 f_swim_right_3 = pygame.image.load('Resources/Images/Fire_mario/swim_right_3.png')
 f_swim_right_4 = pygame.image.load('Resources/Images/Fire_mario/swim_right_4.png')
-s_swim_list = [[swim_left_1, swim_left_2, swim_left_3, swim_left_4], [swim_right_1, swim_right_2, swim_right_3, swim_right_4]]
-b_swim_list = [[b_swim_left_1, b_swim_left_2, b_swim_left_3, b_swim_left_4], [b_swim_right_1, b_swim_right_2, b_swim_right_3, b_swim_right_4]]
-f_swim_list = [[f_swim_left_1, f_swim_left_2, f_swim_left_3, f_swim_left_4], [f_swim_right_1, f_swim_right_2, f_swim_right_3, f_swim_right_4]]
+s_swim_list = [[swim_left_1, swim_left_2, swim_left_3, swim_left_4],
+               [swim_right_1, swim_right_2, swim_right_3, swim_right_4]]
+b_swim_list = [[b_swim_left_1, b_swim_left_2, b_swim_left_3, b_swim_left_4],
+               [b_swim_right_1, b_swim_right_2, b_swim_right_3, b_swim_right_4]]
+f_swim_list = [[f_swim_left_1, f_swim_left_2, f_swim_left_3, f_swim_left_4],
+               [f_swim_right_1, f_swim_right_2, f_swim_right_3, f_swim_right_4]]
 swim_list = [s_swim_list, b_swim_list, f_swim_list]
 
 pygame.mixer.init()
@@ -120,6 +122,7 @@ class Jumpman(Sprite):
         self.crouching = False
         self.fireball_delay = 0
         self.reset_timer = 240
+        self.level = stage
 
         self.x = self.rect.left
         self.delta_x = 0
@@ -137,8 +140,8 @@ class Jumpman(Sprite):
         self.death_timer = 240
         self.my_warp = None
 
-    def update_mask(self, image):
-        self.mask = pygame.mask.from_surface(image)
+    def update_mask(self, plyr_image):
+        self.mask = pygame.mask.from_surface(plyr_image)
 
     def update_hitbox(self, hitbox_size):
         bottom = self.rect.bottom
@@ -223,7 +226,8 @@ class Jumpman(Sprite):
                     self.buffer_a = 0
 
             if self.delta_x >= 0:
-                if (self.delta_x < self.settings.walk_speed and not shift) or (self.delta_x < self.settings.run_speed and shift):
+                if (self.delta_x < self.settings.walk_speed and not shift) or\
+                        (self.delta_x < self.settings.run_speed and shift):
                     self.delta_x += self.settings.acceleration_x
             elif self.delta_x < 0:
                 self.image = turn[self.stage][self.face]
@@ -240,7 +244,7 @@ class Jumpman(Sprite):
         if self.face is 0:
             self.face = 1
         if 0 <= self.delta_x < self.settings.swim_max_speed:
-                self.delta_x += self.settings.acceleration_x
+            self.delta_x += self.settings.acceleration_x
         elif self.delta_x < 0:
             self.delta_x += self.settings.decceleration_x
 
@@ -248,7 +252,7 @@ class Jumpman(Sprite):
         if self.face is 1:
             self.face = 0
         if 0 >= self.delta_x > -self.settings.swim_max_speed:
-                self.delta_x -= self.settings.acceleration_x
+            self.delta_x -= self.settings.acceleration_x
         elif self.delta_x > 0:
             self.delta_x -= self.settings.decceleration_x
 
@@ -265,7 +269,8 @@ class Jumpman(Sprite):
                 if self.buffer_a >= 24:
                     self.buffer_a = 0
             if self.delta_x <= 0:
-                if (self.delta_x > -self.settings.walk_speed and not shift) or (self.delta_x > -self.settings.run_speed and shift):
+                if (self.delta_x > -self.settings.walk_speed and not shift) or\
+                        (self.delta_x > -self.settings.run_speed and shift):
                     self.delta_x -= self.settings.acceleration_x
             elif self.delta_x > 0:
                 self.image = turn[self.stage][self.face]
@@ -286,7 +291,8 @@ class Jumpman(Sprite):
 
     def fire(self, fireballs):
         if self.stage == 2 and len(fireballs) < 2 and self.fireball_delay == 0:
-            x = self.x + self.settings.WIDTH / 2 - self.settings.block_size / 6 + self.face * face[self.stage][1].get_size()[1] / 2
+            x = self.x + self.settings.WIDTH / 2 - self.settings.block_size / 6 +\
+                self.face * face[self.stage][1].get_size()[1] / 2
             new_fireball = Fireball(self.screen, self.settings, self.camera, x, self.rect.centery, self.face)
             fireballs.add(new_fireball)
             self.fireball_delay = 20
@@ -339,6 +345,8 @@ class Jumpman(Sprite):
 
             else:
                 self.my_warp.load_level()
+
+            self.level = level
 
         else:
             if self.rect.bottom < self.my_warp.rect.bottom:
@@ -418,7 +426,6 @@ class Jumpman(Sprite):
 
         if self.buffer_b > 0:
             self.buffer_b -= 1
-
 
     def land_update(self):
         if self.crouching:
