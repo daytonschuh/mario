@@ -1,7 +1,5 @@
-from pygame.sprite import Sprite
 from pygame import *
 from physics import *
-from itertools import combinations
 
 goomba_walk_1 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_1.png')
 goomba_walk_2 = pygame.image.load('Resources/Images/Enemies/Goomba/walk_2.png')
@@ -24,22 +22,18 @@ fireball_up_3 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/up_3.png
 fireball_down_1 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_1.png')
 fireball_down_2 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_2.png')
 fireball_down_3 = pygame.image.load('Resources/Images/Enemies/Lava_Bubble/down_3.png')
-#fire_bar_spin_1 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_1.png')
-#fire_bar_spin_2 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_2.png')
-#fire_bar_spin_3 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_3.png')
-#fire_bar_spin_4 = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar_spin_4.png')
 blooper_1 = pygame.image.load('Resources/Images/Enemies/Blooper/blooper_1.png')
 blooper_2 = pygame.image.load('Resources/Images/Enemies/Blooper/blooper_2.png')
 bowser_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_left_1.png')
 bowser_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_left_2.png')
 bowser_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_right_1.png')
 bowser_right_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_right_2.png')
-bowser_walk = [[bowser_left_1, bowser_left_2],[bowser_right_1,  bowser_right_2]]
+bowser_walk = [[bowser_left_1, bowser_left_2], [bowser_right_1,  bowser_right_2]]
 bowser_shoot_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_left_1.png')
 bowser_shoot_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_left_2.png')
 bowser_shoot_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_right_1.png')
 bowser_shoot_right_2 = pygame.image.load('Resources/Images/Enemies/Bowser/bowser_shoot_right_2.png')
-bowser_shoot = [[bowser_shoot_left_1,bowser_shoot_left_2],[bowser_shoot_right_1,bowser_shoot_right_2]]
+bowser_shoot = [[bowser_shoot_left_1, bowser_shoot_left_2], [bowser_shoot_right_1, bowser_shoot_right_2]]
 fireball_left_1 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_left_1.png')
 fireball_left_2 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_left_3.png')
 fireball_right_1 = pygame.image.load('Resources/Images/Enemies/Bowser/fireball_right_1.png')
@@ -48,12 +42,13 @@ cc_left_1 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_left_1.
 cc_left_2 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_left_2.png')
 cc_right_1 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_right_1.png')
 cc_right_2 = pygame.image.load('Resources/Images/Enemies/Cheep_Cheep/jump_right_2.png')
-cc_move = [[cc_left_1,cc_left_2],[cc_right_1,cc_right_2]]
+cc_move = [[cc_left_1, cc_left_2], [cc_right_1, cc_right_2]]
 fire_bar = pygame.image.load('Resources/Images/Enemies/Fire_Bar/fire_bar.png')
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 stomp = pygame.mixer.Sound("Resources/Sounds/smb_stomp.wav")
 kick = pygame.mixer.Sound("Resources/Sounds/smb_kick.wav")
+
 
 class Enemy(Sprite):
     """ Base class for enemies. """
@@ -120,6 +115,8 @@ class Enemy(Sprite):
         self.rect.bottom = bottom
         self.rect.left = left
 
+        return self.rect
+
     def fire_hit(self):
         pass
 
@@ -134,8 +131,8 @@ class Blooper(Enemy):
         self.just_jumped = False
         self.image = blooper_1
         self.frames = [blooper_1, blooper_2]
-        self.asset_id = self.settings.no_jump_phase_enemy # enemy can only be killed by fireball
-        self.adjust_hitbox(settings, x, y)
+        self.asset_id = self.settings.no_jump_phase_enemy  # enemy can only be killed by fireball
+        self.rect = self.adjust_hitbox(settings, x, y)
         self.y = self.rect.bottom
         self.delta_y = 1
         self.delta_x = -5
@@ -198,22 +195,20 @@ class Bowser(Enemy):
         self.face = 0
         self.frames = bowser_walk[self.face][self.buffer]
         self.asset_id = self.settings.tough_enemy
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
+        self.hp = 10
 
     def hit(self):
         pass
 
     def fire_hit(self):
-        self.image = pygame.transform.flip(goomba_walk_1, True, False)
-        self.wait = 1000
-        # animate death sequence
-        self.bounce()
-        pygame.mixer.Sound.play(kick)
-        if self.wait > 0:
-            self.wait -= 1
-            self.rect.bottom += 1
-        else:
-            print("Enemy Down")
+        self.hp -= 1
+        if self.hp == 0:
+            self.image = pygame.transform.flip(bowser_walk[self.face][self.buffer], True, False)
+            self.state = 1
+            self.active = False
+            pygame.mixer.Sound.play(kick)
+            self.asset_id = self.settings.no_collision_id
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
@@ -247,7 +242,7 @@ class Bowser(Enemy):
         # kill when mario picks up axe and bridge collapse
 
 
-class Cheep_Cheep(Enemy):
+class CheepCheep(Enemy):
     def __init__(self, screen, settings, camera, x, y, swim=False):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
@@ -258,7 +253,7 @@ class Cheep_Cheep(Enemy):
             self.asset_id = self.settings.no_jump_phase_enemy
         else:
             self.asset_id = self.settings.ground_enemy
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
         self.swim = swim
 
     def hit(self):
@@ -307,14 +302,14 @@ class Cheep_Cheep(Enemy):
                 # settings.points += 100
 
 
-class Fire_Bar(Enemy):
+class FireBar(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
         self.original_image = fire_bar
         self.image = self.original_image
         self.angle = 0
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
 
     def rotate(self):
         """Rotate the image of the sprite around its center."""
@@ -348,22 +343,16 @@ class Goomba(Enemy):
         print("Enemy Down")
 
     def fire_hit(self):
-        self.image = pygame.transform.flip(goomba_walk_1, True, False)
-        self.wait = 1000
-        # animate death sequence
-        self.bounce()
+        self.state = 2
+        self.active = False
         pygame.mixer.Sound.play(kick)
-        if self.wait > 0:
-            self.wait -= 1
-            self.rect.bottom += 1
-        else:
-            print("Enemy Down")
+        self.asset_id = self.settings.no_collision_id
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
+            apply_gravity(self.settings, self)
             if self.state == 0:
                 # animate walking
-                apply_gravity(self.settings, self)
                 if self.buffer % 8 == 0:
                     self.image = self.frames[self.buffer // 8]
                 self.buffer += 1
@@ -398,11 +387,15 @@ class Goomba(Enemy):
                     self.kill()
                     self.state = 0
 
+            if self.state == 2:
+                self.image = pygame.transform.flip(goomba_walk_1, False, True)
+                self.rect.bottom += self.delta_y
+
                 # death sound
                 # settings.points += 100
 
 
-class Koopa_Paratroopa(Enemy):
+class KoopaParatroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
@@ -412,19 +405,12 @@ class Koopa_Paratroopa(Enemy):
         self.frames = [koopa_jump_left_1, koopa_jump_left_2], [koopa_jump_right_1, koopa_jump_right_2]
         self.frames2 = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
         self.rect = self.image.get_rect()
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
 
     def hit(self):
         self.image = koopa_shell
         self.state = 1
         self.wait = 1000
-#        if self.settings.koopa_paratroopa_id == self.asset_id:
-#            self.asset_id = self.settings.koopa_troopa_id
-#        if self.settings.koopa_troopa_id == self.asset_id:
-#            self.asset_id = self.settings.koopa_shell_id
-#       if self.settings.koopa_shell_id == self.asset_id:
-            # depending on collision, hit it that way
- #           pass
         print("Enemy Down")
 
     def fire_hit(self):
@@ -493,7 +479,7 @@ class Koopa_Paratroopa(Enemy):
                     self.state = 0
 
 
-class Koopa_Troopa(Enemy):
+class KoopaTroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
@@ -501,14 +487,14 @@ class Koopa_Troopa(Enemy):
         self.image_a = koopa_walk_left_1
         self.frames = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
         self.rect = self.image.get_rect()
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
         self.asset_id = self.settings.ground_enemy
 
     def fire_hit(self):
         self.image = pygame.transform.flip(koopa_shell, False, True)
         self.active = False
-        # animate death sequence
-        self.bounce()
+        self.state = 3
+        pygame.mixer.Sound.play(kick)
         self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
 
@@ -516,30 +502,34 @@ class Koopa_Troopa(Enemy):
         self.image = koopa_shell
         self.state = 1
         self.wait = 1000
-        self.asset_id = self.settings.no_collision_id
+        if self.asset_id == self.settings.ground_enemy:
+            self.asset_id = self.settings.slide_enemy
+        elif self.asset_id == self.settings.slide_enemy:
+            self.kick()
         print("Enemy Down")
 
-    def kick(self, direction):
+    def kick(self):
+        self.state = 2
+        self.wait = 10
+        pygame.mixer.Sound.play(kick)
         # Hit is used when:
-            # Mario jumps on a moving shell
-            # Mario jumps on a non-shell koopa(paratroopa)
+        # Mario jumps on a moving shell
+        # Mario jumps on a non-shell koopa(paratroopa)
         # Kick is used when:
-            # Mario touches a shell(and shell only) when its delta_x = 0
-            # Direction parameter is so mario kicks it away from him, +1 is to the right, -1 if to the left
+        # Mario touches a shell(and shell only) when its delta_x = 0
+        # Direction parameter is so mario kicks it away from him, +1 is to the right, -1 if to the left
         # Check asset_id of 33 in Physics for more shell information
 
         # When mario kicks the shell it is possible he will get hit immediately
-            # Potential Solutions
-                # give it a asset_id of 33 for the first few frames of motion
-                #
-        # To minimize the above risk the shell movespeed must be >= Mario's max runs peed (6)
-        pass
+        # Potential Solutions
+        # give it a asset_id of 33 for the first few frames of motion
+        # To minimize the above risk the shell movespeed must be >= Mario's max run speed (6)
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
+            apply_gravity(self.settings, self)
             if self.state == 0:
                 # animate walking
-                apply_gravity(self.settings, self)
                 if self.buffer % 8 == 0:
                     self.image = self.frames[self.face][self.buffer // 8]
                 self.buffer += 1
@@ -566,28 +556,48 @@ class Koopa_Troopa(Enemy):
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
                     self.delta_y = False
 
-                # Koopa currently in his shell
-                if self.state == 1:
-                    # Wait until it's safe to come out!
+            # Koopa currently in his shell
+            if self.state == 1:
+                # Wait until it's safe to come out!
+                self.wait -= 1
+                if self.wait == 0:
+                    self.asset_id = self.settings.slide_enemy
+                    self.state = 0
+
+            # Koopa shell has been kicked
+            if self.state == 2:
+                apply_gravity(self.settings, self)
+                if self.wait > 0:
                     self.wait -= 1
-                    if self.wait == 0:
-                        self.asset_id = self.settings.ground_enemy
-                        self.state = 0
+                    self.asset_id = self.settings.no_collision_id
+
+                else:
+                    self.asset_id = self.settings.slide_enemy
+                    self.rect.left += 5
+                    self.x += 5
+                    direction_x = get_direction(self.delta_x)
+                    if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x))\
+                            and self.settings.slide_enemy == self.asset_id:
+                        self.delta_x *= -1
+
+            # Koopa is dying
+            if self.state == 3:
+                self.image = pygame.transform.flip(koopa_shell, False, True)
+                self.rect.bottom += self.delta_y
 
         else:
             apply_gravity(self.settings, self)
             self.kill()
 
 
-class Lava_Bubble(Enemy):
+class LavaBubble(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
         self.image = fireball_up_1
-        self.frames = [fireball_up_1, fireball_up_2, fireball_up_3],[fireball_down_1, fireball_down_2, fireball_down_3]
+        self.frames = [fireball_up_1, fireball_up_2, fireball_up_3], [fireball_down_1, fireball_down_2, fireball_down_3]
         self.face = 0
-        self.rect = self.image.get_rect()
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
         self.asset_id = self.settings.pure_phase_enemy
 
     def hit(self):
@@ -627,15 +637,22 @@ class Lava_Bubble(Enemy):
                 self.state = 0
 
 
-class Piranha_Plant(Enemy):
+class PiranhaPlant(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
         self.image = piranha_plant_open
         self.frames = [piranha_plant_open, piranha_plant_close]
         self.rect = self.image.get_rect()
-        self.adjust_hitbox(settings, x, y)
+        self.rect = self.adjust_hitbox(settings, x, y)
         self.asset_id = self.settings.no_jump_phase_enemy
+
+    def fire_hit(self):
+        self.image = pygame.transform.flip(koopa_shell, False, True)
+        self.active = False
+        self.state = 4
+        pygame.mixer.Sound.play(kick)
+        self.asset_id = self.settings.no_collision_id
 
     def hit(self):
         # can be killed with fireball
@@ -671,16 +688,17 @@ class Piranha_Plant(Enemy):
             self.wait -= 1
             if 0 == self.wait:
                 self.state = 0
-    # up and down delay
-    # behind pipe, in front of backdrop?
-    pass
 
+        if 4 == self.state:
+            self.image = pygame.transform.flip(piranha_plant_open, False, True)
+            self.delta_y = 6
+            self.rect.bottom += self.delta_y
 
 
 """ ANYTHING BEYOND THIS POINT DOES NOT NEED TO BE IMPLEMENTED BEFORE THE DEADLINE """
 
 
-class Bullet_Bill(Enemy):
+class BulletBill(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
             super().__init__(screen, settings, camera, x, y)
             self.active = False
@@ -700,7 +718,7 @@ class Bullet_Bill(Enemy):
     pass
 
 
-class Bill_Blaster(Enemy):
+class BillBlaster(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
         self.active = False
@@ -715,7 +733,7 @@ class Bill_Blaster(Enemy):
     pass
 
 
-class Buzzy_Beetle(Enemy):
+class BuzzyBeetle(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
             super().__init__(screen, settings, camera, x, y)
             self.active = False
@@ -728,7 +746,7 @@ class Buzzy_Beetle(Enemy):
     pass
 
 
-class Hammer_Bro(Enemy):
+class HammerBro(Enemy):
     """def behavior(self, enemies, floor, blocks, mario):
         choices = [1000, 2000]
         # randomly throw stuff and jump
@@ -740,7 +758,7 @@ class Hammer_Bro(Enemy):
 """ TODO: Maybe make a class for hammers thrown by the hammer bro """
 
 
-class Spiny_Egg(Enemy):
+class SpinyEgg(Enemy):
     """def __init__(self, screen, settings, camera, x, y):
             super().__init__(screen, settings, camera, x, y)
             self.active = False
