@@ -65,21 +65,21 @@ class Level:
         if enemy is 'goomba':
             new_enemy = Goomba(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'koopa':
-            new_enemy = Koopa_Troopa(self.screen, self.settings, self.camera, x, y)
+            new_enemy = KoopaTroopa(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'piranha_plant':
-            new_enemy = Piranha_Plant(self.screen, self.settings, self.camera, x, y)
+            new_enemy = PiranhaPlant(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'koopa_paratroopa':
-            new_enemy = Koopa_Paratroopa(self.screen, self.settings, self.camera, x, y)
+            new_enemy = KoopaParatroopa(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'fire_bar':
-            new_enemy = Fire_Bar(self.screen, self.settings, self.camera, x, y)
+            new_enemy = FireBar(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'bowser':
             new_enemy = Bowser(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'blooper':
             new_enemy = Blooper(self.screen, self.settings, self.camera, x, y)
         elif enemy is 'cheep_cheep':
-            new_enemy = Cheep_Cheep(self.screen, self.settings, self.camera, x, y, self.mario.swim)
+            new_enemy = CheepCheep(self.screen, self.settings, self.camera, x, y, self.mario.swim)
         elif enemy is 'lava_bubble':
-            new_enemy = Lava_Bubble(self.screen, self.settings, self.camera, x, y)
+            new_enemy = LavaBubble(self.screen, self.settings, self.camera, x, y)
         else:
             new_enemy = Enemy(self.screen, self.settings, self.camera, x, y)
         self.enemies.add(new_enemy)

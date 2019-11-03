@@ -19,8 +19,8 @@ lvl2_4_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
 
 class SuperMario:
     def __init__(self):
+        pygame.mixer.pre_init(22100, -16, 2, 2048)
         pygame.init()
-        pygame.mixer.init()
         self.clock = pygame.time.Clock()
         self.game_active = False
         self.settings = Settings()

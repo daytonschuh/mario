@@ -200,6 +200,7 @@ class Coin(Sprite):
             self.timer = Timer(12)
         else:
             self.asset_id = self.settings.no_collision_id
+            pygame.mixer.Sound.play(coin_ping)
             self.timer = Timer(1)
 
     def update(self, floor, blocks):
@@ -210,9 +211,8 @@ class Coin(Sprite):
             self.image = coin[self.state]
         self.rect.left = self.x - self.camera.x_pos + self.settings.block_size / 2 - self.image.get_size()[0] / 2
 
-        if self.block_spawn:
+        if self.block_spawn and self.delta_y == 0:
             add_velocity_up(10, self)
-            self.block_spawn = False
         if self.delta_y is not 0:
             self.rect.bottom += self.delta_y
             apply_gravity(self.settings, self)
@@ -223,7 +223,8 @@ class Coin(Sprite):
         self.kill()
         self.scores.scores += self.score
         self.scores.add_coin()
-        pygame.mixer.Sound.play(coin_ping)
+        if not self.block_spawn:
+            pygame.mixer.Sound.play(coin_ping)
 
     def spawn(self):
         pass

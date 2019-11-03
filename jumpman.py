@@ -303,7 +303,7 @@ class Jumpman(Sprite):
         self.jump()
 
     def take_damage(self):
-        if self.invulnerable is False:
+        if self.invulnerable is False and self.stage != -1:
             if self.stage > 0:
                 print("Mario got hit!")
                 self.invul_timer = 100
@@ -311,11 +311,15 @@ class Jumpman(Sprite):
                 self.stage = 0
                 self.update_hitbox(0)
             else:
-                print("Mario died!")
-                self.stage = -1
-                self.image = death
-                pygame.mixer.Sound.play(mariodie)
-                self.delta_y = 0
+                self.set_death()
+
+    def set_death(self):
+        if self.stage != -1:
+            print("Mario died!")
+            self.stage = -1
+            self.image = death
+            pygame.mixer.Sound.play(mariodie)
+            self.delta_y = 0
 
     def land(self):
         self.airborne = False
@@ -451,12 +455,13 @@ class Jumpman(Sprite):
         self.power_up(items, level)
         apply_gravity(self.settings, self, self.swim)
 
-        self.rect.left += self.delta_x
-        self.x += self.delta_x
+        old_x = self.x
         self.delta_x -= get_direction(self.delta_x) * self.settings.decceleration_x
+        self.rect.left += round(self.delta_x)
+        self.x += round(self.delta_x)
         if abs(self.delta_x) < 0.5:
             self.delta_x = 0
-        direction_x = get_direction(self.delta_x)
+        direction_x = get_direction(self.x - old_x)
         if collide_group_x(blocks, self, direction_x) or collide_check_x(floor, self, direction_x):
             self.delta_x = 0
             direction_x = 0
@@ -476,6 +481,8 @@ class Jumpman(Sprite):
 
         collide_group_y(enemies, self, direction_y)
         collide_group_x(enemies, self, direction_x)
+        if self.rect.top >= self.settings.HEIGHT and self.rect.right < self.settings.WIDTH:
+            self.set_death()
 
         if self.invulnerable:
             if self.invul_timer % 4 == 0:
