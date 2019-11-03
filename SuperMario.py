@@ -1,10 +1,20 @@
-import pygame, sys
-from pygame.locals import *
-from Text import *
+import sys
 from Scoring import *
 from Settings import *
 from Button import *
 from LevelCreator import *
+
+# LOAD LEVEL MUSIC
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+pygame.init()
+lvl1_1_bg_music = pygame.mixer.music.load("Resources/Sounds/level_1_theme.wav")
+lvl1_2_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+lvl1_3_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+lvl1_4_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+lvl2_1_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+lvl2_2_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+lvl2_3_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+lvl2_4_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
 
 
 class SuperMario:
@@ -18,7 +28,8 @@ class SuperMario:
         pygame.display.set_caption('Super Mario')
 
         # SET BUTTONS
-        self.play_button = Button(self, "PLAY", self.settings.WIDTH/2 - 100, self.settings.HEIGHT/2) # 100 is the button offset (button width/2)
+        # 100 is the button offset (button width/2)
+        self.play_button = Button(self, "PLAY", self.settings.WIDTH/2 - 100, self.settings.HEIGHT/2)
         self.exit_button = Button(self, "EXIT", self.settings.WIDTH/2 - 100, self.settings.HEIGHT/2 + 100)
 
         # SET GAME HEADER
@@ -33,7 +44,8 @@ class SuperMario:
         self.left, self.right, self.space, self.shift, self.down, self.fire = [False] * 6
 
         # SET SOUNDS
-        #self.lvl1_bg_music = pygame.mixer.Sound('Resources/Sounds/level_1_theme.wav')
+        self.music = lvl1_1_bg_music
+        self.music_channel = pygame.mixer.music.play(0, 0)
 
     def check_level(self):
         if self.level_id == self.level.level_id:
@@ -52,6 +64,7 @@ class SuperMario:
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_1_1_sub:
                 self.level = world_1_1_sub(self.screen, self.settings)
@@ -60,9 +73,13 @@ class SuperMario:
                 self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_1_2:
+                self.music = lvl1_2_bg_music
                 self.level = world_1_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl1_2_bg_music
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_1_2_sub:
                 if old_id == self.settings.W_1_2_sub_sub:
@@ -88,11 +105,17 @@ class SuperMario:
                 self.level = world_1_3(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl1_3_bg_music
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_1_4:
                 self.level = world_1_4(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl1_4_bg_music
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_1:
                 if old_id == self.settings.W_2_1_sub:
@@ -101,6 +124,9 @@ class SuperMario:
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl2_1_bg_music
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_1_sub:
                 self.level = world_2_1_sub(self.screen, self.settings)
@@ -112,6 +138,9 @@ class SuperMario:
                 self.level = world_2_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl2_2_bg_music
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_2_sub:
                 self.level = world_2_2_water(self.screen, self.settings)
@@ -129,11 +158,17 @@ class SuperMario:
                 self.level = world_2_3(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl2_3_bg_music
+                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_4:
                 self.level = world_2_4(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
+                self.music_channel.stop()
+                self.music = lvl2_4_bg_music
+                self.music_channel.play(self.music)
 
             print("Level " + self.level.world + " loaded")
 
