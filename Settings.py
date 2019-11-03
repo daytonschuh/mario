@@ -4,7 +4,7 @@ class Settings:
         self.WIDTH = 768
         self.HEIGHT = 672
         self.fps = 30
-        self.bg_speed = 1 # speed of the background
+        self.bg_speed = 1  # speed of the background
         self.upscale = 3
 
         # Physics Variables
