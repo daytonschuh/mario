@@ -104,6 +104,8 @@ mariodie = pygame.mixer.Sound("Resources/Sounds/smb_mariodie.wav")
 s_jump = pygame.mixer.Sound("Resources/Sounds/smb_jump-small.wav")
 b_jump = pygame.mixer.Sound("Resources/Sounds/smb_jump-super.wav")
 p_down = pygame.mixer.Sound("Resources/Sounds/smb_pipe.wav")
+swim_up = pygame.mixer.Sound("Resources/Sounds/smb_stomp.wav")
+
 
 class Jumpman(Sprite):
     def __init__(self, screen, settings, camera, stage, style, start_pos, swim=False):
@@ -123,7 +125,7 @@ class Jumpman(Sprite):
         self.asset_id = self.settings.mario_id
         self.crouching = False
         self.fireball_delay = 0
-        self.reset_timer = 240
+        self.reset_timer = 360
         self.level = stage
 
         self.x = self.rect.left
@@ -240,6 +242,7 @@ class Jumpman(Sprite):
             self.delta_y = 0
             self.airborne = True
             add_velocity_up(self.settings.swim_up_speed, self)
+            swim_up.play()
             self.buffer_b = 10
 
     def swim_right(self):
