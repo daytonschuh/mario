@@ -466,7 +466,7 @@ def world_2_2(screen, settings, mario_stage, start_pos=None):
     return new_level
 
 
-def world_2_2_water(screen, settings, start_pos=None):
+def world_2_2_water(screen, settings, mario_stage, start_pos=None):
     if start_pos is None:
         start_pos = [3, 10]
     new_level = \
@@ -543,12 +543,12 @@ def world_2_2_exit(screen, settings, mario_stage, start_pos=None):
     return new_level
 
 
-def world_2_3(screen, settings, start_pos=None):
+def world_2_3(screen, settings, mario_stage, start_pos=None):
     if start_pos is None:
         start_pos = [4.5, 1]
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_2/2-3/2-3_background.png',
-              'Resources/Images/Backgrounds/World_2/2-3/2-3_floor.png', start_pos, [225, 2], 500, "2-3",
+              'Resources/Images/Backgrounds/World_2/2-3/2-3_floor.png', mario_stage, start_pos, [225, 2], 500, "2-3",
               settings.W_2_3, settings.W_2_4, settings.W_2_3)
     new_level.place_enemy("cheep_cheep", 17.4, 6.5)
     new_level.place_enemy("cheep_cheep", 27.8, 10)

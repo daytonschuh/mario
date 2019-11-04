@@ -34,7 +34,7 @@ class SuperMario:
         self.game_coin = 0
         # SET LEVEL
         self.mario_stage = 0
-        self.level = world_1_2(self.screen, self.settings, self.mario_stage)
+        self.level = world_2_3(self.screen, self.settings, self.mario_stage)
         self.level_id = self.level.level_id
 
         # SET EVENTS

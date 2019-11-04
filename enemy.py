@@ -253,17 +253,17 @@ class CheepCheep(Enemy):
         self.face = 0
         self.frames = cc_move[self.face][self.buffer]
         self.start_y = y
-        self.start_x = x
         if swim:
             self.face = 0
             self.delta_x = -1
             self.asset_id = self.settings.no_jump_phase_enemy
         else:
             self.face = 1
-            self.delta_x = 2
+            self.delta_x = 5
             self.asset_id = self.settings.fish_enemy
         self.rect = self.adjust_hitbox(settings, x, y)
         self.swim = swim
+        self.distance = 0
 
     def hit(self):
         self.state = 1
@@ -290,17 +290,19 @@ class CheepCheep(Enemy):
             print("Enemy Down")
 
     def bounce(self):
+        self.rect.left -= self.distance*5
+        self.x -= self.distance*5
+        self.distance = 0
         self.delta_y = 0
         self.rect.top = self.settings.HEIGHT
-        add_velocity_up(self.start_y*1.5 + 14, self)
-        self.rect.left = self.start_x * self.settings.block_size + self.camera.x_pos
-        self.x = self.rect.left
+        add_velocity_up(self.start_y*2 + 10, self)
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             if self.state == 0:
                 # animate walking
                 if not self.swim:
+                    self.distance += 1
                     apply_gravity(self.settings, self)
                     if self.rect.top > self.settings.HEIGHT:
                         self.bounce()
@@ -313,8 +315,6 @@ class CheepCheep(Enemy):
                 # check collisions
                 self.rect.left += self.delta_x
                 self.x += self.delta_x
-                direction_x = get_direction(self.delta_x)
-
                 self.rect.bottom += self.delta_y
 
             # animate death
