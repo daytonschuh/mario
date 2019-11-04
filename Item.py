@@ -1,5 +1,3 @@
-import pygame
-from pygame.sprite import Sprite
 from Timer import Timer
 from physics import *
 
@@ -19,7 +17,7 @@ flower_c = pygame.image.load('Resources/Images/Items/flower_c.png')
 flower_d = pygame.image.load('Resources/Images/Items/flower_d.png')
 flower = [flower_a, flower_b, flower_c, flower_d]
 coin_ping = pygame.mixer.Sound("Resources/Sounds/smb_coin.wav")
-
+power_up = pygame.mixer.Sound("Resources/Sounds/smb_powerup.wav")
 
 
 class Mushroom(Sprite):
@@ -93,6 +91,7 @@ class Mushroom(Sprite):
         self.screen.blit(self.image, self.rect)
 
     def eat_mushroom(self):
+        pygame.mixer.Sound.play(power_up)
         self.kill()
         self.scores.scores += self.score
 
@@ -122,6 +121,7 @@ class FireFlower(Mushroom):
             self.frame = 0
 
     def eat_flower(self):
+        pygame.mixer.Sound.play(power_up)
         self.kill()
         self.scores.scores += self.score
 
@@ -171,7 +171,7 @@ class GreenMushroom(Mushroom):
 
     def eat_green_mushroom(self):
         self.kill()
-        #Give player 1+ life
+        # Give player 1+ life
         self.scores.scores += self.score
 
 
@@ -191,7 +191,8 @@ class Coin(Sprite):
         else:
             self.x = true_x
         self.rect.left = self.x - self.camera.x_pos + self.settings.block_size/2 - self.image.get_size()[0]/2
-        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size) - self.settings.block_size/2 + self.image.get_size()[1]/2
+        self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size) - self.settings.block_size/2 +\
+            self.image.get_size()[1]/2
         self.block_spawn = block_spawn
         self.delta_x = 0
         self.delta_y = 0
