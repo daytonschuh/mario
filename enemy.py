@@ -73,6 +73,7 @@ class Enemy(Sprite):
         self.buffer = 0
         self.asset_id = self.settings.ground_enemy  # goomba is base asset id
         self.dead = False
+        self.mario_on_left = True
 
     def land(self):
         self.airborne = False
@@ -141,8 +142,9 @@ class Blooper(Enemy):
         pass
 
     def fire_hit(self):
-        self.image = pygame.transform.flip(goomba_walk_1, True, False)
+        self.image = pygame.transform.flip(blooper_1, True, False)
         self.wait = 1000
+        self.asset_id = self.settings.no_collision_id
         # animate death sequence
         self.state = 1
         self.bounce()
@@ -196,7 +198,7 @@ class Bowser(Enemy):
         self.frames = bowser_walk[self.face][self.buffer]
         self.asset_id = self.settings.tough_enemy
         self.rect = self.adjust_hitbox(settings, x, y)
-        self.hp = 10
+        self.hp = 5
 
     def hit(self):
         pass
@@ -275,6 +277,7 @@ class CheepCheep(Enemy):
         self.asset_id = self.settings.no_collision_id
         self.image = pygame.transform.flip(cc_left_1, True, False)
         self.wait = 1000
+        self.asset_id = self.settings.no_collision_id
         # animate death sequence
         self.bounce()
         pygame.mixer.Sound.play(kick)
@@ -439,6 +442,7 @@ class KoopaParatroopa(Enemy):
 
     def fire_hit(self):
         self.image = pygame.transform.flip(koopa_shell, True, False)
+        self.asset_id = self.settings.no_collision_id
         self.wait = 1000
         # animate death sequence
         self.bounce()
@@ -524,6 +528,7 @@ class KoopaTroopa(Enemy):
 
     def hit(self):
         self.image = koopa_shell
+        self.rect = self.image.get_rect(bottom=self.rect.bottom)
         self.state = 1
         self.wait = 1000
         if self.asset_id == self.settings.ground_enemy:
@@ -534,7 +539,12 @@ class KoopaTroopa(Enemy):
 
     def kick(self):
         self.state = 2
-        self.wait = 10
+        self.wait = 50
+        if self.mario_on_left:
+            self.delta_x = 7
+        else:
+            self.delta_x = -7
+        self.asset_id = self.settings.no_collision_id
         pygame.mixer.Sound.play(kick)
         # Hit is used when:
         # Mario jumps on a moving shell
@@ -584,25 +594,29 @@ class KoopaTroopa(Enemy):
             if self.state == 1:
                 # Wait until it's safe to come out!
                 self.wait -= 1
+
                 if self.wait == 0:
                     self.asset_id = self.settings.slide_enemy
                     self.state = 0
 
+                if mario.rect.right <= self.rect.left:
+                    self.mario_on_left = True
+                else:
+                    self.mario_on_left = False
+
             # Koopa shell has been kicked
             if self.state == 2:
-                apply_gravity(self.settings, self)
-                if self.wait > 0:
-                    self.wait -= 1
-                    self.asset_id = self.settings.no_collision_id
+                self.rect.left += self.delta_x
+                self.x += self.delta_x
+                direction_x = get_direction(self.delta_x)
 
-                else:
+                if collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x):
+                    self.delta_x *= -1
+
+                self.wait -= 1
+
+                if self.wait < 0:
                     self.asset_id = self.settings.slide_enemy
-                    self.rect.left += 5
-                    self.x += 5
-                    direction_x = get_direction(self.delta_x)
-                    if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x))\
-                            and self.settings.slide_enemy == self.asset_id:
-                        self.delta_x *= -1
 
             # Koopa is dying
             if self.state == 3:
