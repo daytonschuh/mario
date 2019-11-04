@@ -101,6 +101,8 @@ swim_list = [s_swim_list, b_swim_list, f_swim_list]
 
 pygame.mixer.init()
 mariodie = pygame.mixer.Sound("Resources/Sounds/smb_mariodie.wav")
+s_jump = pygame.mixer.Sound("Resources/Sounds/smb_jump-small.wav")
+b_jump = pygame.mixer.Sound("Resources/Sounds/smb_jump-super.wav")
 
 
 class Jumpman(Sprite):
@@ -281,6 +283,10 @@ class Jumpman(Sprite):
             self.airborne = True
             self.buffer_a = 0
             self.buffer_b = 0
+            if self.stage == 0:
+                s_jump.play()
+            else:
+                b_jump.play()
 
         if self.buffer_b < 9 and self.buffer_b % 3 == 0:
             run_bonus = 0

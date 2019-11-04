@@ -188,7 +188,7 @@ class horizontal_Platform(Block):
         self.rect = self.image.get_rect()
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.rect.x = self.rect.right
-        self.asset_id = self.settings.one_way_platform_id
+        self.asset_id = self.settings.platform_id
         self.track = 0
         self.speed = 2
 
@@ -210,7 +210,7 @@ class invert_horizontal_Platform(Block):
         self.rect = self.image.get_rect()
         self.rect.bottom = self.settings.HEIGHT - ((0.5 + y) * settings.block_size)
         self.rect.x = self.rect.right
-        self.asset_id = self.settings.one_way_platform_id
+        self.asset_id = self.settings.platform_id
         self.track = 0
         self.speed = 2
 

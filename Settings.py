@@ -50,7 +50,7 @@ class Settings:
         self.flower_id = 23
         self.coin_id = 24
 
-        # Goombas, Koopas, Koopa Paratroopas, Non-Water Cheep-Cheeps
+        # Goombas, Koopas, Koopa Paratroopas
         self.ground_enemy = 30
         # Pirahna Plant, Water Cheep-Cheep, Blooper
         self.no_jump_phase_enemy = 31
@@ -60,6 +60,8 @@ class Settings:
         self.slide_enemy = 33
         # Bowser
         self.tough_enemy = 34
+        # Cheep Cheep Ground version
+        self.fish_enemy = 35
 
         self.one_way_platform_id = 40
         self.down_platform_id = 40

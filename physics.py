@@ -108,7 +108,7 @@ def check_event_collision_x(solid, entity, direction):
     if solid.asset_id == 10:
         return True
 
-    if 30 <= solid.asset_id <= 34 and entity.asset_id == 99:
+    if 30 <= solid.asset_id <= 35 and entity.asset_id == 99:
         if collide_rect(entity, solid):
             if solid.asset_id != 33 or solid.delta_x != 0:
                 entity.take_damage()
@@ -119,7 +119,7 @@ def check_event_collision_x(solid, entity, direction):
                     solid.kick(1)
         return True
 
-    if 30 <= solid.asset_id <= 34 and entity.asset_id == 100:
+    if 30 <= solid.asset_id <= 35 and entity.asset_id == 100:
         if collide_rect(entity, solid):
             solid.fire_hit()
         return True
@@ -193,9 +193,9 @@ def check_event_collision_y(solid, entity, direction):
     if solid.asset_id == 10:
         return True
 
-    if solid.asset_id == 30 and entity.asset_id == 99:
+    if solid.asset_id == 30  or solid.asset_id == 35 and entity.asset_id == 99:
         if collide_rect(entity, solid):
-            if entity.rect.bottom - entity.delta_y <= solid.rect.top and direction > 0:
+            if entity.rect.bottom <= solid.rect.bottom:
                 entity.bounce()
                 solid.hit()
             else:
@@ -214,7 +214,7 @@ def check_event_collision_y(solid, entity, direction):
                 entity.bounce()
         return True
 
-    if 30 <= solid.asset_id <= 34 and entity.asset_id == 100:
+    if 30 <= solid.asset_id <= 35 and entity.asset_id == 100:
         if collide_rect(entity, solid):
             solid.fire_hit()
             return True

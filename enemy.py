@@ -249,17 +249,30 @@ class CheepCheep(Enemy):
         self.image = cc_left_1
         self.face = 0
         self.frames = cc_move[self.face][self.buffer]
+        self.start_y = y
+        self.start_x = x
         if swim:
+            self.face = 0
+            self.delta_x = -1
             self.asset_id = self.settings.no_jump_phase_enemy
         else:
-            self.asset_id = self.settings.ground_enemy
+            self.face = 1
+            self.delta_x = 2
+            self.asset_id = self.settings.fish_enemy
         self.rect = self.adjust_hitbox(settings, x, y)
         self.swim = swim
 
     def hit(self):
+        self.state = 1
+        self.delta_y = 0
+        pygame.mixer.Sound.play(stomp)
+        self.buffer = 0
+        self.asset_id = self.settings.no_collision_id
+        print("Enemy Down")
         pass
 
     def fire_hit(self):
+        self.asset_id = self.settings.no_collision_id
         self.image = pygame.transform.flip(cc_left_1, True, False)
         self.wait = 1000
         # animate death sequence
@@ -271,12 +284,21 @@ class CheepCheep(Enemy):
         else:
             print("Enemy Down")
 
+    def bounce(self):
+        self.delta_y = 0
+        self.rect.top = self.settings.HEIGHT
+        add_velocity_up(self.start_y*1.5 + 14, self)
+        self.rect.left = self.start_x * self.settings.block_size + self.camera.x_pos
+        self.x = self.rect.left
+
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             if self.state == 0:
                 # animate walking
                 if not self.swim:
                     apply_gravity(self.settings, self)
+                    if self.rect.top > self.settings.HEIGHT:
+                        self.bounce()
                 if self.buffer % 8 == 0:
                     self.image = cc_move[self.face][self.buffer // 32]
                 self.buffer += 1
@@ -293,6 +315,8 @@ class CheepCheep(Enemy):
             # animate death
             if self.state == 1:
                 # death animation
+                apply_gravity(self.settings, self)
+                self.rect.top += self.delta_y
                 self.buffer += 1
                 if self.buffer > 16:
                     self.kill()
