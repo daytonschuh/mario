@@ -111,7 +111,7 @@ class Jumpman(Sprite):
         self.screen = screen
         self.settings = settings
         self.camera = camera
-        self.stage = 0
+        self.stage = stage
         self.style = style
         self.state = 0
         self.image = face[self.stage][1]

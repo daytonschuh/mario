@@ -102,13 +102,13 @@ def check_event_collision_x(solid, entity, direction):
     if solid.asset_id == 1 or solid.asset_id == 2 or solid.asset_id == 40 or solid.asset_id == 41:
         return True
 
-    if solid.asset_id == 3:
+    elif solid.asset_id == 3:
         return True
 
-    if solid.asset_id == 10:
+    elif solid.asset_id == 10:
         return True
 
-    if 30 <= solid.asset_id <= 35 and entity.asset_id == 99:
+    elif 30 <= solid.asset_id <= 35 and entity.asset_id == 99:
         if collide_rect(entity, solid):
             if solid.asset_id != 33 or solid.delta_x != 0:
                 entity.take_damage()
@@ -119,7 +119,7 @@ def check_event_collision_x(solid, entity, direction):
                     solid.kick(1)
         return True
 
-    if 30 <= solid.asset_id <= 35 and entity.asset_id == 100:
+    elif 30 <= solid.asset_id <= 35 and entity.asset_id == 100:
         if collide_rect(entity, solid):
             solid.fire_hit()
         return True
@@ -190,31 +190,33 @@ def check_event_collision_y(solid, entity, direction):
                 entity.land()
         return True
 
-    if solid.asset_id == 10:
+    elif solid.asset_id == 10:
         return True
 
-    if solid.asset_id == 30  or solid.asset_id == 35 and entity.asset_id == 99:
+    elif solid.asset_id == 30 or solid.asset_id == 35 and entity.asset_id == 99:
         if collide_rect(entity, solid):
-            if entity.rect.bottom <= solid.rect.bottom:
+            if entity.rect.bottom <= solid.rect.centery:
                 entity.bounce()
                 solid.hit()
             else:
                 entity.take_damage()
             return True
 
-    if solid.asset_id == 33 and entity.asset_id == 99:
+    elif solid.asset_id == 33 and entity.asset_id == 99:
         if collide_rect(entity, solid):
             if solid.delta_x == 0:
                 if entity.rect.centerx >= solid.rect.centerx:
                     solid.kick(-1)
                 else:
                     solid.kick(1)
-            else:
+            elif entity.rect.bottom <= solid.rect.centery:
                 solid.hit()
                 entity.bounce()
+            else:
+                entity.take_damage()
         return True
 
-    if 30 <= solid.asset_id <= 35 and entity.asset_id == 100:
+    elif 30 <= solid.asset_id <= 35 and entity.asset_id == 100:
         if collide_rect(entity, solid):
             solid.fire_hit()
             return True
@@ -242,15 +244,16 @@ def enemy_to_enemy_collision(enemies):
 
             # shells kill enemies that aren't bowser including other shells if they are moving
             # if shells are not moving ground enemies turn around when touching it
-            id_1, dx1 = one.asset_id, one.delta_x
-            id_2, dx2 = two.asset_id, two.delta_x
-            if id_1 == 33 and 30 <= id_2 <= 33:
-                if dx1 != 0:
-                    two.fire_hit()
-                elif id_1 == 30:
-                    two.delta_x *= -1
-            if id_2 == 33 and 30 <= id_2 <= 33:
-                if dx2 != 0:
-                    one.fire_hit()
-                elif id_2 == 30:
-                    two.delta_x *= -1
+            else:
+                id_1, dx1 = one.asset_id, one.delta_x
+                id_2, dx2 = two.asset_id, two.delta_x
+                if id_1 == 33 and 30 <= id_2 <= 35:
+                    if dx1 != 0:
+                        two.fire_hit()
+                    elif id_1 == 30:
+                        two.delta_x *= -1
+                if id_2 == 33 and 30 <= id_1 <= 35:
+                    if dx2 != 0:
+                        one.fire_hit()
+                    elif id_2 == 30:
+                        two.delta_x *= -1
