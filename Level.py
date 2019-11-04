@@ -13,14 +13,14 @@ from LevelCreator import *
 
 
 class Level:
-    def __init__(self, screen, settings, bg_img, floor_img, mario_pos, flag_pos, time, world, level_id, next_id, respawn_id, swim=False, castle=False):
+    def __init__(self, screen, settings, bg_img, floor_img, mario_stage, mario_pos, flag_pos, time, world, level_id, next_id, respawn_id, swim=False, castle=False):
         self.screen = screen
         self.settings = settings
         self.camera = Camera(self.settings, pygame.image.load(bg_img))
         self.background = Background(self.screen, self.settings, self.camera, bg_img)
         self.floor = Background(self.screen, self.settings, self.camera, floor_img)
 
-        self.mario = Jumpman(self.screen, self.settings, self.camera, 0, 0, mario_pos, swim)
+        self.mario = Jumpman(self.screen, self.settings, self.camera, mario_stage, 0, mario_pos, swim)
         self.flag = FlagPole(self.screen, self.settings, self.camera, flag_pos[0], flag_pos[1], castle)
         self.time = time
         self.score = 0

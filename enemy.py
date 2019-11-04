@@ -149,6 +149,7 @@ class Blooper(Enemy):
         self.state = 1
         self.bounce()
         pygame.mixer.Sound.play(kick)
+        self.asset_id = self.settings.no_collision_id
         if self.wait > 0:
             self.wait -= 1
             self.rect.bottom += 1
@@ -281,6 +282,7 @@ class CheepCheep(Enemy):
         # animate death sequence
         self.bounce()
         pygame.mixer.Sound.play(kick)
+        self.asset_id = self.settings.no_collision_id
         if self.wait > 0:
             self.wait -= 1
             self.rect.bottom += 1
@@ -422,91 +424,6 @@ class Goomba(Enemy):
                 # settings.points += 100
 
 
-class KoopaParatroopa(Enemy):
-    def __init__(self, screen, settings, camera, x, y):
-        super().__init__(screen, settings, camera, x, y)
-        self.active = False
-        self.asset_id = self.settings.ground_enemy
-        self.face = 0
-        self.image_a = koopa_jump_left_1
-        self.frames = [koopa_jump_left_1, koopa_jump_left_2], [koopa_jump_right_1, koopa_jump_right_2]
-        self.frames2 = [koopa_walk_left_1, koopa_walk_left_2], [koopa_walk_right_1, koopa_walk_right_2]
-        self.rect = self.image.get_rect()
-        self.rect = self.adjust_hitbox(settings, x, y)
-
-    def hit(self):
-        self.image = koopa_shell
-        self.state = 1
-        self.wait = 1000
-        print("Enemy Down")
-
-    def fire_hit(self):
-        self.image = pygame.transform.flip(koopa_shell, True, False)
-        self.asset_id = self.settings.no_collision_id
-        self.wait = 1000
-        # animate death sequence
-        self.bounce()
-        if self.wait > 0:
-            self.wait -= 1
-            self.rect.bottom += 10
-        else:
-            self.kill()
-        print("Enemy Down")
-
-    def land(self):
-        super().land()
-        self.bounce()
-
-    def behavior(self, enemies, floor, blocks, mario):
-        if self.active:
-            if self.state == 0:
-                # animate movement
-                apply_gravity(self.settings, self)
-                if self.asset_id == self.settings.koopa_paratroopa_id:
-                    if self.buffer % 8 == 0:
-                        self.image = self.frames[self.face][self.buffer // 16]
-                    self.buffer += 1
-                    if self.buffer >= 32:
-                        self.buffer = 0
-
-                else:
-                    if self.buffer % 8 == 0:
-                        self.image = self.frames2[self.face][self.buffer // 16]
-                    self.buffer += 1
-                    if self.buffer >= 32:
-                        self.buffer = 0
-
-                # check collisions
-                self.rect.left += self.delta_x
-                self.x += self.delta_x
-                direction_x = get_direction(self.delta_x)
-
-                if direction_x > 0:
-                    self.face = 1
-                elif direction_x < 0:
-                    self.face = 0
-
-                # Turns the koopa around if he hits an enemy or wall
-                if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x)) \
-                        and self.settings.koopa_troopa_id == self.asset_id:
-                    self.delta_x *= -1
-
-                self.rect.bottom += self.delta_y
-                direction_y = get_direction(self.delta_y)
-                if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
-                    self.delta_y = 0
-                    if direction_y > 0:
-                        self.land()
-
-            # Koopa currently in his shell
-            if self.state == 1:
-                # Wait until it's safe to come out!
-                self.wait -= 1
-                if self.wait == 0:
-                    self.asset_id = self.settings.koopa_troopa_id
-                    self.state = 0
-
-
 class KoopaTroopa(Enemy):
     def __init__(self, screen, settings, camera, x, y):
         super().__init__(screen, settings, camera, x, y)
@@ -530,46 +447,22 @@ class KoopaTroopa(Enemy):
         self.image = koopa_shell
         self.rect = self.image.get_rect(bottom=self.rect.bottom)
         self.state = 1
-        self.wait = 1000
-        if self.asset_id == self.settings.ground_enemy:
-            self.asset_id = self.settings.slide_enemy
-        elif self.asset_id == self.settings.slide_enemy:
-            self.kick()
+        self.delta_x = 0
+        self.wait = 10
+        self.asset_id = self.settings.no_collision_id
         print("Enemy Down")
 
-    def kick(self):
+    def kick(self, direction):
         self.state = 2
-        self.wait = 50
-        if self.mario_on_left:
-            self.delta_x = 7
-        else:
-            self.delta_x = -7
+        self.wait = 10
+        self.delta_x = 7 * direction
         self.asset_id = self.settings.no_collision_id
         pygame.mixer.Sound.play(kick)
-        # Hit is used when:
-        # Mario jumps on a moving shell
-        # Mario jumps on a non-shell koopa(paratroopa)
-        # Kick is used when:
-        # Mario touches a shell(and shell only) when its delta_x = 0
-        # Direction parameter is so mario kicks it away from him, +1 is to the right, -1 if to the left
-        # Check asset_id of 33 in Physics for more shell information
-
-        # When mario kicks the shell it is possible he will get hit immediately
-        # Potential Solutions
-        # give it a asset_id of 33 for the first few frames of motion
-        # To minimize the above risk the shell movespeed must be >= Mario's max run speed (6)
 
     def behavior(self, enemies, floor, blocks, mario):
         if self.active:
             apply_gravity(self.settings, self)
-            if self.state == 0:
-                # animate walking
-                if self.buffer % 8 == 0:
-                    self.image = self.frames[self.face][self.buffer // 8]
-                self.buffer += 1
-                if self.buffer >= 16:
-                    self.buffer = 0
-
+            if self.state < 3:
                 # check collisions
                 self.rect.left += self.delta_x
                 self.x += self.delta_x
@@ -581,51 +474,85 @@ class KoopaTroopa(Enemy):
                     self.face = 0
 
                 # Turns the koopa around if he hits an enemy or wall
-                if (collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x))\
-                        and self.settings.ground_enemy == self.asset_id:
+                if collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x):
                     self.delta_x *= -1
 
                 self.rect.bottom += self.delta_y
                 direction_y = get_direction(self.delta_y)
                 if collide_check_y(floor, self, direction_y) or collide_group_y(blocks, self, direction_y):
-                    self.delta_y = False
+                    if self.delta_y > 0:
+                        self.delta_y = 0
+            self.wait -= 1
+
+            if self.state == 0:
+                # animate walking
+                if self.buffer % 8 == 0:
+                    self.image = self.frames[self.face][self.buffer // 8]
+                self.buffer += 1
+                if self.buffer >= 16:
+                    self.buffer = 0
+                if self.wait < 0 and self.asset_id == self.settings.no_collision_id:
+                    self.asset_id = self.settings.ground_enemy
 
             # Koopa currently in his shell
-            if self.state == 1:
+            elif self.state == 1:
                 # Wait until it's safe to come out!
-                self.wait -= 1
-
-                if self.wait == 0:
-                    self.asset_id = self.settings.slide_enemy
-                    self.state = 0
-
-                if mario.rect.right <= self.rect.left:
-                    self.mario_on_left = True
-                else:
-                    self.mario_on_left = False
+                if self.wait < 0:
+                    if self.asset_id == self.settings.slide_enemy:
+                        self.asset_id = self.settings.ground_enemy
+                        if self.face == 0:
+                            self.delta_x = 1
+                        else:
+                            self.delta_x = -1
+                        self.state = 0
+                    else:
+                        self.asset_id = self.settings.slide_enemy
+                        self.wait = 1000
 
             # Koopa shell has been kicked
-            if self.state == 2:
-                self.rect.left += self.delta_x
-                self.x += self.delta_x
-                direction_x = get_direction(self.delta_x)
-
-                if collide_check_x(floor, self, direction_x) or collide_group_x(blocks, self, direction_x):
-                    self.delta_x *= -1
-
-                self.wait -= 1
-
+            elif self.state == 2:
                 if self.wait < 0:
                     self.asset_id = self.settings.slide_enemy
 
             # Koopa is dying
-            if self.state == 3:
+            elif self.state == 3:
                 self.image = pygame.transform.flip(koopa_shell, False, True)
                 self.rect.bottom += self.delta_y
 
         else:
             apply_gravity(self.settings, self)
-            self.kill()
+            #self.kill()
+
+
+class KoopaParatroopa(KoopaTroopa):
+    def __init__(self, screen, settings, camera, x, y):
+        super().__init__(screen, settings, camera, x, y)
+        self.jump_frames = [koopa_jump_left_1, koopa_jump_left_2], [koopa_jump_right_1, koopa_jump_right_2]
+        self.state = -1
+
+    def land(self):
+        super().land()
+        if self.state == -1:
+            self.bounce()
+
+    def hit(self):
+        if self.state == -1:
+            self.state = 0
+            self.asset_id = self.settings.no_collision_id
+            self.wait = 10
+        else:
+            super().hit()
+
+    def behavior(self, enemies, floor, blocks, mario):
+        super().behavior(enemies, floor, blocks, mario)
+        if self.active:
+            if self.state == -1:
+                # animate walking
+                if self.buffer % 8 == 0:
+                    self.image = self.jump_frames[self.face][self.buffer // 8]
+                self.buffer += 1
+                if self.buffer >= 16:
+                    self.buffer = 0
 
 
 class LavaBubble(Enemy):

@@ -34,7 +34,7 @@ class SuperMario:
         self.game_coin = 0
         # SET LEVEL
         self.mario_stage = 0
-        self.level = world_2_3(self.screen, self.settings)
+        self.level = world_1_2(self.screen, self.settings, self.mario_stage)
         self.level_id = self.level.level_id
 
         # SET EVENTS
@@ -50,6 +50,7 @@ class SuperMario:
             return
         else:
             self.level.scores.set_stats(self.game_score, self.game_time)
+            self.mario_stage = self.level.mario.stage
             old_id = self.level_id
             start_pos = None
             if self.level.level_id is not None:
@@ -61,7 +62,7 @@ class SuperMario:
                 pygame.mixer.music.play(-1)
                 if old_id == self.settings.W_1_1_sub:
                     start_pos = [163.5, 2]
-                self.level = world_1_1(self.screen, self.settings, start_pos)
+                self.level = world_1_1(self.screen, self.settings, self.mario_stage, start_pos)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
@@ -71,7 +72,7 @@ class SuperMario:
                     self.music = ug_theme
                     pygame.mixer.music.load(self.music)
                     pygame.mixer.music.play(-1)
-                self.level = world_1_1_sub(self.screen, self.settings)
+                self.level = world_1_1_sub(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
@@ -80,7 +81,7 @@ class SuperMario:
                 self.music = ow_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_1_2(self.screen, self.settings)
+                self.level = world_1_2(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
 
@@ -91,7 +92,7 @@ class SuperMario:
                     pygame.mixer.music.play(-1)
                 if old_id == self.settings.W_1_2_sub_sub:
                     start_pos = [115.5, 3]
-                self.level = world_1_2_sub(self.screen, self.settings, start_pos)
+                self.level = world_1_2_sub(self.screen, self.settings, self.mario_stage, start_pos)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
@@ -101,7 +102,7 @@ class SuperMario:
                     self.music = ug_theme
                     pygame.mixer.music.load(self.music)
                     pygame.mixer.music.play(-1)
-                self.level = world_1_2_sub_sub(self.screen, self.settings)
+                self.level = world_1_2_sub_sub(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
@@ -111,7 +112,7 @@ class SuperMario:
                     self.music = ow_theme
                     pygame.mixer.music.load(self.music)
                     pygame.mixer.music.play(-1)
-                self.level = world_1_2_exit(self.screen, self.settings)
+                self.level = world_1_2_exit(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
@@ -120,7 +121,7 @@ class SuperMario:
                 self.music = ow_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_1_3(self.screen, self.settings)
+                self.level = world_1_3(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
 
@@ -128,7 +129,7 @@ class SuperMario:
                 self.music = c_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_1_4(self.screen, self.settings)
+                self.level = world_1_4(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
 
@@ -138,7 +139,7 @@ class SuperMario:
                 self.music = ow_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_2_1(self.screen, self.settings, start_pos)
+                self.level = world_2_1(self.screen, self.settings, self.mario_stage, start_pos)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
@@ -148,7 +149,7 @@ class SuperMario:
                     self.music = ug_theme
                     pygame.mixer.music.load(self.music)
                     pygame.mixer.music.play(-1)
-                self.level = world_2_1_sub(self.screen, self.settings)
+                self.level = world_2_1_sub(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
@@ -157,7 +158,7 @@ class SuperMario:
                 self.music = ow_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_2_2(self.screen, self.settings)
+                self.level = world_2_2(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
 
@@ -166,7 +167,7 @@ class SuperMario:
                     self.music = uw_theme
                     pygame.mixer.music.load(self.music)
                     pygame.mixer.music.play(-1)
-                self.level = world_2_2_water(self.screen, self.settings)
+                self.level = world_2_2_water(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
@@ -176,7 +177,7 @@ class SuperMario:
                     self.music = ow_theme
                     pygame.mixer.music.load(self.music)
                     pygame.mixer.music.play(-1)
-                self.level = world_2_2_exit(self.screen, self.settings)
+                self.level = world_2_2_exit(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
@@ -185,7 +186,7 @@ class SuperMario:
                 self.music = ow_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_2_3(self.screen, self.settings)
+                self.level = world_2_3(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
 
@@ -193,7 +194,7 @@ class SuperMario:
                 self.music = c_theme
                 pygame.mixer.music.load(self.music)
                 pygame.mixer.music.play(-1)
-                self.level = world_2_4(self.screen, self.settings)
+                self.level = world_2_4(self.screen, self.settings, self.mario_stage)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
 
