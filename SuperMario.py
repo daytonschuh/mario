@@ -34,7 +34,7 @@ class SuperMario:
         self.game_coin = 0
         # SET LEVEL
         self.mario_stage = 0
-        self.level = world_2_3(self.screen, self.settings, self.mario_stage)
+        self.level = world_1_1(self.screen, self.settings, self.mario_stage)
         self.level_id = self.level.level_id
 
         # SET EVENTS
@@ -51,6 +51,8 @@ class SuperMario:
         else:
             self.level.scores.set_stats(self.game_score, self.game_time)
             self.mario_stage = self.level.mario.stage
+            if 0 > self.mario_stage:
+                self.mario_stage = 0
             old_id = self.level_id
             start_pos = None
             if self.level.level_id is not None:

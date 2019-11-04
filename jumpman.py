@@ -103,7 +103,7 @@ pygame.mixer.init()
 mariodie = pygame.mixer.Sound("Resources/Sounds/smb_mariodie.wav")
 s_jump = pygame.mixer.Sound("Resources/Sounds/smb_jump-small.wav")
 b_jump = pygame.mixer.Sound("Resources/Sounds/smb_jump-super.wav")
-
+p_down = pygame.mixer.Sound("Resources/Sounds/smb_pipe.wav")
 
 class Jumpman(Sprite):
     def __init__(self, screen, settings, camera, stage, style, start_pos, swim=False):
@@ -311,6 +311,7 @@ class Jumpman(Sprite):
     def take_damage(self):
         if self.invulnerable is False and self.stage != -1:
             if self.stage > 0:
+                pygame.mixer.Sound.play(p_down)
                 print("Mario got hit!")
                 self.invul_timer = 100
                 self.invulnerable = True

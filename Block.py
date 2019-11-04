@@ -15,6 +15,9 @@ axe = pygame.image.load("Resources/Images/Blocks/axe.png")
 itemappear = pygame.mixer.Sound("Resources/Sounds/smb_powerup_appears.wav")
 breakbricks = pygame.mixer.Sound("Resources/Sounds/smb_breakblock.wav")
 bump = pygame.mixer.Sound("Resources/Sounds/smb_bump.wav")
+pipe = pygame.mixer.Sound("Resources/Sounds/smb_pipe.wav")
+axe_clear = "Resources/Sounds/smb_world_clear.wav"
+flag_clear = "Resources/Sounds/smb_stage_clear.wav"
 
 
 class Block(Sprite):
@@ -281,7 +284,8 @@ class FlagPole(Sprite):
         self.flag_x = self.flag_rect.left
         self.asset_id = self.settings.flag_id
         self.grabbed = False
-        self.axe_timer = 120
+        self.active = False
+        self.axe_timer = 80
 
     def grab(self):
         self.grabbed = True
@@ -296,6 +300,10 @@ class FlagPole(Sprite):
                 else:
                     self.grabbed = False
                     self.asset_id = self.settings.auto_id
+                    if self.active is False:
+                        pygame.mixer.music.load(flag_clear)
+                        pygame.mixer.music.play()
+                        self.active = True
         else:
             if self.grabbed:
                 self.axe_timer -= 1
@@ -303,6 +311,10 @@ class FlagPole(Sprite):
                     self.image = i_block
                     self.grabbed = False
                     self.asset_id = self.settings.auto_id
+                    if self.active is False:
+                        pygame.mixer.music.load(axe_clear)
+                        pygame.mixer.music.play()
+                        self.active = True
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
@@ -324,6 +336,7 @@ class Warp(Sprite):
         self.level_id = new_level_id
         self.do_load = False
         self.direction = direction
+        self.activated = False
         if direction == "left":
             self.x += 1
         elif direction == "right":
@@ -339,6 +352,10 @@ class Warp(Sprite):
         self.rect.left = self.x - self.camera.x_pos
 
     def check(self, mario, down, left, right):
-        if collide_rect(mario, self):
-            if (down and self.direction == "down") or (right and self.direction == "right") or (left and self.direction == "left"):
-                mario.my_warp = self
+        if not self.activated:
+            if collide_rect(mario, self):
+                if (down and self.direction == "down") or (right and self.direction == "right")\
+                        or (left and self.direction == "left"):
+                    mario.my_warp = self
+                    pygame.mixer.Sound.play(pipe)
+                    self.activated = True
