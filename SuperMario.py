@@ -7,14 +7,10 @@ from LevelCreator import *
 # LOAD LEVEL MUSIC
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
-lvl1_1_bg_music = pygame.mixer.music.load("Resources/Sounds/level_1_theme.wav")
-lvl1_2_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
-lvl1_3_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
-lvl1_4_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
-lvl2_1_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
-lvl2_2_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
-lvl2_3_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
-lvl2_4_bg_music = pygame.mixer.Sound("Resources/Sounds/level_1_theme.wav")
+ow_theme = "Resources/Sounds/overworld_theme.wav"
+ug_theme = "Resources/Sounds/underground_theme.wav"
+uw_theme = "Resources/Sounds/underwater_theme.wav"
+c_theme = "Resources/Sounds/castle_theme.wav"
 
 
 class SuperMario:
@@ -44,8 +40,9 @@ class SuperMario:
         self.left, self.right, self.space, self.shift, self.down, self.fire = [False] * 6
 
         # SET SOUNDS
-        self.music = lvl1_1_bg_music
-        self.music_channel = pygame.mixer.music.play(0, 0)
+        self.music = ow_theme
+        pygame.mixer.music.load(ow_theme)
+        pygame.mixer.music.play(-1)
 
     def check_level(self):
         if self.level_id == self.level.level_id:
@@ -58,30 +55,39 @@ class SuperMario:
                 self.level_id = self.level.level_id
 
             if self.level_id == self.settings.W_1_1:
+                self.music = ow_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 if old_id == self.settings.W_1_1_sub:
                     start_pos = [163.5, 2]
                 self.level = world_1_1(self.screen, self.settings, start_pos)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_1_1_sub:
+                if self.music is not ug_theme:
+                    self.music = ug_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 self.level = world_1_1_sub(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_1_2:
-                self.music = lvl1_2_bg_music
+                self.music = ow_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_1_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl1_2_bg_music
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_1_2_sub:
+                if self.music is not ug_theme:
+                    self.music = ug_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 if old_id == self.settings.W_1_2_sub_sub:
                     start_pos = [115.5, 3]
                 self.level = world_1_2_sub(self.screen, self.settings, start_pos)
@@ -90,85 +96,105 @@ class SuperMario:
                 self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_2_sub_sub:
+                if self.music is not ug_theme:
+                    self.music = ug_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 self.level = world_1_2_sub_sub(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_2_exit:
+                if self.music is not ow_theme:
+                    self.music = ow_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 self.level = world_1_2_exit(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_1_3:
+                self.music = ow_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_1_3(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl1_3_bg_music
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_1_4:
+                self.music = c_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_1_4(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl1_4_bg_music
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_1:
                 if old_id == self.settings.W_2_1_sub:
                     start_pos = [115.5, 3]
+                self.music = ow_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_2_1(self.screen, self.settings, start_pos)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl2_1_bg_music
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_1_sub:
+                if self.music is not ug_theme:
+                    self.music = ug_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 self.level = world_2_1_sub(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_2:
+                self.music = ow_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_2_2(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl2_2_bg_music
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_2_sub:
+                if self.music is not uw_theme:
+                    self.music = uw_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 self.level = world_2_2_water(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.timer = self.game_time
                 self.level.scores.coins = self.game_coin
 
             elif self.level_id == self.settings.W_2_2_exit:
+                if self.music is not ow_theme:
+                    self.music = ow_theme
+                    pygame.mixer.music.load(self.music)
+                    pygame.mixer.music.play(-1)
                 self.level = world_2_2_exit(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
                 self.level.scores.timer = self.game_time
 
             elif self.level_id == self.settings.W_2_3:
+                self.music = ow_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_2_3(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl2_3_bg_music
-                self.music_channel.play(self.music)
 
             elif self.level_id == self.settings.W_2_4:
+                self.music = c_theme
+                pygame.mixer.music.load(self.music)
+                pygame.mixer.music.play(-1)
                 self.level = world_2_4(self.screen, self.settings)
                 self.level.scores.scores = self.game_score
                 self.level.scores.coins = self.game_coin
-                self.music_channel.stop()
-                self.music = lvl2_4_bg_music
-                self.music_channel.play(self.music)
 
             print("Level " + self.level.world + " loaded")
 

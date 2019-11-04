@@ -109,7 +109,7 @@ class Jumpman(Sprite):
         self.screen = screen
         self.settings = settings
         self.camera = camera
-        self.stage = 2
+        self.stage = 0
         self.style = style
         self.state = 0
         self.image = face[self.stage][1]
@@ -315,6 +315,7 @@ class Jumpman(Sprite):
 
     def set_death(self):
         if self.stage != -1:
+            pygame.mixer.music.stop()
             print("Mario died!")
             self.stage = -1
             self.image = death
