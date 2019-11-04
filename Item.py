@@ -18,6 +18,7 @@ flower_d = pygame.image.load('Resources/Images/Items/flower_d.png')
 flower = [flower_a, flower_b, flower_c, flower_d]
 coin_ping = pygame.mixer.Sound("Resources/Sounds/smb_coin.wav")
 power_up = pygame.mixer.Sound("Resources/Sounds/smb_powerup.wav")
+one_up = pygame.mixer.Sound("Resources/Sounds/smb_1-up.wav")
 
 
 class Mushroom(Sprite):
@@ -173,6 +174,7 @@ class GreenMushroom(Mushroom):
         self.kill()
         # Give player 1+ life
         self.scores.scores += self.score
+        pygame.mixer.Sound.play(one_up)
 
 
 class Coin(Sprite):
