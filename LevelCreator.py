@@ -265,7 +265,7 @@ def world_1_3(screen, settings, mario_stage, start_pos=None):
 
     new_level = \
         Level(screen, settings, 'Resources/Images/Backgrounds/World_1/1-3/level_1_3_background.png',
-              'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', start_pos, mario_stage, [152, 2], 500, "1-3",
+              'Resources/Images/Backgrounds/World_1/1-3/level_1_3_floor.png', mario_stage, start_pos, [152, 2], 500, "1-3",
               settings.W_1_3, settings.W_1_4, settings.W_1_3)
 
     new_level.place_enemy('koopa', 29, 9)
